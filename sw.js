@@ -1,4 +1,4 @@
-const CACHE_NAME = "arrival-guide-v44-contact-name";
+const CACHE_NAME = "arrival-guide-v45-resilient-cache";
 const APP_SHELL = "./index.html";
 const ASSETS = [
   "./",
@@ -17,21 +17,26 @@ const ASSETS = [
 ];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches
-      .open(CACHE_NAME)
-      .then((cache) => cache.addAll(ASSETS))
-      .then(() => self.skipWaiting())
-  );
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    await Promise.all(ASSETS.map(async (asset) => {
+      try {
+        await cache.add(new Request(asset, { cache: "reload" }));
+      } catch (error) {
+        // Keep installation resilient if a non-critical asset fails.
+      }
+    }));
+    await self.skipWaiting();
+  })());
 });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys()
-      .then((keys) =>
-        Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key)))
-      )
-      .then(() => self.clients.claim())
+    caches.keys().then((keys) =>
+      Promise.all(keys
+        .filter((key) => key.startsWith("arrival-guide-") && key !== CACHE_NAME)
+        .map((key) => caches.delete(key)))
+    ).then(() => self.clients.claim())
   );
 });
 
