@@ -1,5 +1,5 @@
 window.ARRIVAL_DEFAULT_CONFIG = {
-  version: 2,
+  version: 3,
   languages: {
     pl: "Polski",
     uk: "Українська",
@@ -17,6 +17,7 @@ window.ARRIVAL_DEFAULT_CONFIG = {
       chooseLocationText: "Kliknij kafelek miejsca, do którego jedziesz. Strona pokaże instrukcję tylko dla tej lokalizacji.",
       selectedLocation: "Wybrana lokalizacja",
       showInstruction: "Pokaż instrukcję",
+      checkConnections: "Sprawdź połączenia",
       employee: "Pracownik",
       arrivalDate: "Data przyjazdu",
       location: "Lokalizacja",
@@ -62,6 +63,7 @@ window.ARRIVAL_DEFAULT_CONFIG = {
       chooseLocationText: "Натисніть на місце, куди ви їдете. Сторінка покаже інструкцію саме для цієї локації.",
       selectedLocation: "Обрана локація",
       showInstruction: "Показати інструкцію",
+      checkConnections: "Перевірити сполучення",
       employee: "Працівник",
       arrivalDate: "Дата приїзду",
       location: "Локація",
@@ -107,6 +109,7 @@ window.ARRIVAL_DEFAULT_CONFIG = {
       chooseLocationText: "Нажмите на место, куда вы едете. Страница покажет инструкцию именно для этой локации.",
       selectedLocation: "Выбранная локация",
       showInstruction: "Показать инструкцию",
+      checkConnections: "Проверить маршруты",
       employee: "Работник",
       arrivalDate: "Дата приезда",
       location: "Локация",
@@ -152,6 +155,7 @@ window.ARRIVAL_DEFAULT_CONFIG = {
       chooseLocationText: "Tap the location you are travelling to. The page will show instructions for that place.",
       selectedLocation: "Selected location",
       showInstruction: "Show instruction",
+      checkConnections: "Check connections",
       employee: "Employee",
       arrivalDate: "Arrival date",
       location: "Location",
@@ -197,6 +201,7 @@ window.ARRIVAL_DEFAULT_CONFIG = {
       chooseLocationText: "დააჭირეთ იმ ადგილს, სადაც მიდიხართ. გვერდი გაჩვენებთ ინსტრუქციას ამ ლოკაციისთვის.",
       selectedLocation: "არჩეული ლოკაცია",
       showInstruction: "ინსტრუქციის ჩვენება",
+      checkConnections: "მარშრუტების შემოწმება",
       employee: "თანამშრომელი",
       arrivalDate: "ჩამოსვლის თარიღი",
       location: "ლოკაცია",
@@ -242,6 +247,7 @@ window.ARRIVAL_DEFAULT_CONFIG = {
       chooseLocationText: "Getdiyiniz məkanı basın. Səhifə həmin yer üçün təlimatı göstərəcək.",
       selectedLocation: "Seçilmiş məkan",
       showInstruction: "Təlimatı göstər",
+      checkConnections: "Marşrutları yoxla",
       employee: "İşçi",
       arrivalDate: "Gəliş tarixi",
       location: "Məkan",
@@ -321,13 +327,19 @@ window.ARRIVAL_DEFAULT_CONFIG = {
       phone: "+48506845667",
       whatsapp: "+48506845667",
       route: {
-        pl: ["Najprościej: przyjazd przewoźnikiem bezpośrednio pod adres ul. Opolska 30.", "Jeżeli jedziesz samodzielnie, dojedź pociągiem lub autobusem do Wrocławia.", "Z Wrocławia dojedź pociągiem lub autobusem w kierunku Siechnic, a ostatni odcinek pokonaj taxi pod ul. Opolską 30.", "Przed wyjazdem zapisz adres w telefonie i wyślij koordynatorowi godzinę przyjazdu.", "Jeżeli nie możesz znaleźć adresu, zadzwoń do koordynatora i wyślij lokalizację z telefonu."],
+        pl: ["Punkt docelowy: ul. Opolska 30, 55-011 Siechnice.", "Wariant 1: przewoźnik firmowy lub prywatny bezpośrednio pod adres. To najlepsza opcja przy większym bagażu.", "Wariant 2: pociąg do Wrocław Główny, potem pociąg regionalny do stacji Siechnice. Ze stacji zamów taxi lub dojdź zgodnie z mapą.", "Wariant 3: autobus z Wrocławia w kierunku Siechnic. Wysiądź możliwie najbliżej ul. Opolskiej i ostatni odcinek pokonaj pieszo albo taxi.", "Przed wyjazdem zapisz adres w telefonie, zrób zrzut mapy offline i wyślij koordynatorowi planowaną godzinę przyjazdu.", "Jeżeli nie możesz znaleźć adresu, zadzwoń do koordynatora i wyślij lokalizację z telefonu."],
         uk: ["Найпростіше: приїхати перевізником прямо на адресу ul. Opolska 30.", "Якщо їдете самостійно, доїдьте поїздом або автобусом до Вроцлава.", "З Вроцлава їдьте поїздом або автобусом у напрямку Siechnice, останній відрізок краще проїхати таксі до ul. Opolska 30.", "Перед виїздом збережіть адресу в телефоні та повідомте координатору час прибуття.", "Якщо не можете знайти адресу, зателефонуйте координатору і надішліть свою геолокацію."],
         ru: ["Проще всего: приехать перевозчиком прямо по адресу ul. Opolska 30.", "Если едете самостоятельно, доедьте поездом или автобусом до Вроцлава.", "Из Вроцлава езжайте поездом или автобусом в сторону Siechnice, последний участок лучше проехать на такси до ul. Opolska 30.", "Перед выездом сохраните адрес в телефоне и сообщите координатору время приезда.", "Если не можете найти адрес, позвоните координатору и отправьте геолокацию."],
         en: ["The easiest option is to arrive with the carrier directly to ul. Opolska 30.", "If travelling on your own, first get to Wrocław by train or bus.", "From Wrocław, travel towards Siechnice by train or bus, then take a taxi for the final part to ul. Opolska 30.", "Before leaving, save the address on your phone and tell the coordinator your arrival time.", "If you cannot find the address, call the coordinator and send your phone location."],
         ka: ["ყველაზე მარტივია გადამყვანით პირდაპირ მისამართზე ul. Opolska 30 მისვლა.", "თუ დამოუკიდებლად მოდიხართ, ჯერ მატარებლით ან ავტობუსით ჩადით ვროცლავში.", "ვროცლავიდან იმგზავრეთ Siechnice-ის მიმართულებით და ბოლო მონაკვეთი ტაქსით გაიარეთ ul. Opolska 30-მდე.", "გამგზავრებამდე შეინახეთ მისამართი ტელეფონში და კოორდინატორს აცნობეთ ჩამოსვლის დრო.", "თუ მისამართს ვერ პოულობთ, დაურეკეთ კოორდინატორს და გაუგზავნეთ თქვენი ლოკაცია."],
         az: ["Ən rahat yol: daşıyıcı ilə birbaşa ul. Opolska 30 ünvanına gəlməkdir.", "Özünüz gəlirsinizsə, əvvəlcə qatar və ya avtobusla Wrocław şəhərinə gəlin.", "Wrocławdan Siechnice istiqamətinə qatar və ya avtobusla gedin, son hissəni taksi ilə ul. Opolska 30 ünvanına gedin.", "Yola çıxmazdan əvvəl ünvanı telefonda saxlayın və gəliş vaxtını koordinatora bildirin.", "Ünvanı tapa bilmirsinizsə, koordinatora zəng edin və telefon lokasiyanızı göndərin."]
       },
+      routeLinks: [
+        { label: "Pociąg Wrocław Główny → Siechnice", url: "https://kolejedolnoslaskie.pl/rozklad-jazdy/wroclaw-glowny/siechnice/" },
+        { label: "Stacja Siechnice - rozkład", url: "https://kolejedolnoslaskie.pl/rozklad-jazdy/siechnice/" },
+        { label: "Autobusy Siechnice", url: "https://siechnice.com.pl/strona/komunikacja-rozklady-jazdy-autobusow" },
+        { label: "Mapa Google do adresu", url: "https://www.google.com/maps/search/?api=1&query=ul.%20Opolska%2030%2C%2055-011%20Siechnice" }
+      ],
       work: {
         production: { pl: ["pielęgnacja roślin", "zbiór", "usuwanie liści", "opuszczanie roślin", "likwidacja szklarni", "mycie szklarni", "przygotowanie do nowego sezonu", "inne prace pomocnicze"], en: ["plant care", "harvesting", "leaf removal", "lowering plants", "greenhouse liquidation", "greenhouse washing", "new season preparation", "other support tasks"] },
         warehouse: { pl: ["pakowanie", "sortowanie", "kompletacja", "przygotowanie zamówień", "inne prace magazynowe"], en: ["packing", "sorting", "order picking", "order preparation", "other warehouse tasks"] }
@@ -350,13 +362,19 @@ window.ARRIVAL_DEFAULT_CONFIG = {
         az: "Gəldikdən sonra işçi administratora zəng etməlidir: Ludmiła, +48 536 110 591."
       },
       route: {
-        pl: ["Dojedź do Warszawy Zachodniej.", "Na dworcu Warszawa Zachodnia znajdź autobus w kierunku Kozienic.", "Wysiądź na przystanku Ryczywół Szklarnia.", "Po wyjściu z autobusu zadzwoń do administratora albo koordynatora.", "Adres zakwaterowania: Wilczkowice Górne 40, 26-900 Kozienice."],
+        pl: ["Punkt zbiórki w trasie: Warszawa Zachodnia albo inny przystanek wskazany przez rekrutację.", "Wariant 1: autobus/bus Warszawa Zachodnia → Kozienice. Sprawdź kurs w dniu wyjazdu, bo przewoźnicy i godziny mogą się zmieniać.", "Z Kozienic jedź lokalnym autobusem/busem w kierunku Ryczywołu i wysiądź na przystanku Ryczywół Szklarnia, jeżeli kurs jest dostępny.", "Jeżeli nie ma dogodnego kursu do Ryczywołu, dojedź do Kozienic i zadzwoń do koordynatora po dalsze instrukcje.", "Adres zakwaterowania: Wilczkowice Górne 40, 26-900 Kozienice.", "Po wyjściu z autobusu obowiązkowo zadzwoń do administratora albo koordynatora."],
         uk: ["Доїдьте до Warszawa Zachodnia.", "На станції Warszawa Zachodnia знайдіть автобус у напрямку Kozienice.", "Вийдіть на зупинці Ryczywół Szklarnia.", "Після виходу з автобуса зателефонуйте адміністратору або координатору.", "Адреса проживання: Wilczkowice Górne 40, 26-900 Kozienice."],
         ru: ["Доедьте до Warszawa Zachodnia.", "На станции Warszawa Zachodnia найдите автобус в направлении Kozienice.", "Выйдите на остановке Ryczywół Szklarnia.", "После выхода из автобуса позвоните администратору или координатору.", "Адрес проживания: Wilczkowice Górne 40, 26-900 Kozienice."],
         en: ["Travel to Warszawa Zachodnia.", "At Warszawa Zachodnia, find a bus towards Kozienice.", "Get off at the Ryczywół Szklarnia stop.", "After leaving the bus, call the administrator or coordinator.", "Accommodation address: Wilczkowice Górne 40, 26-900 Kozienice."],
         ka: ["ჩადით Warszawa Zachodnia-ზე.", "Warszawa Zachodnia-ზე მოძებნეთ ავტობუსი Kozienice-ის მიმართულებით.", "ჩამოდით გაჩერებაზე Ryczywół Szklarnia.", "ავტობუსიდან ჩამოსვლის შემდეგ დაურეკეთ ადმინისტრატორს ან კოორდინატორს.", "საცხოვრებლის მისამართი: Wilczkowice Górne 40, 26-900 Kozienice."],
         az: ["Warszawa Zachodnia stansiyasına gəlin.", "Warszawa Zachodnia-da Kozienice istiqamətinə gedən avtobusu tapın.", "Ryczywół Szklarnia dayanacağında düşün.", "Avtobusdan düşdükdən sonra administratora və ya koordinatora zəng edin.", "Yaşayış ünvanı: Wilczkowice Górne 40, 26-900 Kozienice."]
       },
+      routeLinks: [
+        { label: "Warszawa Zachodnia → Kozienice", url: "https://travelbuss.pl/kozienice-warszawa/" },
+        { label: "Kozienice → Ryczywół", url: "https://www.e-podroznik.pl/rozklad-jazdy-bilety/kozienice-ryczywol5" },
+        { label: "Warszawa → Kozienice - porównaj kursy", url: "https://www.e-podroznik.pl/rozklad-jazdy-bilety/warszawa-kozienice" },
+        { label: "Mapa zakwaterowania", url: "https://www.google.com/maps/search/?api=1&query=Wilczkowice%20G%C3%B3rne%2040%2C%2026-900%20Kozienice" }
+      ],
       coordinators: ["Maksym +48 506 845 637", "Mykhailo +48 785 580 050"],
       work: { greenhouse: { pl: ["szklarnia"], en: ["greenhouse"] } }
     },
@@ -377,13 +395,19 @@ window.ARRIVAL_DEFAULT_CONFIG = {
         az: "Gəldikdən sonra işçi mütləq zəng etməlidir: Nataliia Berladyn, +48 609 809 601."
       },
       route: {
-        pl: ["Dojedź do Zgorzelca, Bogatyni albo najbliższego punktu ustalonego z rekrutacją.", "Przed wyjazdem potwierdź z koordynatorem, gdzie dokładnie masz wysiąść.", "Adres zakwaterowania to Niedów 9, 59-900 Niedów.", "Po dotarciu w okolice Bogatyni/Niedowa zadzwoń do Natalii Berladyn.", "Jeżeli jedziesz taxi, pokaż kierowcy adres Niedów 9."],
+        pl: ["Punkt docelowy zakwaterowania: Niedów 9, 59-900 Niedów.", "Wariant 1: dojedź pociągiem lub autobusem do Zgorzelca, potem busem/autobusem w kierunku Bogatyni.", "Wariant 2: jeżeli rekrutacja wskazała Bogatynię jako punkt odbioru, dojedź do Bogatyni i przed wysiadką zadzwoń do Natalii Berladyn.", "Z Bogatyni do Niedowa ostatni odcinek najlepiej pokonać taxi albo transportem ustalonym z koordynatorem.", "Przed wyjazdem potwierdź z koordynatorem, gdzie dokładnie masz wysiąść: Zgorzelec, Bogatynia czy Niedów.", "Jeżeli jedziesz taxi, pokaż kierowcy adres Niedów 9."],
         uk: ["Доїдьте до Zgorzelec, Bogatynia або найближчого пункту, узгодженого з рекрутацією.", "Перед виїздом підтвердьте з координатором, де саме вам вийти.", "Адреса проживання: Niedów 9, 59-900 Niedów.", "Після прибуття в район Bogatynia/Niedów зателефонуйте Natalii Berladyn.", "Якщо їдете таксі, покажіть водію адресу Niedów 9."],
         ru: ["Доедьте до Zgorzelec, Bogatynia или ближайшего пункта, согласованного с рекрутингом.", "Перед выездом подтвердите с координатором, где именно вам выйти.", "Адрес проживания: Niedów 9, 59-900 Niedów.", "После прибытия в район Bogatynia/Niedów позвоните Natalii Berladyn.", "Если едете на такси, покажите водителю адрес Niedów 9."],
         en: ["Travel to Zgorzelec, Bogatynia or the nearest meeting point agreed with recruitment.", "Before departure, confirm with the coordinator exactly where you should get off.", "Accommodation address: Niedów 9, 59-900 Niedów.", "After reaching the Bogatynia/Niedów area, call Nataliia Berladyn.", "If taking a taxi, show the driver the address Niedów 9."],
         ka: ["ჩადით Zgorzelec-ში, Bogatynia-ში ან რეკრუტერთან შეთანხმებულ უახლოეს პუნქტში.", "გამგზავრებამდე კოორდინატორთან დააზუსტეთ, სად უნდა ჩამოხვიდეთ.", "საცხოვრებლის მისამართი: Niedów 9, 59-900 Niedów.", "Bogatynia/Niedów-ის მიდამოში მისვლის შემდეგ დაურეკეთ Nataliia Berladyn-ს.", "თუ ტაქსით მიდიხართ, მძღოლს აჩვენეთ მისამართი Niedów 9."],
         az: ["Zgorzelec, Bogatynia və ya rekrutasiya ilə razılaşdırılmış ən yaxın nöqtəyə gəlin.", "Yola çıxmazdan əvvəl harada düşəcəyinizi koordinatorla dəqiqləşdirin.", "Yaşayış ünvanı: Niedów 9, 59-900 Niedów.", "Bogatynia/Niedów ərazisinə çatdıqdan sonra Nataliia Berladyn-ə zəng edin.", "Taksi ilə gedirsinizsə, sürücüyə Niedów 9 ünvanını göstərin."]
       },
+      routeLinks: [
+        { label: "Zgorzelec → Bogatynia - ASTEL", url: "https://astelbus.pl/strefa-pasazera/rozklad-jazdy" },
+        { label: "Zgorzelec → Bogatynia - Bieleccy PDF", url: "https://bieleccybus.pl/rozklady/Linia%2090.pdf" },
+        { label: "Zgorzelec → Bogatynia - e-podróżnik", url: "https://www.e-podroznik.pl/rozklad-jazdy-bilety/zgorzelec-bogatynia" },
+        { label: "Mapa Niedów 9", url: "https://www.google.com/maps/search/?api=1&query=Nied%C3%B3w%209%2C%2059-900%20Nied%C3%B3w" }
+      ],
       work: { production: { pl: ["produkcja", "szklarnia", "prace pomocnicze"], en: ["production", "greenhouse", "support tasks"] } }
     },
     zgorzelec: {
@@ -403,13 +427,19 @@ window.ARRIVAL_DEFAULT_CONFIG = {
         az: "Gəldikdən sonra sənədləri imzalamaq üçün müraciət edin. Əlaqə: Anastasiia Derepa, +48 797 684 159."
       },
       route: {
-        pl: ["Dojedź pociągiem lub autobusem do Zgorzelca.", "Jako cel wpisz: Citronex Sp. z o.o., ul. Bohaterów II Armii Wojska Polskiego 64.", "Z dworca lub przystanku w Zgorzelcu dojedź taxi albo lokalnym transportem pod adres firmy.", "Po przyjeździe zgłoś się do podpisania dokumentów.", "Jeżeli spóźniasz się albo nie możesz znaleźć wejścia, zadzwoń do Anastasii Derepy."],
+        pl: ["Punkt docelowy: Citronex Sp. z o.o., ul. Bohaterów II Armii Wojska Polskiego 64, 59-900 Zgorzelec.", "Wariant 1: dojedź pociągiem lub autobusem do Zgorzelca, potem taxi albo komunikacją miejską pod adres firmy.", "Wariant 2: jeżeli autobus jedzie przez ul. Bohaterów II Armii Wojska Polskiego, wysiądź na najbliższym przystanku i dojście sprawdź w mapie.", "Po przyjeździe zgłoś się do podpisania dokumentów.", "Jeżeli spóźniasz się albo nie możesz znaleźć wejścia, zadzwoń do Anastasii Derepy.", "Nie jedź na inny adres Citronex bez potwierdzenia. W tej instrukcji celem jest numer 64."],
         uk: ["Доїдьте поїздом або автобусом до Zgorzelec.", "Введіть ціль: Citronex Sp. z o.o., ul. Bohaterów II Armii Wojska Polskiego 64.", "З вокзалу або зупинки в Zgorzelec доїдьте таксі або місцевим транспортом до адреси фірми.", "Після приїзду з'явіться для підписання документів.", "Якщо запізнюєтесь або не можете знайти вхід, зателефонуйте Anastasii Derepa."],
         ru: ["Доедьте поездом или автобусом до Zgorzelec.", "Укажите цель: Citronex Sp. z o.o., ul. Bohaterów II Armii Wojska Polskiego 64.", "От вокзала или остановки в Zgorzelec доедьте на такси или местным транспортом до адреса фирмы.", "После приезда явитесь для подписания документов.", "Если опаздываете или не можете найти вход, позвоните Anastasii Derepa."],
         en: ["Travel by train or bus to Zgorzelec.", "Use this destination: Citronex Sp. z o.o., ul. Bohaterów II Armii Wojska Polskiego 64.", "From the station or stop in Zgorzelec, take a taxi or local transport to the company address.", "After arrival, report for document signing.", "If you are late or cannot find the entrance, call Anastasiia Derepa."],
         ka: ["მატარებლით ან ავტობუსით ჩადით Zgorzelec-ში.", "მიზნად მიუთითეთ: Citronex Sp. z o.o., ul. Bohaterów II Armii Wojska Polskiego 64.", "Zgorzelec-ის სადგურიდან ან გაჩერებიდან ტაქსით ან ადგილობრივი ტრანსპორტით მიდით კომპანიის მისამართზე.", "ჩამოსვლის შემდეგ გამოცხადდით დოკუმენტების ხელმოსაწერად.", "თუ აგვიანებთ ან შესასვლელს ვერ პოულობთ, დაურეკეთ Anastasiia Derepa-ს."],
         az: ["Qatar və ya avtobusla Zgorzelec şəhərinə gəlin.", "Məqsəd kimi yazın: Citronex Sp. z o.o., ul. Bohaterów II Armii Wojska Polskiego 64.", "Zgorzelec stansiyasından və ya dayanacağından şirkət ünvanına taksi və ya yerli nəqliyyatla gedin.", "Gəldikdən sonra sənədləri imzalamaq üçün müraciət edin.", "Gecikirsinizsə və ya girişi tapa bilmirsinizsə, Anastasiia Derepa-ya zəng edin."]
       },
+      routeLinks: [
+        { label: "Adres Citronex - kontakt", url: "https://citronex.pl/pl/kontakt" },
+        { label: "Komunikacja miejska Zgorzelec", url: "https://bus.zgorzelec.eu/" },
+        { label: "Gmina Zgorzelec - komunikacja", url: "https://gmina.zgorzelec.pl/komunikacja-publiczna.html" },
+        { label: "Mapa Citronex 64", url: "https://www.google.com/maps/search/?api=1&query=Citronex%20Bohater%C3%B3w%20II%20Armii%20Wojska%20Polskiego%2064%20Zgorzelec" }
+      ],
       work: { warehouse: { pl: ["magazyn", "logistyka", "operator UDT", "pakowanie", "sortowanie"], en: ["warehouse", "logistics", "UDT operator", "packing", "sorting"] } }
     }
   },

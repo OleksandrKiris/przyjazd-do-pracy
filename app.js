@@ -117,7 +117,7 @@
 
     $("guide").innerHTML = `
       ${panel(t("address"), `<p>${addressHtml}</p>`)}
-      ${panel(t("route"), list(localizedList(place.route)))}
+      ${panel(t("route"), `${list(localizedList(place.route))}${routeLinks(place.routeLinks)}`)}
       ${panel(t("workType"), list(workItems))}
       ${panel(t("arrivalRules"), `<p>${escapeHtml(t("reception"))}</p><p>${escapeHtml(t("noWeekend"))}</p><p>${escapeHtml(t("late"))}</p>`)}
       ${panel(t("whatToPack"), `<p><strong>${escapeHtml(packLabel(packKey))}</strong></p>${list(localizedList(config.packs[packKey]))}`)}
@@ -165,6 +165,18 @@
 
   function list(items) {
     return `<ul>${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
+  }
+
+  function routeLinks(links) {
+    if (!links || !links.length) return "";
+    return `
+      <div class="route-links">
+        <h3>${escapeHtml(t("checkConnections"))}</h3>
+        <div>
+          ${links.map((link) => `<a href="${escapeHtml(link.url)}" target="_blank" rel="noopener">${escapeHtml(link.label)}</a>`).join("")}
+        </div>
+      </div>
+    `;
   }
 
   function packLabel(key) {
