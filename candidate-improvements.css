@@ -1310,3 +1310,151 @@ main {
     padding: 12px;
   }
 }
+
+/* v28: calmer colors and no duplicated action card after "You are going to". */
+body {
+  background: #eef3f8;
+}
+
+.app {
+  background: #eef3f8;
+}
+
+.topbar {
+  background:
+    linear-gradient(180deg, #ffffff 0%, #fff7f7 100%);
+  border-bottom: 1px solid #f1d4d7;
+  box-shadow: 0 10px 24px rgba(134, 16, 24, .08);
+}
+
+.brand-logo-lockup {
+  border-color: #ffd7dc;
+  background: #ffffff;
+}
+
+.top-language-switcher select {
+  border-color: #d8e0ea;
+  background: #ffffff;
+}
+
+.location-picker,
+.mobile-candidate-hero,
+.panel,
+.contacts-section {
+  background: #ffffff;
+  border: 1px solid #dfe7f1;
+  box-shadow: 0 8px 18px rgba(22, 34, 51, .07);
+}
+
+.location-picker {
+  border-top: 4px solid var(--primary);
+}
+
+.location-tile {
+  background: #ffffff;
+  border-color: #dfe7f1;
+  border-left-width: 5px;
+  box-shadow: none;
+}
+
+.location-tile.active {
+  background: #fff5f6;
+  border-color: #ffccd2;
+  outline: 2px solid rgba(201, 22, 29, .24);
+}
+
+.mobile-candidate-hero {
+  border-left: 0;
+  border-top: 5px solid var(--primary);
+  background:
+    linear-gradient(180deg, #ffffff 0%, #fff8f8 100%);
+}
+
+.mobile-hero-label,
+.contact-role {
+  background: #fff1f2;
+  color: var(--primary-dark);
+  border-color: #fecdd3;
+}
+
+.mobile-hero-contact {
+  background: #f8fafc;
+  border-color: #dfe7f1;
+}
+
+.mobile-hero-actions button[data-help-action="maps"],
+.candidate-sticky-actions button[data-help-action="maps"] {
+  background: #1d4ed8;
+  color: #ffffff;
+  border-color: #1d4ed8;
+}
+
+.mobile-hero-actions button[data-help-action="call"],
+.candidate-sticky-actions button[data-help-action="call"] {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+}
+
+.mobile-hero-actions button[data-help-action="whatsapp"],
+.candidate-sticky-actions button[data-help-action="whatsapp"] {
+  background: #128c4a;
+  color: #ffffff;
+  border-color: #128c4a;
+}
+
+.panel.wide {
+  display: none !important;
+}
+
+.guide-grid {
+  margin-top: 0;
+}
+
+.route-steps li {
+  border-color: #dfe7f1;
+  box-shadow: none;
+}
+
+.route-steps span {
+  background: var(--primary);
+  box-shadow: none;
+}
+
+.contact-card {
+  border-color: #dfe7f1;
+  border-left-color: var(--primary);
+  box-shadow: none;
+}
+
+.contact-card .contact-phone {
+  background: #fff1f2;
+  color: var(--primary-dark);
+}
+
+.contact-card .contact-whatsapp {
+  background: #ecfdf3;
+  color: #047335;
+}
+
+.candidate-sticky-actions {
+  background: rgba(255, 255, 255, .98);
+  box-shadow: 0 -10px 24px rgba(22, 34, 51, .13);
+}
+
+@media (max-width: 520px) {
+  .topbar {
+    border-radius: 0 0 12px 12px;
+  }
+
+  .mobile-candidate-hero,
+  .location-picker,
+  .panel,
+  .contacts-section {
+    border-radius: 12px;
+  }
+
+  .mobile-hero-actions button {
+    min-height: 50px;
+  }
+}

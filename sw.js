@@ -1,4 +1,4 @@
-const CACHE_NAME = "arrival-guide-v27-logo-header";
+const CACHE_NAME = "arrival-guide-v28-style-cleanup";
 const ASSETS = [
   "./",
   "./index.html",
