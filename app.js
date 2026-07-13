@@ -21,8 +21,9 @@
   function readState() {
     const params = new URLSearchParams(location.search);
     const savedLang = getStoredLanguage();
+    const requestedLang = params.get("lang") || savedLang || "pl";
     return {
-      lang: params.get("lang") || savedLang || "pl",
+      lang: normalizeLanguage(requestedLang),
       name: params.get("name") || params.get("imie") || "",
       surname: params.get("surname") || params.get("nazwisko") || "",
       date: params.get("date") || params.get("data") || "",
@@ -34,10 +35,10 @@
   }
 
   function setLanguage(lang) {
-    state.lang = lang;
-    storeLanguage(lang);
+    state.lang = normalizeLanguage(lang);
+    storeLanguage(state.lang);
     const url = new URL(location.href);
-    url.searchParams.set("lang", lang);
+    url.searchParams.set("lang", state.lang);
     history.replaceState(null, "", url);
     render();
   }
@@ -60,6 +61,30 @@
     renderLocationTiles();
     renderGuide();
     renderContacts();
+  }
+
+  function syncUrlWithState() {
+    const url = new URL(location.href);
+    let changed = false;
+    const currentLang = url.searchParams.get("lang");
+    const currentLocation = url.searchParams.get("location");
+
+    if (currentLang !== state.lang) {
+      url.searchParams.set("lang", state.lang);
+      changed = true;
+    }
+
+    if (currentLocation !== state.location) {
+      url.searchParams.set("location", state.location);
+      changed = true;
+    }
+
+    if (url.searchParams.has("lokalizacja")) {
+      url.searchParams.delete("lokalizacja");
+      changed = true;
+    }
+
+    if (changed) history.replaceState(null, "", url);
   }
 
   function renderHydraLink() {
@@ -241,6 +266,31 @@
     return config?.locations?.[key] ? key : "siechnice";
   }
 
+  function normalizeLanguage(value) {
+    const key = String(value || "").toLowerCase();
+    const aliases = {
+      ua: "uk",
+      ukrainian: "uk",
+      ukrainianu: "uk",
+      ukr: "uk",
+      russian: "ru",
+      rus: "ru",
+      english: "en",
+      polski: "pl",
+      polish: "pl",
+      filipino: "fil",
+      tagalog: "fil",
+      indonesian: "id",
+      nepali: "ne",
+      nepal: "ne",
+      azerbaijani: "az",
+      azeri: "az",
+      spanish: "es"
+    };
+    const normalized = aliases[key] || key;
+    return config?.languages?.[normalized] ? normalized : "pl";
+  }
+
   function copyText(text) {
     if (navigator.clipboard && window.isSecureContext) {
       navigator.clipboard.writeText(text).then(() => toast(t("copied"))).catch(() => fallbackCopy(text));
@@ -335,6 +385,7 @@
     try {
       config = loadConfig();
       state = readState();
+      syncUrlWithState();
       render();
     } catch (error) {
       showFatalError(error);
@@ -342,7 +393,27 @@
   }
 
   if ("serviceWorker" in navigator && location.protocol !== "file:") {
-    navigator.serviceWorker.register("./sw.js");
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (refreshing) return;
+      refreshing = true;
+      location.reload();
+    });
+
+    navigator.serviceWorker.register("./sw.js").then((registration) => {
+      registration.update();
+      registration.addEventListener("updatefound", () => {
+        const worker = registration.installing;
+        if (!worker) return;
+        worker.addEventListener("statechange", () => {
+          if (worker.state === "installed" && navigator.serviceWorker.controller) {
+            worker.postMessage({ type: "SKIP_WAITING" });
+          }
+        });
+      });
+    }).catch((error) => {
+      console.warn("Service worker registration failed", error);
+    });
   }
 
   init();
