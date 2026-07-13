@@ -1,4 +1,4 @@
-const CACHE_NAME = "arrival-guide-v33-route-product";
+const CACHE_NAME = "arrival-guide-v34-master-product";
 const ASSETS = [
   "./",
   "./index.html",
