@@ -53,12 +53,19 @@
 
   function render() {
     document.documentElement.lang = state.lang;
+    renderHydraLink();
     renderLanguageControls();
     renderTexts();
     renderSummary();
     renderLocationTiles();
     renderGuide();
     renderContacts();
+  }
+
+  function renderHydraLink() {
+    const link = $("hydraLink");
+    if (!link) return;
+    link.href = `https://oleksandrkiris.github.io/citronex-hydra-project/?lang=${encodeURIComponent(state.lang)}`;
   }
 
   function renderLanguageControls() {

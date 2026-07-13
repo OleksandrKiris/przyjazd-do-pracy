@@ -1,4 +1,4 @@
-const CACHE_NAME = "arrival-guide-v11";
+const CACHE_NAME = "arrival-guide-v12-hydra-link";
 const ASSETS = [
   "./",
   "./index.html",

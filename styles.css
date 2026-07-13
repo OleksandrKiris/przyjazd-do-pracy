@@ -166,6 +166,35 @@ button:active {
   box-shadow: 13px 0 0 #ffffff;
 }
 
+.hydra-link {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  width: max-content;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 14px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, .36);
+  border-radius: 999px;
+  background: #111827;
+  color: #fff;
+  text-decoration: none;
+  font-size: 15px;
+  line-height: 1;
+  font-weight: 950;
+  letter-spacing: .08em;
+  box-shadow: 0 12px 24px rgba(17, 24, 39, .22);
+  touch-action: manipulation;
+}
+
+.hydra-link::before {
+  content: "↩";
+  margin-right: 8px;
+  font-size: 16px;
+}
+
 .button-row {
   display: flex;
   gap: 0.6rem;
