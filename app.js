@@ -225,8 +225,8 @@
         <div>
           ${orderedLinks.map((link) => `
             <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener">
-              <span>${escapeHtml(link.label)}</span>
-              ${link.note ? `<small>${escapeHtml(link.note)}</small>` : ""}
+              <span>${escapeHtml(localizedText(link.label))}</span>
+              ${link.note ? `<small>${escapeHtml(localizedText(link.note))}</small>` : ""}
             </a>
           `).join("")}
         </div>

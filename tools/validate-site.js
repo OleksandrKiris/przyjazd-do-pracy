@@ -5,6 +5,8 @@ const vm = require("vm");
 const root = path.resolve(__dirname, "..");
 const requiredLanguages = ["pl", "ru", "uk", "en", "az", "es", "fil", "id", "ne"];
 const requiredLocations = ["siechnice", "zgorzelec", "bogatynia", "ryczywol"];
+const visibleTextFiles = ["language-options.js", "translations.js", "index.html"];
+const mojibakePattern = /Đ|Ă|Ĺ|Ń|ŕ|á|Â|â†|GĂ|NiedĂ|RyczywĂ|WrocĹ/;
 const errors = [];
 
 function fail(message) {
@@ -16,6 +18,13 @@ function loadScript(context, relativePath) {
   const code = fs.readFileSync(filePath, "utf8");
   vm.runInContext(code, context, { filename: relativePath });
 }
+
+visibleTextFiles.forEach((relativePath) => {
+  const code = fs.readFileSync(path.join(root, relativePath), "utf8");
+  if (mojibakePattern.test(code)) {
+    fail(`${relativePath}: visible text contains broken encoding`);
+  }
+});
 
 function digits(phone) {
   return String(phone || "").replace(/\D/g, "");
@@ -30,11 +39,18 @@ function validateUrl(locationKey, link) {
   try {
     const url = new URL(link.url);
     if (url.protocol !== "https:") {
-      fail(`${locationKey}: route link "${link.label}" must use HTTPS`);
+      fail(`${locationKey}: route link must use HTTPS`);
     }
   } catch (error) {
-    fail(`${locationKey}: route link "${link.label || "without label"}" has invalid URL`);
+    fail(`${locationKey}: route link has invalid URL`);
   }
+}
+
+function localized(value, lang = "en") {
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    return value[lang] || value.en || value.pl || "";
+  }
+  return value || "";
 }
 
 const context = vm.createContext({
@@ -94,7 +110,11 @@ if (config) {
       let previousPriority = 0;
       let hasEmergencyFromCurrentLocation = false;
       place.routeLinks.forEach((link) => {
-        if (!link.label) fail(`${locationKey}: route link without label`);
+        if (!localized(link.label)) fail(`${locationKey}: route link without label`);
+        requiredLanguages.forEach((code) => {
+          if (!localized(link.label, code)) fail(`${locationKey}: route link missing label for ${code}`);
+          if (link.note && !localized(link.note, code)) fail(`${locationKey}: route link missing note for ${code}`);
+        });
         if (!link.url) fail(`${locationKey}: route link without URL`);
         if (link.url) validateUrl(locationKey, link);
         if ((link.priority || 99) < previousPriority) {
