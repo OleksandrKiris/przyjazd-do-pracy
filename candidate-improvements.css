@@ -1458,3 +1458,371 @@ body {
     min-height: 50px;
   }
 }
+
+/* v29: polished phone layout, tuned down to iPhone 8 width. */
+:root {
+  --page-bg: #f3f6fa;
+  --card-bg: #ffffff;
+  --card-border: #dce5ef;
+  --brand-red: #c9161d;
+  --brand-red-dark: #7f1017;
+  --map-blue: #2563eb;
+  --help-green: #128c4a;
+  --soft-red: #fff4f5;
+  --soft-blue: #eff6ff;
+  --soft-green: #ecfdf3;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  background:
+    linear-gradient(180deg, #ffffff 0, var(--page-bg) 170px),
+    var(--page-bg);
+  color: var(--ink);
+}
+
+.app {
+  width: min(100%, 760px);
+  background: transparent;
+}
+
+main {
+  display: grid;
+  gap: 10px;
+  padding: 0 clamp(8px, 3vw, 14px) 96px;
+}
+
+.topbar {
+  margin: 0 0 10px;
+  padding: 12px clamp(10px, 3vw, 16px);
+  border-bottom: 1px solid #e8edf4;
+  background: rgba(255, 255, 255, .98);
+  box-shadow: 0 8px 20px rgba(23, 32, 51, .07);
+}
+
+.brand-logo-lockup {
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 9px;
+  padding: 6px 9px 6px 6px;
+  border-color: #ffd7dc;
+  border-radius: 11px;
+  box-shadow: none;
+}
+
+.brand-logo-lockup img {
+  width: 48px;
+  height: 48px;
+}
+
+.brand-logo-lockup strong {
+  font-size: 12px;
+  line-height: 1.12;
+}
+
+.topbar h1 {
+  font-size: clamp(22px, 6.4vw, 31px);
+  line-height: 1.08;
+}
+
+.top-language-switcher {
+  gap: 4px;
+}
+
+.top-language-switcher label {
+  font-size: 10px;
+  color: #667085;
+}
+
+.top-language-switcher select {
+  min-height: 44px;
+  border-radius: 9px;
+  border-color: var(--card-border);
+  background-color: #ffffff;
+  box-shadow: none;
+}
+
+.location-picker,
+.mobile-candidate-hero,
+.panel,
+.contacts-section {
+  border-radius: 11px;
+  border-color: var(--card-border);
+  background: var(--card-bg);
+  box-shadow: 0 5px 14px rgba(23, 32, 51, .06);
+}
+
+.location-picker {
+  margin: 0;
+  padding: 12px;
+  border-top: 0;
+}
+
+.section-head {
+  margin-bottom: 10px;
+}
+
+.section-head h2,
+.panel h2,
+.contacts-section h2 {
+  font-size: clamp(18px, 5.4vw, 22px);
+  line-height: 1.14;
+}
+
+.section-head p {
+  font-size: 14px;
+  line-height: 1.35;
+  color: #667085;
+}
+
+.location-tiles {
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.location-tile {
+  min-height: 74px;
+  padding: 12px;
+  border-radius: 10px;
+  border-left-width: 5px;
+}
+
+.location-tile span {
+  font-size: clamp(18px, 5.3vw, 21px);
+  line-height: 1.1;
+}
+
+.location-tile small {
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.location-tile.active {
+  background: var(--soft-red);
+  outline: 2px solid rgba(201, 22, 29, .18);
+  outline-offset: 0;
+}
+
+.mobile-candidate-hero {
+  margin: 0;
+  padding: 13px;
+  gap: 9px;
+  border-top: 0;
+  border-left: 5px solid var(--brand-red);
+  background: #ffffff;
+}
+
+.mobile-hero-label,
+.contact-role {
+  border-radius: 999px;
+  background: var(--soft-red);
+  color: var(--brand-red-dark);
+}
+
+.mobile-candidate-hero h2 {
+  font-size: clamp(25px, 7.4vw, 34px);
+}
+
+.mobile-candidate-hero p {
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.mobile-hero-contact {
+  padding: 9px 10px;
+  border-radius: 9px;
+}
+
+.mobile-hero-actions {
+  gap: 7px;
+}
+
+.mobile-hero-actions button,
+.candidate-sticky-actions button,
+.contact-actions a,
+.action-grid button {
+  min-height: 46px;
+  border-radius: 10px;
+  font-size: 14px;
+  line-height: 1.1;
+}
+
+.mobile-hero-actions button[data-help-action="maps"] {
+  background: var(--map-blue);
+  border-color: var(--map-blue);
+}
+
+.mobile-hero-actions button[data-help-action="call"] {
+  background: var(--brand-red);
+  border-color: var(--brand-red);
+}
+
+.mobile-hero-actions button[data-help-action="whatsapp"] {
+  background: var(--help-green);
+  border-color: var(--help-green);
+}
+
+.guide-grid {
+  gap: 9px;
+}
+
+.guide-grid > .panel:not(.wide):nth-of-type(n+3),
+.panel.wide {
+  display: none !important;
+}
+
+.panel {
+  padding: 13px;
+}
+
+.panel p,
+.panel li,
+.route-steps p {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.route-steps {
+  gap: 7px;
+}
+
+.route-steps li {
+  grid-template-columns: 28px 1fr;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.route-steps span {
+  width: 28px;
+  height: 28px;
+  font-size: 13px;
+}
+
+.contacts-section {
+  padding: 13px;
+}
+
+.contact-grid {
+  gap: 8px;
+}
+
+.contact-card {
+  padding: 12px;
+  border-radius: 10px;
+  border-left-width: 5px;
+}
+
+.contact-card h3 {
+  font-size: 17px;
+}
+
+.contact-actions {
+  gap: 7px;
+}
+
+.contact-card .contact-phone {
+  background: var(--soft-red);
+  color: var(--brand-red-dark);
+  border-color: #fecdd3;
+}
+
+.contact-card .contact-whatsapp {
+  background: var(--soft-green);
+  color: #047335;
+  border-color: #bbf7d0;
+}
+
+.candidate-sticky-actions {
+  gap: 7px;
+  padding: 8px max(8px, env(safe-area-inset-left)) calc(8px + env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-right));
+  border-top-color: #dce5ef;
+}
+
+.candidate-sticky-actions button[data-help-action="maps"] {
+  background: var(--map-blue);
+}
+
+.candidate-sticky-actions button[data-help-action="call"] {
+  background: var(--brand-red);
+}
+
+.candidate-sticky-actions button[data-help-action="whatsapp"] {
+  background: var(--help-green);
+}
+
+@media (max-width: 430px) {
+  .topbar {
+    grid-template-columns: 1fr;
+    gap: 9px;
+    border-radius: 0 0 10px 10px;
+  }
+
+  .brand-head {
+    gap: 7px;
+  }
+
+  .brand-logo-lockup {
+    width: 100%;
+  }
+
+  .top-language-switcher {
+    justify-self: stretch;
+    width: 100%;
+  }
+
+  .top-language-switcher select {
+    min-height: 46px;
+    font-size: 16px;
+  }
+
+  main {
+    padding-inline: 8px;
+    gap: 9px;
+  }
+
+  .location-picker,
+  .mobile-candidate-hero,
+  .panel,
+  .contacts-section {
+    border-radius: 10px;
+  }
+
+  .mobile-hero-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .mobile-hero-actions button[data-help-action="maps"] {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 360px) {
+  .brand-logo-lockup {
+    grid-template-columns: 42px minmax(0, 1fr);
+  }
+
+  .brand-logo-lockup img {
+    width: 42px;
+    height: 42px;
+  }
+
+  .brand-logo-lockup strong,
+  .candidate-sticky-actions button,
+  .mobile-hero-actions button {
+    font-size: 12px;
+  }
+
+  .topbar h1 {
+    font-size: 22px;
+  }
+}

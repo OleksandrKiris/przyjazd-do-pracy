@@ -1,4 +1,4 @@
-const CACHE_NAME = "arrival-guide-v28-style-cleanup";
+const CACHE_NAME = "arrival-guide-v29-phone-fit";
 const ASSETS = [
   "./",
   "./index.html",
