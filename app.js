@@ -192,12 +192,18 @@
 
   function routeLinks(links) {
     if (!links || !links.length) return "";
+    const orderedLinks = [...links].sort((a, b) => (a.priority || 99) - (b.priority || 99));
     return `
       <div class="route-links">
         <h3>${escapeHtml(t("checkConnections"))}</h3>
         <p class="route-links-hint">${escapeHtml(t("travelToolHint"))}</p>
         <div>
-          ${links.map((link) => `<a href="${escapeHtml(link.url)}" target="_blank" rel="noopener">${escapeHtml(link.label)}</a>`).join("")}
+          ${orderedLinks.map((link) => `
+            <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener">
+              <span>${escapeHtml(link.label)}</span>
+              ${link.note ? `<small>${escapeHtml(link.note)}</small>` : ""}
+            </a>
+          `).join("")}
         </div>
       </div>
     `;

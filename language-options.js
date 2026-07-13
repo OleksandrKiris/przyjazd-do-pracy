@@ -553,7 +553,10 @@
     `https://jakdojade.pl/${city}/trasa/z--${encodeURIComponent(from)}--do--${encodeURIComponent(to)}`;
   const googleTransit = (from, to) =>
     `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(from)}&destination=${encodeURIComponent(to)}&travelmode=transit`;
+  const googleTo = (to) =>
+    `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(to)}&travelmode=transit`;
   const ePodroznikBus = "https://www.e-podroznik.pl/rozklad-jazdy-pks-autobusy";
+  const travelLink = (priority, label, note, url) => ({ priority, label, note, url });
   const setRouteLinks = (key, links) => {
     if (config.locations && config.locations[key]) {
       config.locations[key].routeLinks = links;
@@ -561,67 +564,32 @@
   };
 
   setRouteLinks("siechnice", [
-    {
-      label: "KOLEO: Wrocław Główny → Siechnice",
-      url: "https://koleo.pl/rozklad-pkp/wroclaw-glowny/siechnice"
-    },
-    {
-      label: "Jakdojade: Wrocław Główny → Opolska 30",
-      url: jakdojadeRoute("wroclaw", "Wrocław Główny", "Opolska 30, Siechnice")
-    },
-    {
-      label: "Google Maps: transport publiczny do Opolska 30",
-      url: googleTransit("Wrocław Główny", "Opolska 30, 55-011 Siechnice")
-    }
+    travelLink(1, "1. Pociąg: Wrocław Główny → Siechnice", "Najlepszy pierwszy wybór, jeśli jesteś już we Wrocławiu.", "https://koleo.pl/rozklad-pkp/wroclaw-glowny/siechnice"),
+    travelLink(2, "2. Miasto: Wrocław Główny → Opolska 30", "Komunikacja miejska i dojście do dokładnego adresu.", jakdojadeRoute("wroclaw", "Wrocław Główny", "Opolska 30, Siechnice")),
+    travelLink(3, "3. Mapa: Wrocław Główny → Opolska 30", "Użyj, jeśli chcesz widzieć całą trasę na mapie.", googleTransit("Wrocław Główny", "Opolska 30, 55-011 Siechnice")),
+    travelLink(9, "Awaryjnie: trasa z mojej lokalizacji", "Gdy nie wiesz, skąd startujesz.", googleTo("Opolska 30, 55-011 Siechnice"))
   ]);
 
   setRouteLinks("zgorzelec", [
-    {
-      label: "KOLEO: Wrocław Główny → Zgorzelec",
-      url: "https://koleo.pl/rozklad-pkp/wroclaw-glowny/zgorzelec"
-    },
-    {
-      label: "Jakdojade: Wrocław → Zgorzelec",
-      url: jakdojadeRoute("wroclaw", "Wrocław", "Zgorzelec")
-    },
-    {
-      label: "Google Maps: transport publiczny do Citronex",
-      url: googleTransit("Wrocław Główny", "Bohaterów II Armii Wojska Polskiego 64, Zgorzelec")
-    }
+    travelLink(1, "1. Pociąg: Wrocław Główny → Zgorzelec", "Najpierw dojedź do miasta Zgorzelec.", "https://koleo.pl/rozklad-pkp/wroclaw-glowny/zgorzelec"),
+    travelLink(2, "2. Sprawdź też: Wrocław → Zgorzelec", "Alternatywa, jeśli KOLEO nie pokazuje dogodnej godziny.", jakdojadeRoute("wroclaw", "Wrocław", "Zgorzelec")),
+    travelLink(3, "3. Mapa: Zgorzelec → adres firmy", "Ostatni odcinek pod konkretny adres.", googleTransit("Zgorzelec", "Bohaterów II Armii Wojska Polskiego 64, Zgorzelec")),
+    travelLink(9, "Awaryjnie: trasa z mojej lokalizacji", "Gdy nie wiesz, gdzie wysiąść.", googleTo("Bohaterów II Armii Wojska Polskiego 64, Zgorzelec"))
   ]);
 
   setRouteLinks("bogatynia", [
-    {
-      label: "KOLEO: Wrocław Główny → Zgorzelec",
-      url: "https://koleo.pl/rozklad-pkp/wroclaw-glowny/zgorzelec"
-    },
-    {
-      label: "Jakdojade: Wrocław → Zgorzelec",
-      url: jakdojadeRoute("wroclaw", "Wrocław", "Zgorzelec")
-    },
-    {
-      label: "e-podróżnik BUS: Zgorzelec → Bogatynia",
-      url: ePodroznikBus
-    },
-    {
-      label: "Google Maps: Zgorzelec → Niedów 9",
-      url: googleTransit("Zgorzelec", "Niedów 9, 59-900 Niedów")
-    }
+    travelLink(1, "1. Pociąg: Wrocław Główny → Zgorzelec", "Najpierw dojedź do Zgorzelca.", "https://koleo.pl/rozklad-pkp/wroclaw-glowny/zgorzelec"),
+    travelLink(2, "2. Alternatywa: Wrocław → Zgorzelec", "Użyj, jeśli chcesz porównać inne połączenia.", jakdojadeRoute("wroclaw", "Wrocław", "Zgorzelec")),
+    travelLink(3, "3. Bus: Zgorzelec → Bogatynia", "W e-podróżniku wpisz tę relację w pola Z i DO.", ePodroznikBus),
+    travelLink(4, "4. Mapa: Zgorzelec → Niedów 9", "Ostatni odcinek do dokładnego adresu.", googleTransit("Zgorzelec", "Niedów 9, 59-900 Niedów")),
+    travelLink(9, "Awaryjnie: trasa z mojej lokalizacji", "Gdy nie wiesz, co dalej.", googleTo("Niedów 9, 59-900 Niedów"))
   ]);
 
   setRouteLinks("ryczywol", [
-    {
-      label: "Jakdojade: Warszawa Zachodnia → Kozienice",
-      url: jakdojadeRoute("warszawa", "Warszawa Zachodnia", "Kozienice")
-    },
-    {
-      label: "e-podróżnik BUS: Warszawa → Kozienice",
-      url: ePodroznikBus
-    },
-    {
-      label: "Google Maps: Warszawa Zachodnia → zakwaterowanie",
-      url: googleTransit("Warszawa Zachodnia", "Wilczkowice Górne 40, 26-900 Kozienice")
-    }
+    travelLink(1, "1. Bus/pociąg: Warszawa Zachodnia → Kozienice", "Najpierw dojedź do Kozienic.", jakdojadeRoute("warszawa", "Warszawa Zachodnia", "Kozienice")),
+    travelLink(2, "2. Bus: Warszawa → Kozienice", "W e-podróżniku wpisz tę relację w pola Z i DO.", ePodroznikBus),
+    travelLink(3, "3. Mapa: Warszawa Zachodnia → zakwaterowanie", "Ostatni odcinek do Wilczkowic Górnych.", googleTransit("Warszawa Zachodnia", "Wilczkowice Górne 40, 26-900 Kozienice")),
+    travelLink(9, "Awaryjnie: trasa z mojej lokalizacji", "Gdy nie wiesz, skąd startujesz.", googleTo("Wilczkowice Górne 40, 26-900 Kozienice"))
   ]);
 
   window.CANDIDATE_LANGUAGE_LABELS = {
