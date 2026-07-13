@@ -5,13 +5,39 @@
   function currentPlace() {
     const config = window.ARRIVAL_DEFAULT_CONFIG;
     if (!config || !config.locations) return null;
+    return config.locations[currentLocationKey()] || config.locations.siechnice;
+  }
+
+  function currentLocationKey() {
+    const config = window.ARRIVAL_DEFAULT_CONFIG;
+    if (!config || !config.locations) return "siechnice";
     const params = new URLSearchParams(location.search);
     const raw = (params.get("location") || params.get("lokalizacja") || "siechnice").toLowerCase();
     const key = raw.includes("ryczy") ? "ryczywol"
       : raw.includes("bogat") ? "bogatynia"
       : raw.includes("zgorz") ? "zgorzelec"
       : "siechnice";
-    return config.locations[key] || config.locations.siechnice;
+    return config.locations[key] ? key : "siechnice";
+  }
+
+  function contactKeyForCurrentLocation() {
+    const key = currentLocationKey();
+    if (key === "bogatynia" || key === "zgorzelec") return "bogatynia_zgorzelec";
+    return key;
+  }
+
+  function primaryContact() {
+    const config = window.ARRIVAL_DEFAULT_CONFIG;
+    const place = currentPlace();
+    const contacts = config?.contacts?.[contactKeyForCurrentLocation()] || [];
+    const accommodation = contacts.find((person) => /zakwaterowanie/i.test(person.role || ""));
+    const person = accommodation || contacts[0];
+    return {
+      name: person?.name || place?.name || "",
+      phone: person?.phone || place?.phone || "",
+      whatsapp: person?.whatsapp || person?.phone || place?.whatsapp || place?.phone || "",
+      role: person?.role || "Kontakt"
+    };
   }
 
   function mapsFor(place) {
@@ -42,6 +68,35 @@
     field.remove();
   }
 
+  function ensureMobileHero() {
+    const place = currentPlace();
+    if (!place) return;
+    const contact = primaryContact();
+    const address = Array.isArray(place.address) ? place.address.join(", ") : "";
+    let hero = $("mobileCandidateHero");
+    if (!hero) {
+      hero = document.createElement("section");
+      hero.id = "mobileCandidateHero";
+      hero.className = "mobile-candidate-hero";
+      $("instructionStart")?.insertAdjacentElement("afterend", hero);
+    }
+
+    hero.innerHTML = `
+      <div class="mobile-hero-label">Jedziesz do</div>
+      <h2>${place.name}</h2>
+      <p>${address}</p>
+      <div class="mobile-hero-contact">
+        <span>${contact.role}</span>
+        <strong>${contact.name}</strong>
+      </div>
+      <div class="mobile-hero-actions">
+        <button type="button" data-help-action="maps">Mapa</button>
+        <button type="button" data-help-action="call">Zadzwoń</button>
+        <button type="button" data-help-action="whatsapp">WhatsApp</button>
+      </div>
+    `;
+  }
+
   function renderHelp() {
     const target = $("helpSection");
     const place = currentPlace();
@@ -59,6 +114,43 @@
         <button type="button" data-help-action="copy-address">Kopiuj adres</button>
       </div>
     `;
+  }
+
+  function ensureStickyActions() {
+    const place = currentPlace();
+    if (!place) return;
+    const contact = primaryContact();
+    let bar = $("candidateStickyActions");
+    if (!bar) {
+      bar = document.createElement("nav");
+      bar.id = "candidateStickyActions";
+      bar.className = "candidate-sticky-actions";
+      bar.setAttribute("aria-label", "Szybkie akcje");
+      document.body.appendChild(bar);
+    }
+
+    bar.innerHTML = `
+      <button type="button" data-help-action="maps">Mapa</button>
+      <button type="button" data-help-action="call">Zadzwoń</button>
+      <button type="button" data-help-action="whatsapp">WhatsApp</button>
+    `;
+    bar.dataset.phone = contact.phone;
+    bar.dataset.whatsapp = contact.whatsapp;
+  }
+
+  function addContactRoles() {
+    const config = window.ARRIVAL_DEFAULT_CONFIG;
+    const people = config?.contacts?.[contactKeyForCurrentLocation()] || [];
+    const roleByName = new Map(people.map((person) => [person.name, person.role || "Kontakt"]));
+    document.querySelectorAll("#contactsPage .contact-card").forEach((card) => {
+      const name = card.querySelector("h3")?.textContent.trim();
+      const role = roleByName.get(name);
+      if (!role || card.querySelector(".contact-role")) return;
+      const badge = document.createElement("p");
+      badge.className = "contact-role";
+      badge.textContent = role;
+      card.querySelector("h3")?.insertAdjacentElement("afterend", badge);
+    });
   }
 
   function updateContactTitle() {
@@ -87,20 +179,24 @@
   }
 
   function refresh() {
+    ensureMobileHero();
     renderHelp();
+    ensureStickyActions();
     updateContactTitle();
     filterContacts();
+    addContactRoles();
   }
 
   document.addEventListener("click", (event) => {
     const helpButton = event.target.closest("[data-help-action]");
     if (helpButton) {
       const place = currentPlace();
+      const contact = primaryContact();
       if (!place) return;
       const action = helpButton.dataset.helpAction;
       if (action === "maps") open(mapsFor(place), "_blank");
-      if (action === "call") location.href = `tel:${place.phone}`;
-      if (action === "whatsapp") open(`https://wa.me/${normalizePhone(place.whatsapp || place.phone)}`, "_blank");
+      if (action === "call") location.href = `tel:${normalizePhone(contact.phone)}`;
+      if (action === "whatsapp") open(`https://wa.me/${normalizePhone(contact.whatsapp || contact.phone)}`, "_blank");
       if (action === "copy-address") copyAddress(place);
       return;
     }
