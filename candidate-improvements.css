@@ -90,6 +90,30 @@
   border: 1px solid #fecdd3;
 }
 
+.language-gate {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+}
+
+.language-gate button {
+  min-width: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+.language-gate button span {
+  min-width: 0;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.language-gate button small {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
 .mobile-candidate-hero {
   display: grid;
   gap: 10px;
@@ -235,12 +259,17 @@
 
   .language-gate {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 7px;
+    gap: 8px;
   }
 
   .language-gate button {
-    min-height: 48px;
-    padding: 7px;
+    min-height: 52px;
+    display: grid;
+    grid-template-columns: 1fr;
+    place-items: center;
+    padding: 6px;
+    text-align: center;
+    border-radius: 12px;
   }
 
   .language-gate button span {
@@ -250,9 +279,13 @@
   .language-gate button small {
     margin: 0;
     min-width: 0;
+    min-height: 0;
     width: 100%;
-    padding: 8px 0;
-    font-size: 13px;
+    padding: 9px 0;
+    border-radius: 10px;
+    font-size: 15px;
+    line-height: 1;
+    letter-spacing: 0;
   }
 
   .location-tiles {
