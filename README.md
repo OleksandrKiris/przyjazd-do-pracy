@@ -2,42 +2,31 @@
 
 Strona informacyjna dla kandydatów przyjeżdżających do pracy w Polsce.
 
-## Najważniejsze linki
-
-**Link dla kandydata:**
+## Link do wysyłania kandydatom
 
 ```text
 https://oleksandrkiris.github.io/przyjazd-do-pracy/
 ```
 
-Ten link można wysyłać kandydatom. Kandydat widzi tylko instrukcję dojazdu, język, lokalizację, kontakty i potrzebne informacje.
+To jest główny i jedyny link projektu. Kandydat widzi instrukcję dojazdu, język, lokalizację, adres, kontakty i najważniejsze informacje przed przyjazdem.
 
-**Generator linków:**
+## Link z wybraną lokalizacją i językiem
 
-```text
-https://oleksandrkiris.github.io/przyjazd-do-pracy/generator.html
-```
+Link można przygotować ręcznie przez parametry URL.
 
-Ten link jest tylko do użytku wewnętrznego. Nie wysyłać kandydatom.
-
-## Jak przygotować link dla kandydata
-
-1. Otwórz `generator.html`.
-2. Wybierz język kandydata.
-3. Wybierz lokalizację pracy.
-4. Wpisz imię, nazwisko i datę przyjazdu, jeśli są potrzebne.
-5. Wybierz dział i kraj, z którego kandydat jedzie.
-6. Zaznacz zakwaterowanie, jeśli kandydat ma je mieć pokazane.
-7. Kliknij `Kopiuj link`.
-8. Wyślij kandydatowi tylko wygenerowany link.
-
-## Przykład linku dla kandydata
+Przykład dla kandydata po ukraińsku, lokalizacja Ryczywół:
 
 ```text
-https://oleksandrkiris.github.io/przyjazd-do-pracy/?lang=uk&location=ryczywol&name=Ivan&surname=Petrenko&date=2026-07-20&department=greenhouse&country=ukraine&hotel=yes
+https://oleksandrkiris.github.io/przyjazd-do-pracy/?lang=uk&location=ryczywol
 ```
 
-## Obsługiwane parametry linku
+Przykład z datą i imieniem:
+
+```text
+https://oleksandrkiris.github.io/przyjazd-do-pracy/?lang=uk&location=ryczywol&name=Ivan&surname=Petrenko&date=2026-07-20
+```
+
+## Parametry linku
 
 | Parametr | Znaczenie | Przykład |
 | --- | --- | --- |
@@ -48,7 +37,7 @@ https://oleksandrkiris.github.io/przyjazd-do-pracy/?lang=uk&location=ryczywol&na
 | `date` | data przyjazdu | `2026-07-20` |
 | `department` | dział pracy | `production`, `warehouse`, `greenhouse` |
 | `country` | skąd jedzie kandydat | `ukraine`, `poland`, `caucasus` |
-| `hotel` | informacja o zakwaterowaniu | `yes` |
+| `hotel` | pokazuje informację o zakwaterowaniu | `yes` |
 
 ## Lokalizacje
 
@@ -57,6 +46,15 @@ https://oleksandrkiris.github.io/przyjazd-do-pracy/?lang=uk&location=ryczywol&na
 - `bogatynia` - Bogatynia
 - `zgorzelec` - Zgorzelec
 
+## Języki
+
+- `pl` - polski
+- `uk` - ukraiński
+- `ru` - rosyjski
+- `en` - angielski
+- `ka` - gruziński
+- `az` - azerski
+
 ## Co widzi kandydat
 
 - wybór języka,
@@ -64,30 +62,21 @@ https://oleksandrkiris.github.io/przyjazd-do-pracy/?lang=uk&location=ryczywol&na
 - adres docelowy,
 - instrukcję dojazdu,
 - rzeczy do zabrania,
-- kontakty bez wewnętrznych opisów typu rekrutacja/koordynacja,
+- kontakty bez wewnętrznych opisów rekrutacyjnych,
 - przyciski Google Maps, telefon i WhatsApp.
-
-## Czego nie wysyłać kandydatowi
-
-Nie wysyłać:
-
-```text
-https://oleksandrkiris.github.io/przyjazd-do-pracy/generator.html
-```
-
-To jest narzędzie wewnętrzne do tworzenia linków.
 
 ## Pliki projektu
 
-- `index.html` - czysta strona dla kandydata.
-- `generator.html` - wewnętrzny generator linków.
-- `app.js` - logika strony kandydata.
-- `share.js` - logika generatora linków.
+- `index.html` - strona dla kandydata.
+- `app.js` - logika strony.
 - `data/config.js` - dane lokalizacji, teksty i tłumaczenia.
-- `styles.css` - główny wygląd strony.
-- `share.css` - wygląd generatora.
+- `styles.css` - wygląd strony.
 - `sw.js` - cache/PWA.
 
 ## Ważne
 
-Strona kandydata i generator są rozdzielone. Kandydat powinien dostawać wyłącznie link wygenerowany w `generator.html`, który prowadzi do głównej strony `index.html`.
+Projekt nie ma panelu admina ani generatora linków. Wszystkie linki dla kandydatów prowadzą do głównej strony:
+
+```text
+https://oleksandrkiris.github.io/przyjazd-do-pracy/
+```
