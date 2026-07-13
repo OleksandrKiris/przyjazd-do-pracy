@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Przyjazd do pracy">
+  <rect width="128" height="128" rx="28" fill="#1f7a8c"/>
+  <path d="M28 84h72v14H28z" fill="#fff"/>
+  <path d="M36 39h56a8 8 0 0 1 8 8v31H28V47a8 8 0 0 1 8-8z" fill="#f4d35e"/>
+  <path d="M43 50h18v15H43zm25 0h18v15H68z" fill="#0f172a" opacity=".78"/>
+  <circle cx="45" cy="84" r="10" fill="#0f172a"/>
+  <circle cx="83" cy="84" r="10" fill="#0f172a"/>
+</svg>
