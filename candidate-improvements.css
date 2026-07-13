@@ -37,8 +37,8 @@ body {
   margin: 12px 0;
   padding: 14px;
   background:
-    linear-gradient(135deg, rgba(255, 216, 77, .24), transparent 44%),
-    linear-gradient(135deg, #250608 0%, #be151d 100%);
+    linear-gradient(135deg, rgba(255, 210, 63, .22), transparent 44%),
+    linear-gradient(135deg, #3b070a 0%, var(--primary) 100%);
   color: #fff;
   border: 0;
   border-radius: 16px;
@@ -322,7 +322,7 @@ body {
 }
 
 .contact-card a::before {
-  content: "Telefon: ";
+  content: "";
 }
 
 .contact-card .contact-whatsapp::before {
@@ -484,10 +484,6 @@ body {
   }
 
   .contact-card a::before {
-    content: "Telefon ";
-  }
-
-  .contact-card .contact-whatsapp::before {
     content: "";
   }
 
@@ -1002,5 +998,223 @@ body {
 
   .mobile-candidate-hero {
     margin-top: 10px;
+  }
+}
+
+/* Simplified candidate flow: fewer blocks, clearer path on phones. */
+.hydra-link,
+.brand-kicker,
+.summary-band,
+.help-section {
+  display: none !important;
+}
+
+.topbar {
+  padding-block: 18px;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: clamp(24px, 7vw, 34px);
+  line-height: 1.05;
+}
+
+main {
+  gap: 14px;
+}
+
+.setup-card,
+.location-picker,
+.mobile-candidate-hero,
+.guide-grid,
+.contacts-section {
+  scroll-margin-top: 86px;
+}
+
+.setup-card {
+  padding: 14px;
+}
+
+.setup-card h2,
+.location-picker h2,
+.contacts-section h2 {
+  font-size: 20px;
+  line-height: 1.15;
+}
+
+.section-head p {
+  max-width: 56ch;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.language-gate {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.language-gate button {
+  min-height: 54px;
+  padding: 8px 6px;
+}
+
+.language-gate button span {
+  font-size: 13px;
+  line-height: 1.15;
+}
+
+.location-tiles {
+  gap: 10px;
+}
+
+.location-tile {
+  min-height: 92px;
+  padding: 14px;
+}
+
+.location-tile strong {
+  display: none;
+}
+
+.mobile-candidate-hero {
+  display: grid;
+  gap: 10px;
+  margin-top: 0;
+}
+
+.mobile-candidate-hero h2 {
+  font-size: clamp(26px, 8vw, 38px);
+}
+
+.mobile-hero-actions {
+  grid-template-columns: 1fr 1fr;
+}
+
+.mobile-hero-actions button[data-help-action="maps"] {
+  grid-column: 1 / -1;
+  min-height: 54px;
+  font-size: 17px;
+}
+
+.guide-grid {
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.guide-grid > .panel:not(.wide):nth-of-type(n+3) {
+  display: none !important;
+}
+
+.panel {
+  padding: 16px;
+}
+
+.panel h2 {
+  font-size: 19px;
+}
+
+.panel.wide {
+  order: -1;
+}
+
+.panel.wide h2 {
+  display: none;
+}
+
+.action-grid {
+  grid-template-columns: 1fr 1fr;
+}
+
+.action-grid button[data-action="maps"] {
+  grid-column: 1 / -1;
+}
+
+.contacts-section {
+  padding: 16px;
+}
+
+.contacts-section > h3,
+.contacts-section > p {
+  display: none;
+}
+
+.contact-grid {
+  gap: 10px;
+}
+
+.contact-card {
+  padding: 14px;
+}
+
+.contact-card h3 {
+  font-size: 18px;
+}
+
+.contact-actions {
+  grid-template-columns: 1fr;
+}
+
+.candidate-sticky-actions {
+  grid-template-columns: 1.2fr 1fr 1fr;
+}
+
+.candidate-sticky-actions button {
+  min-height: 46px;
+}
+
+@media (max-width: 520px) {
+  .app {
+    padding-bottom: 82px;
+  }
+
+  .topbar {
+    padding: 14px 16px;
+  }
+
+  main {
+    padding-inline: 10px;
+  }
+
+  .setup-card,
+  .location-picker,
+  .mobile-candidate-hero,
+  .panel,
+  .contacts-section {
+    border-radius: 10px;
+  }
+
+  .location-picker {
+    padding: 14px;
+  }
+
+  .section-head {
+    gap: 5px;
+  }
+
+  .section-head p {
+    font-size: 14px;
+  }
+
+  .location-tiles {
+    grid-template-columns: 1fr;
+  }
+
+  .location-tile {
+    min-height: 82px;
+  }
+
+  .location-tile span {
+    font-size: 19px;
+  }
+
+  .mobile-hero-contact {
+    padding: 10px;
+  }
+
+  .route-steps {
+    gap: 8px;
+  }
+
+  .route-steps li {
+    padding: 12px;
   }
 }
