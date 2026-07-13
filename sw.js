@@ -1,4 +1,4 @@
-const CACHE_NAME = "arrival-guide-v22-mobile-style-polish";
+const CACHE_NAME = "arrival-guide-v23-normal-translations";
 const ASSETS = [
   "./",
   "./index.html",
@@ -6,6 +6,7 @@ const ASSETS = [
   "./candidate-improvements.css",
   "./app.js",
   "./candidate-improvements.js",
+  "./translations.js",
   "./data/config.js",
   "./data/overrides.js",
   "./manifest.webmanifest",
