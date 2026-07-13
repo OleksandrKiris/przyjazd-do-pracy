@@ -7,6 +7,7 @@
     <title>Przyjazd do pracy</title>
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="share.css">
   </head>
   <body>
     <div class="app">
@@ -54,6 +55,54 @@
 
       <section id="contactsPage" class="contacts-section"></section>
 
+      <section class="candidate-section" aria-labelledby="candidateLinkTitle">
+        <div>
+          <h2 id="candidateLinkTitle">Link dla kandydata</h2>
+          <p>Ustaw dane, skopiuj gotowy link i wyślij go kandydatowi. Link otworzy instrukcję z wybranym językiem i lokalizacją.</p>
+        </div>
+        <div class="candidate-form">
+          <label>
+            <span>Imię</span>
+            <input id="candidateName" type="text" autocomplete="given-name" placeholder="np. Ivan">
+          </label>
+          <label>
+            <span>Nazwisko</span>
+            <input id="candidateSurname" type="text" autocomplete="family-name" placeholder="np. Petrenko">
+          </label>
+          <label>
+            <span>Data przyjazdu</span>
+            <input id="candidateDate" type="date">
+          </label>
+          <label>
+            <span>Dział</span>
+            <select id="candidateDepartment">
+              <option value="production">Produkcja</option>
+              <option value="warehouse">Magazyn</option>
+              <option value="greenhouse">Szklarnia</option>
+            </select>
+          </label>
+          <label>
+            <span>Skąd jedzie</span>
+            <select id="candidateCountry">
+              <option value="ukraine">Z Ukrainy</option>
+              <option value="poland">Jest już w Polsce</option>
+              <option value="caucasus">Gruzja / Azerbejdżan</option>
+            </select>
+          </label>
+          <label class="candidate-toggle">
+            <input id="candidateHotel" type="checkbox">
+            <span>Dodaj informację o zakwaterowaniu</span>
+          </label>
+        </div>
+        <div class="share-box">
+          <input id="candidateLink" type="text" readonly aria-label="Gotowy link dla kandydata">
+          <div class="button-row">
+            <button id="copyCandidateLinkBtn" class="primary" type="button">Kopiuj link dla kandydata</button>
+            <button id="openCandidateLinkBtn" type="button">Otwórz link</button>
+          </div>
+        </div>
+      </section>
+
       <section class="tools-section">
         <div>
           <h2 data-i18n="tools">Narzedzia</h2>
@@ -73,5 +122,6 @@
 
     <script src="data/config.js"></script>
     <script src="app.js"></script>
+    <script src="share.js"></script>
   </body>
 </html>
