@@ -75,3 +75,17 @@
   border-radius: 12px;
   box-shadow: none;
 }
+
+.contact-card a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: #fff1f2;
+  color: var(--primary-dark);
+  font-weight: 900;
+  text-decoration: none;
+  border: 1px solid #fecdd3;
+}
