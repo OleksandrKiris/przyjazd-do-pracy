@@ -1,18 +1,26 @@
 (function () {
   const languageKey = "arrival-guide-language";
-  let config = loadConfig();
-  let state = readState();
+  let config;
+  let state;
 
   const $ = (id) => document.getElementById(id);
   const t = (key) => (config.ui[state.lang] && config.ui[state.lang][key]) || config.ui.pl[key] || key;
 
   function loadConfig() {
-    return structuredClone(window.ARRIVAL_DEFAULT_CONFIG);
+    if (!window.ARRIVAL_DEFAULT_CONFIG) {
+      throw new Error("Brak pliku data/config.js albo konfiguracja nie zostala zaladowana.");
+    }
+
+    if (typeof structuredClone === "function") {
+      return structuredClone(window.ARRIVAL_DEFAULT_CONFIG);
+    }
+
+    return JSON.parse(JSON.stringify(window.ARRIVAL_DEFAULT_CONFIG));
   }
 
   function readState() {
     const params = new URLSearchParams(location.search);
-    const savedLang = localStorage.getItem(languageKey);
+    const savedLang = getStoredLanguage();
     return {
       lang: params.get("lang") || savedLang || "pl",
       name: params.get("name") || params.get("imie") || "",
@@ -27,7 +35,7 @@
 
   function setLanguage(lang) {
     state.lang = lang;
-    localStorage.setItem(languageKey, lang);
+    storeLanguage(lang);
     const url = new URL(location.href);
     url.searchParams.set("lang", lang);
     history.replaceState(null, "", url);
@@ -211,7 +219,55 @@
   }
 
   function copyText(text) {
-    navigator.clipboard.writeText(text).then(() => toast(t("copied")));
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(() => toast(t("copied"))).catch(() => fallbackCopy(text));
+      return;
+    }
+
+    fallbackCopy(text);
+  }
+
+  function fallbackCopy(text) {
+    const field = document.createElement("textarea");
+    field.value = text;
+    field.setAttribute("readonly", "");
+    field.style.position = "fixed";
+    field.style.left = "-9999px";
+    document.body.appendChild(field);
+    field.select();
+    try {
+      document.execCommand("copy");
+      toast(t("copied"));
+    } finally {
+      field.remove();
+    }
+  }
+
+  function getStoredLanguage() {
+    try {
+      return window.localStorage ? localStorage.getItem(languageKey) : "";
+    } catch (error) {
+      return "";
+    }
+  }
+
+  function storeLanguage(lang) {
+    try {
+      if (window.localStorage) localStorage.setItem(languageKey, lang);
+    } catch (error) {
+      // Some browser/file modes block storage. The URL parameter still keeps the choice.
+    }
+  }
+
+  function showFatalError(error) {
+    document.body.insertAdjacentHTML(
+      "afterbegin",
+      `<div class="app-error">
+        <strong>Strona nie mogla sie uruchomic.</strong>
+        <span>${escapeHtml(error.message || error)}</span>
+      </div>`
+    );
+    console.error(error);
   }
 
   function toast(message) {
@@ -252,9 +308,19 @@
   $("qrBtn")?.addEventListener("click", () => drawQr(location.href));
   $("printBtn")?.addEventListener("click", () => print());
 
-  if ("serviceWorker" in navigator) {
+  function init() {
+    try {
+      config = loadConfig();
+      state = readState();
+      render();
+    } catch (error) {
+      showFatalError(error);
+    }
+  }
+
+  if ("serviceWorker" in navigator && location.protocol !== "file:") {
     navigator.serviceWorker.register("./sw.js");
   }
 
-  render();
+  init();
 })();
