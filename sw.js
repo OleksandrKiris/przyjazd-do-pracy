@@ -1,4 +1,4 @@
-const CACHE_NAME = "arrival-guide-v25-simple-candidate-flow";
+const CACHE_NAME = "arrival-guide-v26-top-language-switcher";
 const ASSETS = [
   "./",
   "./index.html",
@@ -6,6 +6,7 @@ const ASSETS = [
   "./candidate-improvements.css",
   "./app.js",
   "./candidate-improvements.js",
+  "./language-options.js",
   "./translations.js",
   "./data/config.js",
   "./data/overrides.js",

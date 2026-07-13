@@ -4,11 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#1f7a8c">
-    <meta name="candidate-page-version" content="v25-simple-candidate-flow">
+    <meta name="candidate-page-version" content="v26-top-language-switcher">
     <title>Przyjazd do pracy</title>
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="styles.css?v=25-simple">
-    <link rel="stylesheet" href="candidate-improvements.css?v=25-simple">
+    <link rel="stylesheet" href="styles.css?v=26-languages">
+    <link rel="stylesheet" href="candidate-improvements.css?v=26-languages">
   </head>
   <body>
     <div class="app">
@@ -21,14 +21,14 @@
 
       <main>
       <section class="setup-card">
-        <h2 data-i18n="chooseLanguage">Wybierz jezyk</h2>
+        <h2 data-i18n="chooseLanguage">Wybierz język</h2>
         <div id="languageGate" class="language-gate"></div>
       </section>
 
       <section class="location-picker">
         <div class="section-head">
-          <h2 data-i18n="chooseLocation">Wybierz lokalizacje</h2>
-          <p data-i18n="chooseLocationText">Kliknij kafelek miejsca, do ktorego jedziesz. Strona pokaze instrukcje tylko dla tej lokalizacji.</p>
+          <h2 data-i18n="chooseLocation">Wybierz lokalizację</h2>
+          <p data-i18n="chooseLocationText">Kliknij kafelek miejsca, do którego jedziesz. Strona pokaże instrukcję tylko dla tej lokalizacji.</p>
         </div>
         <div id="locationTiles" class="location-tiles"></div>
       </section>
@@ -62,10 +62,11 @@
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-    <script src="data/config.js?v=25-simple"></script>
-    <script src="data/overrides.js?v=25-simple"></script>
-    <script src="app.js?v=25-simple"></script>
-    <script src="candidate-improvements.js?v=25-simple"></script>
-    <script src="translations.js?v=25-simple"></script>
+    <script src="data/config.js?v=26-languages"></script>
+    <script src="data/overrides.js?v=26-languages"></script>
+    <script src="language-options.js?v=26-languages"></script>
+    <script src="app.js?v=26-languages"></script>
+    <script src="candidate-improvements.js?v=26-languages"></script>
+    <script src="translations.js?v=26-languages"></script>
   </body>
 </html>

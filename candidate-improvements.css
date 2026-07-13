@@ -1005,18 +1005,52 @@ body {
 .hydra-link,
 .brand-kicker,
 .summary-band,
+.setup-card,
 .help-section {
   display: none !important;
 }
 
 .topbar {
   padding-block: 18px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(168px, 230px);
+  align-items: center;
+  gap: 12px;
 }
 
 .topbar h1 {
   margin: 0;
   font-size: clamp(24px, 7vw, 34px);
   line-height: 1.05;
+}
+
+.top-language-switcher {
+  display: grid;
+  gap: 5px;
+  justify-self: end;
+  width: min(230px, 100%);
+}
+
+.top-language-switcher label {
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 900;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.top-language-switcher select {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 40px 0 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: #ffffff;
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 800;
+  box-shadow: 0 6px 16px rgba(17, 24, 39, .08);
 }
 
 main {
@@ -1168,6 +1202,17 @@ main {
 
   .topbar {
     padding: 14px 16px;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .top-language-switcher {
+    justify-self: stretch;
+    width: 100%;
+  }
+
+  .top-language-switcher select {
+    min-height: 48px;
   }
 
   main {
