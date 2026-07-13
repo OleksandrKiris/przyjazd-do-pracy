@@ -1,9 +1,11 @@
-const CACHE_NAME = "arrival-guide-v6";
+const CACHE_NAME = "arrival-guide-v7";
 const ASSETS = [
   "./",
   "./index.html",
   "./styles.css",
+  "./share.css",
   "./app.js",
+  "./share.js",
   "./data/config.js",
   "./manifest.webmanifest",
   "./assets/icon.svg"
