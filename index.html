@@ -4,10 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#1f7a8c">
-    <meta name="candidate-page-version" content="clean-v2">
+    <meta name="candidate-page-version" content="help-v1">
     <title>Przyjazd do pracy</title>
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="candidate-improvements.css">
     <style>.contact-card p{display:none!important}</style>
   </head>
   <body>
@@ -53,22 +54,11 @@
         </div>
       </section>
 
+      <section id="helpSection" class="help-section"></section>
+
       <section id="guide" class="guide-grid"></section>
 
       <section id="contactsPage" class="contacts-section"></section>
-
-      <section class="tools-section">
-        <div>
-          <h2 data-i18n="tools">Narzedzia</h2>
-          <p data-i18n="toolsText">Skopiuj link, wygeneruj kod QR albo wydrukuj instrukcje jako PDF.</p>
-        </div>
-        <div class="button-row">
-          <button id="copyLinkBtn" class="primary" data-i18n="copyLink">Kopiuj link</button>
-          <button id="qrBtn" data-i18n="showQr">Kod QR</button>
-          <button id="printBtn" data-i18n="printPdf">Drukuj PDF</button>
-        </div>
-        <img id="qrImage" class="qr-canvas" alt="QR code" hidden>
-      </section>
       </main>
     </div>
 
@@ -77,5 +67,6 @@
     <script src="data/config.js"></script>
     <script src="data/overrides.js"></script>
     <script src="app.js"></script>
+    <script src="candidate-improvements.js"></script>
   </body>
 </html>
