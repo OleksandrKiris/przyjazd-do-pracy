@@ -446,7 +446,7 @@ window.ARRIVAL_DEFAULT_CONFIG = {
   contacts: {
     siechnice: [
       { name: "Fariz Injaev", phone: "+48 504 165 739", role: "Koordynator" },
-      { name: "Yuliia Kernichenko", phone: "+48 506 845 667", role: "Rekruter" },
+      { name: "Yuliia Kornienko", phone: "+48 506 845 667", role: "Rekruter" },
       { name: "Yana Radushynska", phone: "+48 797 066 987", role: "Rekruter" },
       { name: "Oleksandr Kiris", phone: "+48 502 251 384", role: "Koordynator / Rekrutacja" }
     ],

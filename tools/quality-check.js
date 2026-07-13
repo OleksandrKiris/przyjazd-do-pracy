@@ -92,7 +92,7 @@ const requiredContactRules = {
     primaryRole: "Koordynator",
     requiredPeople: [
       { name: "Fariz Injaev", role: "Koordynator" },
-      { name: "Yuliia Kernichenko", role: "Rekruter" }
+      { name: "Yuliia Kornienko", role: "Rekruter" }
     ]
   }
 };
@@ -382,8 +382,8 @@ async function validatePublic() {
     fetched[key] = await response.text();
   }
 
-  if (fetched.index && !fetched.index.includes("v43-contact-roles")) fail("Public index is not v43");
-  if (fetched.serviceWorker && !fetched.serviceWorker.includes("arrival-guide-v43-contact-roles")) fail("Public service worker is not v43");
+  if (fetched.index && !fetched.index.includes("v44-contact-name")) fail("Public index is not v44");
+  if (fetched.serviceWorker && !fetched.serviceWorker.includes("arrival-guide-v44-contact-name")) fail("Public service worker is not v44");
   Object.entries(fetched).forEach(([key, content]) => {
     if (key === "validator") return;
     if (hasBrokenEncoding(content)) fail(`Public ${key}: broken encoding token found`);
