@@ -806,3 +806,201 @@ main {
     font-size: 12px;
   }
 }
+
+/* Clean candidate theme: light, practical, phone-first. */
+body {
+  background: #f6f8fb;
+}
+
+.app {
+  background: #f6f8fb;
+  box-shadow: none;
+}
+
+.topbar {
+  position: relative;
+  background: #ffffff;
+  color: var(--ink);
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 8px 20px rgba(17, 24, 39, .06);
+}
+
+.topbar::after {
+  display: none;
+}
+
+.topbar h1 {
+  color: var(--ink);
+}
+
+.brand-kicker {
+  background: #fff1f2;
+  border-color: #fecdd3;
+  color: var(--primary-dark);
+}
+
+.brand-kicker::before {
+  background: var(--primary);
+  box-shadow: 13px 0 0 var(--yellow);
+}
+
+.setup-card,
+.panel,
+.contacts-section,
+.help-section,
+.summary-item {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 8px 20px rgba(17, 24, 39, .06);
+}
+
+.setup-card::before,
+.panel::before,
+.contacts-section::before,
+.help-section::before {
+  background: var(--primary);
+  width: 5px;
+}
+
+.help-section {
+  color: var(--text);
+}
+
+.help-copy span,
+.mobile-hero-label,
+.contact-role {
+  background: #fff7d6;
+  color: #6b4b00;
+  border: 1px solid #fde68a;
+}
+
+.help-copy h2,
+.help-copy p {
+  color: var(--ink);
+}
+
+.help-copy p {
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.location-tile {
+  min-height: 106px;
+  color: var(--ink);
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-left: 6px solid var(--tile-accent, var(--primary));
+  box-shadow: 0 8px 18px rgba(17, 24, 39, .07);
+}
+
+.location-tile::after {
+  display: none;
+}
+
+.location-tile span {
+  color: var(--ink);
+}
+
+.location-tile small {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.location-tile strong {
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
+
+.location-tile.active {
+  outline: 3px solid rgba(201, 22, 29, .22);
+  border-color: #fecdd3;
+  border-left-color: var(--primary);
+  background: #fffafa;
+}
+
+.mobile-candidate-hero {
+  color: var(--ink);
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-left: 6px solid var(--primary);
+  box-shadow: 0 10px 24px rgba(17, 24, 39, .08);
+}
+
+.mobile-candidate-hero h2 {
+  color: var(--ink);
+}
+
+.mobile-candidate-hero p {
+  color: var(--muted);
+}
+
+.mobile-hero-contact {
+  background: #f9fafb;
+  border-color: #e5e7eb;
+}
+
+.mobile-hero-contact span {
+  color: var(--primary-dark);
+}
+
+.help-actions button,
+.mobile-hero-actions button {
+  border: 1px solid #e5e7eb;
+}
+
+.help-actions button[data-help-action="maps"],
+.mobile-hero-actions button[data-help-action="maps"] {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-color: #bfdbfe;
+}
+
+.help-actions button[data-help-action="call"],
+.mobile-hero-actions button[data-help-action="call"] {
+  background: #fff1f2;
+  color: var(--primary-dark);
+  border-color: #fecdd3;
+}
+
+.help-actions button[data-help-action="whatsapp"],
+.mobile-hero-actions button[data-help-action="whatsapp"] {
+  background: #ecfdf3;
+  color: #047335;
+  border-color: #bbf7d0;
+}
+
+.help-actions button[data-help-action="copy-address"] {
+  background: #f9fafb;
+  color: #374151;
+}
+
+.route-steps li,
+.contact-card {
+  background: #ffffff;
+  border-color: #e5e7eb;
+}
+
+.route-steps span {
+  background: var(--primary);
+}
+
+.candidate-sticky-actions {
+  background: rgba(255, 255, 255, .98);
+  border-top-color: #e5e7eb;
+}
+
+@media (max-width: 520px) {
+  .topbar {
+    position: sticky;
+    top: 0;
+  }
+
+  .location-tile {
+    min-height: 96px;
+  }
+
+  .mobile-candidate-hero {
+    margin-top: 10px;
+  }
+}
