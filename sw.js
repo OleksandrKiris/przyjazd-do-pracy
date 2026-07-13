@@ -1,4 +1,4 @@
-const CACHE_NAME = "arrival-guide-v18-contact-choice";
+const CACHE_NAME = "arrival-guide-v19-tel-plus-contact-list";
 const ASSETS = [
   "./",
   "./index.html",
