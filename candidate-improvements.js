@@ -90,6 +90,12 @@
     field.remove();
   }
 
+  function scrollToContacts() {
+    const section = $("contactsPage");
+    if (!section) return;
+    section.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   function ensureMobileHero() {
     const place = currentPlace();
     if (!place) return;
@@ -178,6 +184,8 @@
   function updateContactTitle() {
     const title = document.querySelector("#contactsPage h2");
     if (title) title.textContent = "Kontakt w razie problemu";
+    const hint = document.querySelector("#contactsPage > p strong");
+    if (hint) hint.textContent = "Wybierz osobę z listy i kliknij numer telefonu. Numery są tylko dla wybranej lokalizacji.";
   }
 
   function contactTitleForCurrentLocation() {
@@ -218,7 +226,7 @@
       if (!place) return;
       const action = helpButton.dataset.helpAction;
       if (action === "maps") open(mapsFor(place), "_blank");
-      if (action === "call") location.href = `tel:${normalizePhone(contact.phone)}`;
+      if (action === "call") scrollToContacts();
       if (action === "whatsapp") open(`https://wa.me/${normalizePhone(contact.whatsapp || contact.phone)}`, "_blank");
       if (action === "copy-address") copyAddress(place);
       return;
