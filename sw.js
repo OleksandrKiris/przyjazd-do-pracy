@@ -1,4 +1,4 @@
-const CACHE_NAME = "arrival-guide-v20-location-only-contacts";
+const CACHE_NAME = "arrival-guide-v21-contact-actions-style";
 const ASSETS = [
   "./",
   "./index.html",
