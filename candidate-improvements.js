@@ -73,6 +73,11 @@
     return String(phone || "").replace(/\D/g, "");
   }
 
+  function telHref(phone) {
+    const digits = normalizePhone(phone);
+    return digits ? `tel:+${digits}` : "";
+  }
+
   function copyAddress(place) {
     const address = Array.isArray(place.address) ? place.address.join(", ") : "";
     if (!address) return;
@@ -119,7 +124,7 @@
       </div>
       <div class="mobile-hero-actions">
         <button type="button" data-help-action="maps">Mapa</button>
-        <button type="button" data-help-action="call">Zadzwoń</button>
+        <button type="button" data-help-action="call">Numery</button>
         <button type="button" data-help-action="whatsapp">WhatsApp</button>
       </div>
     `;
@@ -137,7 +142,7 @@
       </div>
       <div class="help-actions">
         <button type="button" data-help-action="maps">Google Maps</button>
-        <button type="button" data-help-action="call">Zadzwoń</button>
+        <button type="button" data-help-action="call">Numery</button>
         <button type="button" data-help-action="whatsapp">WhatsApp</button>
         <button type="button" data-help-action="copy-address">Kopiuj adres</button>
       </div>
@@ -159,7 +164,7 @@
 
     bar.innerHTML = `
       <button type="button" data-help-action="maps">Mapa</button>
-      <button type="button" data-help-action="call">Zadzwoń</button>
+      <button type="button" data-help-action="call">Numery</button>
       <button type="button" data-help-action="whatsapp">WhatsApp</button>
     `;
     bar.dataset.phone = contact.phone;
@@ -178,6 +183,13 @@
       badge.className = "contact-role";
       badge.textContent = role;
       card.querySelector("h3")?.insertAdjacentElement("afterend", badge);
+    });
+  }
+
+  function fixContactPhoneLinks() {
+    document.querySelectorAll("#contactsPage .contact-card a[href^='tel:']").forEach((link) => {
+      const href = telHref(link.textContent);
+      if (href) link.setAttribute("href", href);
     });
   }
 
@@ -216,6 +228,7 @@
     updateContactTitle();
     filterContacts();
     addContactRoles();
+    fixContactPhoneLinks();
   }
 
   document.addEventListener("click", (event) => {
