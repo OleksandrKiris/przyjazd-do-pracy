@@ -1,5 +1,4 @@
 (function () {
-  const storageKey = "arrival-guide-config";
   const languageKey = "arrival-guide-language";
   let config = loadConfig();
   let state = readState();
@@ -8,18 +7,7 @@
   const t = (key) => (config.ui[state.lang] && config.ui[state.lang][key]) || config.ui.pl[key] || key;
 
   function loadConfig() {
-    const saved = localStorage.getItem(storageKey);
-    if (!saved) return structuredClone(window.ARRIVAL_DEFAULT_CONFIG);
-    try {
-      const parsed = JSON.parse(saved);
-      if (parsed.version !== window.ARRIVAL_DEFAULT_CONFIG.version) {
-        localStorage.removeItem(storageKey);
-        return structuredClone(window.ARRIVAL_DEFAULT_CONFIG);
-      }
-      return parsed;
-    } catch {
-      return structuredClone(window.ARRIVAL_DEFAULT_CONFIG);
-    }
+    return structuredClone(window.ARRIVAL_DEFAULT_CONFIG);
   }
 
   function readState() {
@@ -63,18 +51,16 @@
     renderLocationTiles();
     renderGuide();
     renderContacts();
-    $("configEditor").value = JSON.stringify(config, null, 2);
   }
 
   function renderLanguageControls() {
-    const select = $("languageSelect");
-    select.innerHTML = Object.entries(config.languages)
-      .map(([code, label]) => `<option value="${code}">${escapeHtml(label)}</option>`)
-      .join("");
-    select.value = state.lang;
-
     $("languageGate").innerHTML = Object.entries(config.languages)
-      .map(([code, label]) => `<button type="button" data-lang="${code}">${escapeHtml(label)}</button>`)
+      .map(([code, label]) => `
+        <button type="button" class="${code === state.lang ? "active" : ""}" data-lang="${code}">
+          <span>${escapeHtml(label)}</span>
+          <small>${escapeHtml(code.toUpperCase())}</small>
+        </button>
+      `)
       .join("");
   }
 
@@ -241,7 +227,6 @@
     image.hidden = false;
   }
 
-  $("languageSelect")?.addEventListener("change", (event) => setLanguage(event.target.value));
   $("languageGate")?.addEventListener("click", (event) => {
     const button = event.target.closest("[data-lang]");
     if (button) setLanguage(button.dataset.lang);
@@ -253,33 +238,6 @@
   $("copyLinkBtn")?.addEventListener("click", () => copyText(location.href));
   $("qrBtn")?.addEventListener("click", () => drawQr(location.href));
   $("printBtn")?.addEventListener("click", () => print());
-  $("adminToggle")?.addEventListener("click", () => $("adminPanel").classList.add("open"));
-  $("adminClose")?.addEventListener("click", () => $("adminPanel").classList.remove("open"));
-  $("saveConfigBtn")?.addEventListener("click", () => {
-    config = JSON.parse($("configEditor").value);
-    localStorage.setItem(storageKey, JSON.stringify(config));
-    toast(t("saved"));
-    render();
-  });
-  $("resetConfigBtn")?.addEventListener("click", () => {
-    localStorage.removeItem(storageKey);
-    config = structuredClone(window.ARRIVAL_DEFAULT_CONFIG);
-    render();
-  });
-  $("exportConfigBtn")?.addEventListener("click", () => {
-    const blob = new Blob([JSON.stringify(config, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const link = Object.assign(document.createElement("a"), { href: url, download: "arrival-config.json" });
-    link.click();
-    URL.revokeObjectURL(url);
-  });
-  $("importConfigInput")?.addEventListener("change", async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-    config = JSON.parse(await file.text());
-    localStorage.setItem(storageKey, JSON.stringify(config));
-    render();
-  });
 
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("./sw.js");
