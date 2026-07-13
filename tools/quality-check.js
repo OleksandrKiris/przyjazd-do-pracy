@@ -86,6 +86,16 @@ const requiredRouteStages = {
     { priority: 9, destinationIncludes: "Wilczkowice Górne 40", noOrigin: true }
   ]
 };
+const requiredContactRules = {
+  siechnice: {
+    primaryName: "Fariz Injaev",
+    primaryRole: "Koordynator",
+    requiredPeople: [
+      { name: "Fariz Injaev", role: "Koordynator" },
+      { name: "Yuliia Kernichenko", role: "Rekruter" }
+    ]
+  }
+};
 const errors = [];
 const warnings = [];
 const report = {
@@ -314,6 +324,33 @@ function validatePhones(config) {
   });
 }
 
+function validateContactRules(config) {
+  Object.entries(requiredContactRules).forEach(([group, rule]) => {
+    const people = config.contacts?.[group] || [];
+    const primary = people[0];
+    if (!primary) {
+      fail(`${group}: missing contact list`);
+      return;
+    }
+    if (primary.name !== rule.primaryName) {
+      fail(`${group}: primary contact must be ${rule.primaryName}, got ${primary.name}`);
+    }
+    if (!String(primary.role || "").includes(rule.primaryRole)) {
+      fail(`${group}: primary contact role must include ${rule.primaryRole}, got ${primary.role}`);
+    }
+    rule.requiredPeople.forEach((expected) => {
+      const person = people.find((item) => item.name === expected.name);
+      if (!person) {
+        fail(`${group}: missing contact ${expected.name}`);
+        return;
+      }
+      if (!String(person.role || "").includes(expected.role)) {
+        fail(`${group}: ${expected.name} role must include ${expected.role}, got ${person.role}`);
+      }
+    });
+  });
+}
+
 function validateAliases(config) {
   urlAliases.forEach(([langIn, locIn, langOut, locOut]) => {
     const normalizedLang = normalizeLanguage(langIn, config.languages || {});
@@ -345,8 +382,8 @@ async function validatePublic() {
     fetched[key] = await response.text();
   }
 
-  if (fetched.index && !fetched.index.includes("v42-route-stages")) fail("Public index is not v42");
-  if (fetched.serviceWorker && !fetched.serviceWorker.includes("arrival-guide-v42-route-stages")) fail("Public service worker is not v42");
+  if (fetched.index && !fetched.index.includes("v43-contact-roles")) fail("Public index is not v43");
+  if (fetched.serviceWorker && !fetched.serviceWorker.includes("arrival-guide-v43-contact-roles")) fail("Public service worker is not v43");
   Object.entries(fetched).forEach(([key, content]) => {
     if (key === "validator") return;
     if (hasBrokenEncoding(content)) fail(`Public ${key}: broken encoding token found`);
@@ -379,6 +416,7 @@ async function main() {
     validateRouteLinks(config);
     validateRouteStages(config);
     validatePhones(config);
+    validateContactRules(config);
     validateAliases(config);
   }
 

@@ -156,7 +156,7 @@
     if (!config || !config.locations) return "siechnice";
     const params = new URLSearchParams(location.search);
     const raw = (params.get("location") || params.get("lokalizacja") || "siechnice").toLowerCase();
-    const key = raw.includes("ryczy") ? "ryczywol"
+    const key = raw.includes("ryczy") || raw.includes("rycz") ? "ryczywol"
       : raw.includes("bogat") ? "bogatynia"
       : raw.includes("zgorz") ? "zgorzelec"
       : "siechnice";

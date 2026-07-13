@@ -1,4 +1,4 @@
-const CACHE_NAME = "arrival-guide-v42-route-stages";
+const CACHE_NAME = "arrival-guide-v43-contact-roles";
 const APP_SHELL = "./index.html";
 const ASSETS = [
   "./",

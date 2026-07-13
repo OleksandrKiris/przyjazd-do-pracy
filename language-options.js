@@ -832,6 +832,15 @@
   });
 
   const contacts = config.contacts || (config.contacts = {});
+  contacts.siechnice = [
+    { name: "Fariz Injaev", phone: "+48 504 165 739", role: "Koordynator" },
+    { name: "Yuliia Kernichenko", phone: "+48 506 845 667", role: "Rekruter" },
+    ...(contacts.siechnice || []).filter((person) => {
+      const phone = String(person.phone || "").replace(/\D/g, "");
+      return phone !== "48504165739" && phone !== "48506845667";
+    })
+  ];
+
   function ensureContact(group, person) {
     const list = contacts[group] || (contacts[group] = []);
     const clean = String(person.phone || "").replace(/\D/g, "");
