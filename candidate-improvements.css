@@ -2180,3 +2180,112 @@ body {
       linear-gradient(180deg, #f9fbff 0, #e8eef6 46%, #f4e9eb 100%);
   }
 }
+
+/* v32: stronger color balance, less white on every main surface. */
+:root {
+  --page-bg: #dbe5f1;
+  --page-bg-2: #ead8dc;
+  --card-bg: #f4f7fc;
+  --card-border: #b9c9dc;
+  --surface-shadow: 0 9px 24px rgba(16, 24, 40, .11);
+}
+
+body {
+  background:
+    radial-gradient(circle at 12% -80px, rgba(215, 25, 32, .25), transparent 250px),
+    radial-gradient(circle at 105% 110px, rgba(37, 99, 235, .20), transparent 280px),
+    linear-gradient(180deg, #eef3fb 0, #dbe5f1 46%, #ead8dc 100%);
+}
+
+.topbar {
+  background:
+    linear-gradient(180deg, #fff1f3 0%, #f7e6ea 100%);
+  border-bottom-color: #dda9b1;
+}
+
+.brand-logo-lockup {
+  background:
+    linear-gradient(135deg, #fff8f9 0%, #ffdfe4 100%);
+  border-color: #ef9faa;
+}
+
+.top-language-switcher select {
+  background: #eaf0f8;
+  border-color: #b8c6d8;
+}
+
+.location-picker {
+  background:
+    linear-gradient(180deg, #ffe2e7 0%, #f5e8ee 100%);
+  border-color: #e69aa7;
+}
+
+.mobile-candidate-hero {
+  background:
+    linear-gradient(180deg, #ffdce2 0%, #f6e8ef 100%);
+  border-color: #e99ca8;
+}
+
+.panel:nth-of-type(1) {
+  background:
+    linear-gradient(180deg, #dfeaff 0%, #eef4ff 100%);
+  border-color: #9bb8ef;
+}
+
+.panel:nth-of-type(2) {
+  background:
+    linear-gradient(180deg, #ffefd2 0%, #fff5df 100%);
+  border-color: #e7bc72;
+}
+
+.contacts-section {
+  background:
+    linear-gradient(180deg, #dff7e9 0%, #edf9f1 100%);
+  border-color: #96d7ad;
+}
+
+.location-tile {
+  background:
+    linear-gradient(180deg, #e7eef8 0%, #dce7f3 100%);
+  border-color: #b4c4d8;
+}
+
+.location-tile.active {
+  background:
+    linear-gradient(180deg, #ffcdd5 0%, #ffe4e8 100%);
+  border-color: #ee8f9d;
+}
+
+.mobile-hero-contact,
+.route-steps li,
+.contact-card {
+  background: rgba(255, 255, 255, .54);
+  border-color: rgba(137, 154, 177, .42);
+}
+
+.mobile-hero-label,
+.contact-role,
+.contact-card .contact-phone {
+  background: #ffd6dd;
+  border-color: #ec9ca8;
+}
+
+.contact-card .contact-whatsapp {
+  background: #c9f3d7;
+  border-color: #82d99d;
+}
+
+.candidate-sticky-actions {
+  background:
+    linear-gradient(180deg, rgba(246, 249, 253, .98), rgba(224, 233, 245, .98));
+  border-top-color: #b9c9dc;
+}
+
+@media (max-width: 430px) {
+  body {
+    background:
+      radial-gradient(circle at 0 -40px, rgba(215, 25, 32, .24), transparent 205px),
+      radial-gradient(circle at 110% 120px, rgba(37, 99, 235, .16), transparent 240px),
+      linear-gradient(180deg, #eef3fb 0, #dbe5f1 48%, #ead8dc 100%);
+  }
+}
