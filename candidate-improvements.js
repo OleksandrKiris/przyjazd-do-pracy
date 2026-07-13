@@ -78,6 +78,11 @@
     return digits ? `tel:+${digits}` : "";
   }
 
+  function whatsappHref(phone) {
+    const digits = normalizePhone(phone);
+    return digits ? `https://wa.me/${digits}` : "";
+  }
+
   function escapeHtml(value) {
     return String(value ?? "").replace(/[&<>"']/g, (char) => ({
       "&": "&amp;",
@@ -212,7 +217,10 @@
       <article class="contact-card">
         <h3>${escapeHtml(person.name)}</h3>
         <p class="contact-role">${escapeHtml(person.role || "Kontakt")}</p>
-        <a href="${escapeHtml(telHref(person.phone))}">${escapeHtml(person.phone)}</a>
+        <div class="contact-actions">
+          <a class="contact-phone" href="${escapeHtml(telHref(person.phone))}">${escapeHtml(person.phone)}</a>
+          <a class="contact-whatsapp" href="${escapeHtml(whatsappHref(person.whatsapp || person.phone))}" target="_blank" rel="noopener">WhatsApp</a>
+        </div>
       </article>
     `).join("");
 
@@ -220,7 +228,7 @@
       <h2>Kontakt w razie problemu</h2>
       <h3>${escapeHtml(contactTitleForKey(key))}</h3>
       <div class="contact-grid">${cards}</div>
-      <p><strong>Wybierz osobę z listy i kliknij numer telefonu. Numery są tylko dla wybranej lokalizacji.</strong></p>
+      <p><strong>Wybierz osobę z listy. Numery i WhatsApp są tylko dla wybranej lokalizacji.</strong></p>
     `;
   }
 
@@ -229,13 +237,19 @@
       const href = telHref(link.textContent);
       if (href) link.setAttribute("href", href);
     });
+    document.querySelectorAll("#contactsPage .contact-whatsapp").forEach((link) => {
+      const card = link.closest(".contact-card");
+      const phone = card?.querySelector(".contact-phone")?.textContent || "";
+      const href = whatsappHref(phone);
+      if (href) link.setAttribute("href", href);
+    });
   }
 
   function updateContactTitle() {
     const title = document.querySelector("#contactsPage h2");
     if (title) title.textContent = "Kontakt w razie problemu";
     const hint = document.querySelector("#contactsPage > p strong");
-    if (hint) hint.textContent = "Wybierz osobę z listy i kliknij numer telefonu. Numery są tylko dla wybranej lokalizacji.";
+    if (hint) hint.textContent = "Wybierz osobę z listy. Numery i WhatsApp są tylko dla wybranej lokalizacji.";
   }
 
   function contactTitleForCurrentLocation() {
@@ -274,12 +288,11 @@
     const helpButton = event.target.closest("[data-help-action]");
     if (helpButton) {
       const place = currentPlace();
-      const contact = primaryContact();
       if (!place) return;
       const action = helpButton.dataset.helpAction;
       if (action === "maps") open(mapsFor(place), "_blank");
       if (action === "call") scrollToContacts();
-      if (action === "whatsapp") open(`https://wa.me/${normalizePhone(contact.whatsapp || contact.phone)}`, "_blank");
+      if (action === "whatsapp") scrollToContacts();
       if (action === "copy-address") copyAddress(place);
       return;
     }
@@ -292,6 +305,14 @@
   document.addEventListener("click", (event) => {
     const directCallButton = event.target.closest('[data-action="call"]');
     if (!directCallButton) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    scrollToContacts();
+  }, true);
+
+  document.addEventListener("click", (event) => {
+    const directWhatsappButton = event.target.closest('[data-action="whatsapp"]');
+    if (!directWhatsappButton) return;
     event.preventDefault();
     event.stopImmediatePropagation();
     scrollToContacts();
