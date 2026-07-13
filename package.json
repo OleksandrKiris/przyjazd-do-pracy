@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "scripts": {
+    "validate": "node tools/validate-site.js",
+    "quality": "node tools/quality-check.js",
+    "quality:public": "node tools/quality-check.js --public https://oleksandrkiris.github.io/przyjazd-do-pracy/"
+  }
+}

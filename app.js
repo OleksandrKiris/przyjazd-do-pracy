@@ -259,7 +259,7 @@
 
   function normalizeLocation(value) {
     const key = String(value || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    if (key.includes("ryczy")) return "ryczywol";
+    if (key.includes("ryczy") || key.includes("rycz")) return "ryczywol";
     if (key.includes("bogat")) return "bogatynia";
     if (key.includes("zgorz")) return "zgorzelec";
     if (key.includes("siech")) return "siechnice";
