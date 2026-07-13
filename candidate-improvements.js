@@ -78,6 +78,16 @@
     return digits ? `tel:+${digits}` : "";
   }
 
+  function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    }[char]));
+  }
+
   function copyAddress(place) {
     const address = Array.isArray(place.address) ? place.address.join(", ") : "";
     if (!address) return;
@@ -186,6 +196,34 @@
     });
   }
 
+  function contactTitleForKey(key) {
+    const config = window.ARRIVAL_DEFAULT_CONFIG;
+    if (key === "bogatynia_zgorzelec") return "Bogatynia / Zgorzelec";
+    return config?.locations?.[key]?.name || key || "Kontakt";
+  }
+
+  function renderLocationContactsOnly() {
+    const config = window.ARRIVAL_DEFAULT_CONFIG;
+    const section = $("contactsPage");
+    if (!config || !section) return;
+    const key = contactKeyForCurrentLocation();
+    const people = config.contacts?.[key] || [];
+    const cards = people.map((person) => `
+      <article class="contact-card">
+        <h3>${escapeHtml(person.name)}</h3>
+        <p class="contact-role">${escapeHtml(person.role || "Kontakt")}</p>
+        <a href="${escapeHtml(telHref(person.phone))}">${escapeHtml(person.phone)}</a>
+      </article>
+    `).join("");
+
+    section.innerHTML = `
+      <h2>Kontakt w razie problemu</h2>
+      <h3>${escapeHtml(contactTitleForKey(key))}</h3>
+      <div class="contact-grid">${cards}</div>
+      <p><strong>Wybierz osobę z listy i kliknij numer telefonu. Numery są tylko dla wybranej lokalizacji.</strong></p>
+    `;
+  }
+
   function fixContactPhoneLinks() {
     document.querySelectorAll("#contactsPage .contact-card a[href^='tel:']").forEach((link) => {
       const href = telHref(link.textContent);
@@ -225,6 +263,7 @@
     ensureMobileHero();
     renderHelp();
     ensureStickyActions();
+    renderLocationContactsOnly();
     updateContactTitle();
     filterContacts();
     addContactRoles();
@@ -249,6 +288,14 @@
       setTimeout(refresh, 0);
     }
   });
+
+  document.addEventListener("click", (event) => {
+    const directCallButton = event.target.closest('[data-action="call"]');
+    if (!directCallButton) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    scrollToContacts();
+  }, true);
 
   refresh();
 })();
