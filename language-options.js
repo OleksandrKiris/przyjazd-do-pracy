@@ -737,12 +737,16 @@
 
   const linkText = {
     trainWroSie: text("1. Pociąg: Wrocław Główny → Siechnice", "1. Поезд: Wrocław Główny → Siechnice", "1. Поїзд: Wrocław Główny → Siechnice", "1. Train: Wrocław Główny → Siechnice", "1. Qatar: Wrocław Główny → Siechnice", "1. Tren: Wrocław Główny → Siechnice", "1. Train: Wrocław Główny → Siechnice", "1. Kereta: Wrocław Główny → Siechnice", "1. Train: Wrocław Główny → Siechnice"),
-    cityWroOpolska: text("2. Miasto: Wrocław Główny → Opolska 30", "2. Город: Wrocław Główny → Opolska 30", "2. Місто: Wrocław Główny → Opolska 30", "2. City transport: Wrocław Główny → Opolska 30", "2. Şəhər nəqliyyatı: Wrocław Główny → Opolska 30", "2. Transporte urbano: Wrocław Główny → Opolska 30", "2. City transport: Wrocław Główny → Opolska 30", "2. Transport kota: Wrocław Główny → Opolska 30", "2. City transport: Wrocław Główny → Opolska 30"),
+    finalSiechnice: text("2. Ostatni odcinek: stacja Siechnice → Opolska 30", "2. Последний участок: станция Siechnice → Opolska 30", "2. Остання частина: станція Siechnice → Opolska 30", "2. Final part: Siechnice station → Opolska 30", "2. Son hissə: Siechnice stansiyası → Opolska 30", "2. Último tramo: estación Siechnice → Opolska 30", "2. Huling bahagi: Siechnice station → Opolska 30", "2. Bagian akhir: stasiun Siechnice → Opolska 30", "2. अन्तिम भाग: Siechnice station → Opolska 30"),
+    cityWroOpolska: text("Alternatywa: Wrocław Główny → Opolska 30", "Альтернатива: Wrocław Główny → Opolska 30", "Альтернатива: Wrocław Główny → Opolska 30", "Alternative: Wrocław Główny → Opolska 30", "Alternativ: Wrocław Główny → Opolska 30", "Alternativa: Wrocław Główny → Opolska 30", "Alternative: Wrocław Główny → Opolska 30", "Alternatif: Wrocław Główny → Opolska 30", "वैकल्पिक: Wrocław Główny → Opolska 30"),
     mapExact: text("Mapa do dokładnego adresu", "Карта до точного адреса", "Карта до точної адреси", "Map to the exact address", "Dəqiq ünvana xəritə", "Mapa a la dirección exacta", "Mapa papunta sa eksaktong address", "Peta ke alamat tepat", "ठ्याक्कै ठेगानासम्म नक्सा"),
     emergency: text("Awaryjnie: trasa z mojej lokalizacji", "Аварийно: маршрут от моего местоположения", "Терміново: маршрут з моєї локації", "Emergency: route from my location", "Təcili: mənim yerimdən marşrut", "Emergencia: ruta desde mi ubicación", "Emergency: ruta mula sa aking lokasyon", "Darurat: rute dari lokasi saya", "आपतकालीन: मेरो location बाट route"),
     trainWroZgo: text("1. Pociąg: Wrocław Główny → Zgorzelec", "1. Поезд: Wrocław Główny → Zgorzelec", "1. Поїзд: Wrocław Główny → Zgorzelec", "1. Train: Wrocław Główny → Zgorzelec", "1. Qatar: Wrocław Główny → Zgorzelec", "1. Tren: Wrocław Główny → Zgorzelec", "1. Train: Wrocław Główny → Zgorzelec", "1. Kereta: Wrocław Główny → Zgorzelec", "1. Train: Wrocław Główny → Zgorzelec"),
-    busZgoBog: text("3. Bus: Zgorzelec → Bogatynia", "3. Бус: Zgorzelec → Bogatynia", "3. Бус: Zgorzelec → Bogatynia", "3. Bus: Zgorzelec → Bogatynia", "3. Bus: Zgorzelec → Bogatynia", "3. Bus: Zgorzelec → Bogatynia", "3. Bus: Zgorzelec → Bogatynia", "3. Bus: Zgorzelec → Bogatynia", "3. Bus: Zgorzelec → Bogatynia"),
-    warsawKoz: text("1. Bus/pociąg: Warszawa Zachodnia → Kozienice", "1. Бус/поезд: Warszawa Zachodnia → Kozienice", "1. Бус/поїзд: Warszawa Zachodnia → Kozienice", "1. Bus/train: Warszawa Zachodnia → Kozienice", "1. Bus/qatar: Warszawa Zachodnia → Kozienice", "1. Bus/tren: Warszawa Zachodnia → Kozienice", "1. Bus/train: Warszawa Zachodnia → Kozienice", "1. Bus/kereta: Warszawa Zachodnia → Kozienice", "1. Bus/train: Warszawa Zachodnia → Kozienice"),
+    finalZgorzelec: text("2. Ostatni odcinek: Zgorzelec → adres firmy", "2. Последний участок: Zgorzelec → адрес фирмы", "2. Остання частина: Zgorzelec → адреса фірми", "2. Final part: Zgorzelec → company address", "2. Son hissə: Zgorzelec → şirkət ünvanı", "2. Último tramo: Zgorzelec → dirección de la empresa", "2. Huling bahagi: Zgorzelec → company address", "2. Bagian akhir: Zgorzelec → alamat perusahaan", "2. अन्तिम भाग: Zgorzelec → company address"),
+    busZgoBog: text("2. Bus: Zgorzelec → Bogatynia", "2. Бус: Zgorzelec → Bogatynia", "2. Бус: Zgorzelec → Bogatynia", "2. Bus: Zgorzelec → Bogatynia", "2. Bus: Zgorzelec → Bogatynia", "2. Bus: Zgorzelec → Bogatynia", "2. Bus: Zgorzelec → Bogatynia", "2. Bus: Zgorzelec → Bogatynia", "2. Bus: Zgorzelec → Bogatynia"),
+    finalNiedow: text("3. Ostatni odcinek: Bogatynia → Niedów 9", "3. Последний участок: Bogatynia → Niedów 9", "3. Остання частина: Bogatynia → Niedów 9", "3. Final part: Bogatynia → Niedów 9", "3. Son hissə: Bogatynia → Niedów 9", "3. Último tramo: Bogatynia → Niedów 9", "3. Huling bahagi: Bogatynia → Niedów 9", "3. Bagian akhir: Bogatynia → Niedów 9", "3. अन्तिम भाग: Bogatynia → Niedów 9"),
+    warsawKoz: text("1. Bus: Warszawa Zachodnia → Kozienice", "1. Бус: Warszawa Zachodnia → Kozienice", "1. Бус: Warszawa Zachodnia → Kozienice", "1. Bus: Warszawa Zachodnia → Kozienice", "1. Bus: Warszawa Zachodnia → Kozienice", "1. Bus: Warszawa Zachodnia → Kozienice", "1. Bus: Warszawa Zachodnia → Kozienice", "1. Bus: Warszawa Zachodnia → Kozienice", "1. Bus: Warszawa Zachodnia → Kozienice"),
+    finalRyczywol: text("2. Ostatni odcinek: Kozienice → Ryczywół / Wilczkowice Górne 40", "2. Последний участок: Kozienice → Ryczywół / Wilczkowice Górne 40", "2. Остання частина: Kozienice → Ryczywół / Wilczkowice Górne 40", "2. Final part: Kozienice → Ryczywół / Wilczkowice Górne 40", "2. Son hissə: Kozienice → Ryczywół / Wilczkowice Górne 40", "2. Último tramo: Kozienice → Ryczywół / Wilczkowice Górne 40", "2. Huling bahagi: Kozienice → Ryczywół / Wilczkowice Górne 40", "2. Bagian akhir: Kozienice → Ryczywół / Wilczkowice Górne 40", "2. अन्तिम भाग: Kozienice → Ryczywół / Wilczkowice Górne 40"),
     compare: text("Sprawdź alternatywne połączenie", "Проверить альтернативное соединение", "Перевірити альтернативне сполучення", "Check an alternative connection", "Alternativ bağlantını yoxla", "Comprobar conexión alternativa", "Suriin ang alternatibong biyahe", "Cek koneksi alternatif", "वैकल्पिक connection जाँच गर्नुहोस्")
   };
   const noteText = {
@@ -762,27 +766,27 @@
   const routeLinks = {
     siechnice: [
       travelLink(1, linkText.trainWroSie, noteText.main, "https://koleo.pl/rozklad-pkp/wroclaw-glowny/siechnice"),
-      travelLink(2, linkText.cityWroOpolska, noteText.exact, jakdojadeRoute("wroclaw", "Wrocław Główny", "Opolska 30, Siechnice")),
-      travelLink(3, linkText.mapExact, noteText.exact, googleTransit("Wrocław Główny", "Opolska 30, 55-011 Siechnice")),
+      travelLink(2, linkText.finalSiechnice, noteText.exact, googleTransit("Stacja kolejowa Siechnice", "Opolska 30, 55-011 Siechnice")),
+      travelLink(3, linkText.cityWroOpolska, noteText.main, jakdojadeRoute("wroclaw", "Wrocław Główny", "Opolska 30, Siechnice")),
       travelLink(9, linkText.emergency, noteText.unknown, googleTo("Opolska 30, 55-011 Siechnice"))
     ],
     zgorzelec: [
       travelLink(1, linkText.trainWroZgo, noteText.main, "https://koleo.pl/rozklad-pkp/wroclaw-glowny/zgorzelec"),
-      travelLink(2, linkText.compare, noteText.main, jakdojadeRoute("wroclaw", "Wrocław", "Zgorzelec")),
-      travelLink(3, linkText.mapExact, noteText.exact, googleTransit("Zgorzelec", "Bohaterów II Armii Wojska Polskiego 64, Zgorzelec")),
+      travelLink(2, linkText.finalZgorzelec, noteText.exact, googleTransit("Zgorzelec dworzec kolejowy", "Bohaterów II Armii Wojska Polskiego 64, 59-900 Zgorzelec")),
+      travelLink(3, linkText.compare, noteText.main, jakdojadeRoute("wroclaw", "Wrocław", "Zgorzelec")),
       travelLink(9, linkText.emergency, noteText.unknown, googleTo("Bohaterów II Armii Wojska Polskiego 64, Zgorzelec"))
     ],
     bogatynia: [
       travelLink(1, linkText.trainWroZgo, noteText.main, "https://koleo.pl/rozklad-pkp/wroclaw-glowny/zgorzelec"),
-      travelLink(2, linkText.compare, noteText.main, jakdojadeRoute("wroclaw", "Wrocław", "Zgorzelec")),
-      travelLink(3, linkText.busZgoBog, noteText.exact, "https://www.e-podroznik.pl/rozklad-jazdy-pks-autobusy"),
-      travelLink(4, linkText.mapExact, noteText.exact, googleTransit("Zgorzelec", "Niedów 9, 59-900 Niedów")),
+      travelLink(2, linkText.busZgoBog, noteText.exact, "https://www.e-podroznik.pl/rozklad-jazdy-pks-autobusy"),
+      travelLink(3, linkText.finalNiedow, noteText.exact, googleTransit("Bogatynia", "Niedów 9, 59-900 Niedów")),
+      travelLink(4, linkText.compare, noteText.main, jakdojadeRoute("wroclaw", "Wrocław", "Zgorzelec")),
       travelLink(9, linkText.emergency, noteText.unknown, googleTo("Niedów 9, 59-900 Niedów"))
     ],
     ryczywol: [
-      travelLink(1, linkText.warsawKoz, noteText.main, jakdojadeRoute("warszawa", "Warszawa Zachodnia", "Kozienice")),
-      travelLink(2, linkText.compare, noteText.main, "https://www.e-podroznik.pl/rozklad-jazdy-pks-autobusy"),
-      travelLink(3, linkText.mapExact, noteText.exact, googleTransit("Warszawa Zachodnia", "Wilczkowice Górne 40, 26-900 Kozienice")),
+      travelLink(1, linkText.warsawKoz, noteText.main, "https://www.e-podroznik.pl/rozklad-jazdy-pks-autobusy"),
+      travelLink(2, linkText.finalRyczywol, noteText.exact, googleTransit("Kozienice", "Wilczkowice Górne 40, 26-900 Kozienice")),
+      travelLink(3, linkText.compare, noteText.main, googleTransit("Warszawa Zachodnia", "Kozienice")),
       travelLink(9, linkText.emergency, noteText.unknown, googleTo("Wilczkowice Górne 40, 26-900 Kozienice"))
     ]
   };

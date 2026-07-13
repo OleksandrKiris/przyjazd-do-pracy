@@ -59,6 +59,33 @@ const candidateForbidden = [
   /koordynatorza/i,
   /rekruterza/i
 ];
+const requiredRouteStages = {
+  siechnice: [
+    { priority: 1, urlIncludes: ["koleo.pl", "wroclaw-glowny", "siechnice"] },
+    { priority: 2, originIncludes: "Stacja kolejowa Siechnice", destinationIncludes: "Opolska 30" },
+    { priority: 3, urlIncludes: ["jakdojade.pl"], urlDecodedIncludes: ["Wrocław Główny", "Opolska 30"] },
+    { priority: 9, destinationIncludes: "Opolska 30", noOrigin: true }
+  ],
+  zgorzelec: [
+    { priority: 1, urlIncludes: ["koleo.pl", "wroclaw-glowny", "zgorzelec"] },
+    { priority: 2, originIncludes: "Zgorzelec dworzec kolejowy", destinationIncludes: "Bohaterów II Armii Wojska Polskiego 64" },
+    { priority: 3, urlIncludes: ["jakdojade.pl"], urlDecodedIncludes: ["Wrocław", "Zgorzelec"] },
+    { priority: 9, destinationIncludes: "Bohaterów II Armii Wojska Polskiego 64", noOrigin: true }
+  ],
+  bogatynia: [
+    { priority: 1, urlIncludes: ["koleo.pl", "wroclaw-glowny", "zgorzelec"] },
+    { priority: 2, urlIncludes: ["e-podroznik.pl"] },
+    { priority: 3, originIncludes: "Bogatynia", destinationIncludes: "Niedów 9" },
+    { priority: 4, urlIncludes: ["jakdojade.pl"], urlDecodedIncludes: ["Wrocław", "Zgorzelec"] },
+    { priority: 9, destinationIncludes: "Niedów 9", noOrigin: true }
+  ],
+  ryczywol: [
+    { priority: 1, urlIncludes: ["e-podroznik.pl"] },
+    { priority: 2, originIncludes: "Kozienice", destinationIncludes: "Wilczkowice Górne 40" },
+    { priority: 3, originIncludes: "Warszawa Zachodnia", destinationIncludes: "Kozienice" },
+    { priority: 9, destinationIncludes: "Wilczkowice Górne 40", noOrigin: true }
+  ]
+};
 const errors = [];
 const warnings = [];
 const report = {
@@ -227,6 +254,53 @@ function validateRouteLinks(config) {
   });
 }
 
+function validateRouteStages(config) {
+  Object.entries(requiredRouteStages).forEach(([locationKey, stages]) => {
+    const links = config.locations?.[locationKey]?.routeLinks || [];
+    stages.forEach((stage) => {
+      const link = links.find((item) => (item.priority || 99) === stage.priority);
+      if (!link) {
+        fail(`${locationKey}: missing route stage priority ${stage.priority}`);
+        return;
+      }
+
+      let parsed;
+      try {
+        parsed = new URL(link.url);
+      } catch {
+        fail(`${locationKey}: invalid URL for route stage ${stage.priority}`);
+        return;
+      }
+
+      const decodedUrl = decodeURIComponent(link.url);
+      (stage.urlIncludes || []).forEach((part) => {
+        if (!link.url.includes(part)) fail(`${locationKey}: stage ${stage.priority} URL must include ${part}`);
+      });
+      (stage.urlDecodedIncludes || []).forEach((part) => {
+        if (!decodedUrl.includes(part)) fail(`${locationKey}: stage ${stage.priority} decoded URL must include ${part}`);
+      });
+
+      if (stage.originIncludes) {
+        const origin = parsed.searchParams.get("origin") || "";
+        if (!origin.includes(stage.originIncludes)) {
+          fail(`${locationKey}: stage ${stage.priority} origin must include "${stage.originIncludes}", got "${origin}"`);
+        }
+      }
+
+      if (stage.destinationIncludes) {
+        const destination = parsed.searchParams.get("destination") || decodedUrl;
+        if (!destination.includes(stage.destinationIncludes)) {
+          fail(`${locationKey}: stage ${stage.priority} destination must include "${stage.destinationIncludes}", got "${destination}"`);
+        }
+      }
+
+      if (stage.noOrigin && parsed.searchParams.has("origin")) {
+        fail(`${locationKey}: fallback stage ${stage.priority} must not have fixed origin`);
+      }
+    });
+  });
+}
+
 function validatePhones(config) {
   Object.entries(config.contacts || {}).forEach(([group, people]) => {
     people.forEach((person) => {
@@ -271,8 +345,8 @@ async function validatePublic() {
     fetched[key] = await response.text();
   }
 
-  if (fetched.index && !fetched.index.includes("v41-quality-gate")) fail("Public index is not v41");
-  if (fetched.serviceWorker && !fetched.serviceWorker.includes("arrival-guide-v41-quality-gate")) fail("Public service worker is not v41");
+  if (fetched.index && !fetched.index.includes("v42-route-stages")) fail("Public index is not v42");
+  if (fetched.serviceWorker && !fetched.serviceWorker.includes("arrival-guide-v42-route-stages")) fail("Public service worker is not v42");
   Object.entries(fetched).forEach(([key, content]) => {
     if (key === "validator") return;
     if (hasBrokenEncoding(content)) fail(`Public ${key}: broken encoding token found`);
@@ -303,6 +377,7 @@ async function main() {
   } else {
     validateMatrix(config);
     validateRouteLinks(config);
+    validateRouteStages(config);
     validatePhones(config);
     validateAliases(config);
   }
