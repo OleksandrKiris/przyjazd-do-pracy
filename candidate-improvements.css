@@ -89,3 +89,249 @@
   text-decoration: none;
   border: 1px solid #fecdd3;
 }
+
+.mobile-candidate-hero {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0;
+  padding: 16px;
+  border-radius: 16px;
+  color: #fff;
+  background:
+    linear-gradient(135deg, rgba(255, 210, 63, .22), transparent 42%),
+    linear-gradient(135deg, #3b070a 0%, var(--primary) 100%);
+  box-shadow: var(--shadow);
+}
+
+.mobile-hero-label {
+  width: max-content;
+  max-width: 100%;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: var(--yellow);
+  color: #3b070a;
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.mobile-candidate-hero h2 {
+  margin: 0;
+  color: #fff;
+  font-size: 30px;
+  line-height: 1;
+}
+
+.mobile-candidate-hero p {
+  margin: 0;
+  color: #fff7c2;
+  font-size: 16px;
+  line-height: 1.35;
+  font-weight: 800;
+}
+
+.mobile-hero-contact {
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .14);
+  border: 1px solid rgba(255, 255, 255, .24);
+}
+
+.mobile-hero-contact span {
+  color: #fff7c2;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.mobile-hero-contact strong {
+  font-size: 18px;
+  line-height: 1.15;
+}
+
+.mobile-hero-actions,
+.candidate-sticky-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.mobile-hero-actions button,
+.candidate-sticky-actions button {
+  min-height: 52px;
+  padding: 8px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.mobile-hero-actions button {
+  background: #fff;
+  color: var(--primary-dark);
+  box-shadow: none;
+}
+
+.contact-role {
+  width: max-content;
+  max-width: 100%;
+  margin: -2px 0 8px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--yellow);
+  color: #3b070a;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.candidate-sticky-actions {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 80;
+  padding: 9px max(10px, env(safe-area-inset-left)) calc(9px + env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-right));
+  background: rgba(255, 255, 255, .96);
+  border-top: 1px solid #ead0d3;
+  box-shadow: 0 -12px 30px rgba(15, 23, 42, .16);
+  backdrop-filter: blur(12px);
+}
+
+.candidate-sticky-actions button {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: none;
+}
+
+@media (max-width: 759px) {
+  body {
+    padding-bottom: 88px;
+  }
+
+  .app {
+    padding-inline: 10px;
+  }
+
+  .topbar {
+    padding-top: 12px;
+  }
+
+  .brand-head h1 {
+    font-size: 28px;
+    line-height: 1.02;
+  }
+
+  .setup-card {
+    padding: 12px;
+  }
+
+  .setup-card h2,
+  .section-head h2 {
+    font-size: 21px;
+  }
+
+  .language-gate {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .language-gate button {
+    min-height: 48px;
+    padding: 7px;
+  }
+
+  .language-gate button span {
+    display: none;
+  }
+
+  .language-gate button small {
+    margin: 0;
+    min-width: 0;
+    width: 100%;
+    padding: 8px 0;
+    font-size: 13px;
+  }
+
+  .location-tiles {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .location-tile {
+    min-height: 118px;
+    padding: 14px 12px;
+    border-radius: 14px;
+  }
+
+  .location-tile span {
+    font-size: 22px;
+  }
+
+  .location-tile small {
+    font-size: 12px;
+  }
+
+  .location-tile strong {
+    font-size: 10px;
+  }
+
+  .summary-band {
+    display: none;
+  }
+
+  .panel,
+  .contacts-section,
+  .help-section {
+    padding: 13px;
+    border-radius: 14px;
+  }
+
+  .panel h2,
+  .contacts-section h2,
+  .help-copy h2 {
+    font-size: 21px;
+  }
+
+  .route-steps li {
+    grid-template-columns: 32px 1fr;
+    padding: 9px;
+  }
+
+  .route-steps span {
+    width: 32px;
+    height: 32px;
+  }
+
+  .action-grid,
+  .help-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-card {
+    padding: 13px;
+  }
+
+  .contact-card a {
+    width: 100%;
+    min-height: 50px;
+    font-size: 17px;
+  }
+}
+
+@media (min-width: 760px) {
+  .candidate-sticky-actions {
+    left: 50%;
+    right: auto;
+    width: min(760px, calc(100% - 24px));
+    transform: translateX(-50%);
+    border: 1px solid #ead0d3;
+    border-radius: 18px 18px 0 0;
+  }
+}
