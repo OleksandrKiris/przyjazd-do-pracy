@@ -3001,7 +3001,11 @@ main {
   }
 
   .brand-logo-lockup strong {
-    font-size: 12px;
+    font-size: 11.5px;
+    line-height: 1.08;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
   }
 
   .top-language-switcher select {
@@ -3009,5 +3013,114 @@ main {
     max-width: none;
     min-height: 44px;
     font-size: 13.5px;
+  }
+}
+
+/* v36: travel search links. */
+.route-links {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(221, 227, 235, .92);
+}
+
+.route-links h3 {
+  margin-bottom: 9px;
+  color: var(--hydra-ink);
+  font-size: 14px;
+  font-weight: 950;
+}
+
+.route-links > div {
+  display: grid;
+  gap: 8px;
+}
+
+.route-links a {
+  position: relative;
+  display: flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 9px 11px 9px 38px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid var(--hydra-line);
+  color: var(--hydra-ink);
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.2;
+  box-shadow: 0 7px 16px rgba(17, 24, 39, .05);
+}
+
+.route-links a::before {
+  position: absolute;
+  left: 10px;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 950;
+  content: "↗";
+  background: var(--hydra-blue);
+}
+
+.route-links a[href*="koleo.pl"] {
+  background: var(--hydra-blue-soft);
+  border-color: rgba(29, 95, 214, .22);
+  color: #174ea8;
+}
+
+.route-links a[href*="koleo.pl"]::before {
+  content: "K";
+  background: var(--hydra-blue);
+}
+
+.route-links a[href*="jakdojade.pl"] {
+  background: var(--brand-red-soft);
+  border-color: rgba(201, 0, 22, .18);
+  color: var(--brand-red-dark);
+}
+
+.route-links a[href*="jakdojade.pl"]::before {
+  content: "J";
+  background: var(--brand-red);
+}
+
+.route-links a[href*="e-podroznik.pl"] {
+  background: var(--hydra-gold-soft);
+  border-color: rgba(217, 147, 0, .24);
+  color: #7a5200;
+}
+
+.route-links a[href*="e-podroznik.pl"]::before {
+  content: "E";
+  background: var(--hydra-gold);
+}
+
+.route-links a[href*="google.com/maps"] {
+  background: var(--hydra-green-soft);
+  border-color: rgba(22, 122, 58, .20);
+  color: var(--hydra-green);
+}
+
+.route-links a[href*="google.com/maps"]::before {
+  content: "M";
+  background: var(--hydra-green);
+}
+
+@media (min-width: 680px) {
+  .route-links > div {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 430px) {
+  .route-links a {
+    min-height: 48px;
+    padding-right: 10px;
+    font-size: 12.5px;
   }
 }

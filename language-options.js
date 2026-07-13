@@ -505,6 +505,80 @@
 
   Object.entries(completeRoutes).forEach(([key, route]) => setRoute(key, route));
 
+  const jakdojadeRoute = (city, from, to) =>
+    `https://jakdojade.pl/${city}/trasa/z--${encodeURIComponent(from)}--do--${encodeURIComponent(to)}`;
+  const googleTransit = (from, to) =>
+    `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(from)}&destination=${encodeURIComponent(to)}&travelmode=transit`;
+  const setRouteLinks = (key, links) => {
+    if (config.locations && config.locations[key]) {
+      config.locations[key].routeLinks = links;
+    }
+  };
+
+  setRouteLinks("siechnice", [
+    {
+      label: "KOLEO: Wrocław Główny → Siechnice",
+      url: "https://koleo.pl/rozklad-pkp/wroclaw-glowny/siechnice"
+    },
+    {
+      label: "Jakdojade: Wrocław Główny → Opolska 30",
+      url: jakdojadeRoute("wroclaw", "Wrocław Główny", "Opolska 30, Siechnice")
+    },
+    {
+      label: "Google Maps: transport publiczny do Opolska 30",
+      url: googleTransit("Wrocław Główny", "Opolska 30, 55-011 Siechnice")
+    }
+  ]);
+
+  setRouteLinks("zgorzelec", [
+    {
+      label: "KOLEO: Wrocław Główny → Zgorzelec",
+      url: "https://koleo.pl/rozklad-pkp/wroclaw-glowny/zgorzelec"
+    },
+    {
+      label: "Jakdojade: Wrocław → Zgorzelec",
+      url: jakdojadeRoute("wroclaw", "Wrocław", "Zgorzelec")
+    },
+    {
+      label: "Google Maps: transport publiczny do Citronex",
+      url: googleTransit("Wrocław Główny", "Bohaterów II Armii Wojska Polskiego 64, Zgorzelec")
+    }
+  ]);
+
+  setRouteLinks("bogatynia", [
+    {
+      label: "KOLEO: Wrocław Główny → Zgorzelec",
+      url: "https://koleo.pl/rozklad-pkp/wroclaw-glowny/zgorzelec"
+    },
+    {
+      label: "Jakdojade: Wrocław → Zgorzelec",
+      url: jakdojadeRoute("wroclaw", "Wrocław", "Zgorzelec")
+    },
+    {
+      label: "e-podróżnik: busy/autobusy Zgorzelec → Bogatynia",
+      url: "https://www.e-podroznik.pl/"
+    },
+    {
+      label: "Google Maps: transport publiczny do Niedów 9",
+      url: googleTransit("Zgorzelec", "Niedów 9, 59-900 Niedów")
+    }
+  ]);
+
+  setRouteLinks("ryczywol", [
+    {
+      label: "Jakdojade: Warszawa Zachodnia → Kozienice",
+      url: jakdojadeRoute("warszawa", "Warszawa Zachodnia", "Kozienice")
+    },
+    {
+      label: "e-podróżnik: busy/autobusy Warszawa → Kozienice",
+      url: "https://www.e-podroznik.pl/"
+    },
+    {
+      label: "Google Maps: transport publiczny do zakwaterowania",
+      url: googleTransit("Warszawa Zachodnia", "Wilczkowice Górne 40, 26-900 Kozienice")
+    }
+  ]);
+
   window.CANDIDATE_LANGUAGE_LABELS = {
     es: {
       travelTo: "Vas a",

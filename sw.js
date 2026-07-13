@@ -1,4 +1,4 @@
-const CACHE_NAME = "arrival-guide-v35-hydra-style";
+const CACHE_NAME = "arrival-guide-v36-travel-tools";
 const ASSETS = [
   "./",
   "./index.html",
