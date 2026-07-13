@@ -23,6 +23,8 @@
   }
 
   function writeForm(state) {
+    setValue("candidateLang", state.lang);
+    setValue("candidateLocation", state.location);
     setValue("candidateName", state.name);
     setValue("candidateSurname", state.surname);
     setValue("candidateDate", state.date);
@@ -35,10 +37,9 @@
   }
 
   function readForm() {
-    const params = new URLSearchParams(location.search);
     return {
-      lang: params.get("lang") || document.documentElement.lang || "pl",
-      location: params.get("location") || params.get("lokalizacja") || "siechnice",
+      lang: $("candidateLang")?.value || "pl",
+      location: $("candidateLocation")?.value || "siechnice",
       name: $("candidateName")?.value.trim() || "",
       surname: $("candidateSurname")?.value.trim() || "",
       date: $("candidateDate")?.value || "",
@@ -56,10 +57,7 @@
   }
 
   function buildLink(state) {
-    const base = location.hostname.endsWith("github.io") ? location.href : publicBaseUrl;
-    const url = new URL(base);
-    url.hash = "";
-    url.search = "";
+    const url = new URL(publicBaseUrl);
     setOrDelete(url.searchParams, "lang", state.lang);
     setOrDelete(url.searchParams, "location", state.location);
     setOrDelete(url.searchParams, "name", state.name);
@@ -149,7 +147,7 @@
   function init() {
     if (!$("candidateLink")) return;
     writeForm(readState());
-    ["candidateName", "candidateSurname", "candidateDate", "candidateDepartment", "candidateCountry", "candidateHotel"].forEach((id) => {
+    ["candidateLang", "candidateLocation", "candidateName", "candidateSurname", "candidateDate", "candidateDepartment", "candidateCountry", "candidateHotel"].forEach((id) => {
       $(id)?.addEventListener("input", syncFromForm);
       $(id)?.addEventListener("change", syncFromForm);
     });
