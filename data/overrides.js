@@ -30,6 +30,18 @@
   ];
 
   const routes = config.locations;
+  const contacts = config.contacts || (config.contacts = {});
+  const ensureContact = (key, contact) => {
+    const list = contacts[key] || (contacts[key] = []);
+    const normalizedPhone = contact.phone.replace(/\s+/g, "");
+    if (!list.some((item) => (item.phone || "").replace(/\s+/g, "") === normalizedPhone)) {
+      list.unshift(contact);
+    }
+  };
+
+  ensureContact("ryczywol", { name: "Ludmiła", phone: "+48 536 110 591", role: "Zakwaterowanie" });
+  ensureContact("bogatynia_zgorzelec", { name: "Nataliia", phone: "+48 609 809 601", role: "Zakwaterowanie" });
+
   if (routes.ryczywol) {
     routes.ryczywol.route.pl = [
       "Najpierw dojedź do Warszawy Zachodniej. To najłatwiejszy punkt przesiadki w kierunku Kozienic.",
