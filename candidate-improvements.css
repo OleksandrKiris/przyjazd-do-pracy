@@ -1024,6 +1024,43 @@ body {
   line-height: 1.05;
 }
 
+.brand-head {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.brand-logo-lockup {
+  display: grid;
+  grid-template-columns: 58px minmax(0, auto);
+  align-items: center;
+  gap: 10px;
+  width: max-content;
+  max-width: 100%;
+  padding: 7px 10px 7px 7px;
+  border: 1px solid #fee2e2;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 8px 18px rgba(17, 24, 39, .07);
+}
+
+.brand-logo-lockup img {
+  display: block;
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+  border-radius: 9px;
+}
+
+.brand-logo-lockup strong {
+  min-width: 0;
+  color: var(--primary-dark);
+  font-size: 13px;
+  line-height: 1.15;
+  font-weight: 950;
+  letter-spacing: 0;
+}
+
 .top-language-switcher {
   display: grid;
   gap: 5px;
@@ -1209,6 +1246,16 @@ main {
   .top-language-switcher {
     justify-self: stretch;
     width: 100%;
+  }
+
+  .brand-logo-lockup {
+    width: 100%;
+    grid-template-columns: 54px minmax(0, 1fr);
+  }
+
+  .brand-logo-lockup img {
+    width: 54px;
+    height: 54px;
   }
 
   .top-language-switcher select {

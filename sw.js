@@ -1,4 +1,4 @@
-const CACHE_NAME = "arrival-guide-v26-top-language-switcher";
+const CACHE_NAME = "arrival-guide-v27-logo-header";
 const ASSETS = [
   "./",
   "./index.html",
@@ -11,7 +11,8 @@ const ASSETS = [
   "./data/config.js",
   "./data/overrides.js",
   "./manifest.webmanifest",
-  "./assets/icon.svg"
+  "./assets/icon.svg",
+  "./assets/citronex-hydra-logo.png"
 ];
 
 self.addEventListener("install", (event) => {
