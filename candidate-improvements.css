@@ -2289,3 +2289,41 @@ body {
       linear-gradient(180deg, #eef3fb 0, #dbe5f1 48%, #ead8dc 100%);
   }
 }
+
+/* v33: route instructions as a finished candidate product. */
+.route-steps li {
+  align-items: flex-start;
+  gap: 11px;
+}
+
+.route-steps li:nth-child(odd) {
+  background: rgba(255, 255, 255, .62);
+}
+
+.route-steps li:nth-child(even) {
+  background: rgba(239, 246, 255, .72);
+}
+
+.route-steps p {
+  color: #344054;
+  line-height: 1.48;
+}
+
+.route-steps p strong {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+@media (max-width: 430px) {
+  .route-steps li {
+    padding: 12px;
+  }
+
+  .route-steps p strong {
+    font-size: 12px;
+  }
+}

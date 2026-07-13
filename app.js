@@ -174,11 +174,20 @@
         ${items.map((item, index) => `
           <li>
             <span>${index + 1}</span>
-            <p>${escapeHtml(item)}</p>
+            <p>${formatRouteStep(item)}</p>
           </li>
         `).join("")}
       </ol>
     `;
+  }
+
+  function formatRouteStep(item) {
+    const text = escapeHtml(item);
+    const splitAt = text.indexOf(": ");
+    if (splitAt > 0 && splitAt <= 28) {
+      return `<strong>${text.slice(0, splitAt + 1)}</strong> ${text.slice(splitAt + 2)}`;
+    }
+    return text;
   }
 
   function routeLinks(links) {

@@ -166,6 +166,80 @@
 
   config.ui = ui;
 
+  const setRoute = (key, route) => {
+    if (config.locations && config.locations[key]) {
+      config.locations[key].route = route;
+    }
+  };
+
+  setRoute("siechnice", {
+    pl: [
+      "Cel: ul. Opolska 30, 55-011 Siechnice.",
+      "Transport publiczny: jedź do Wrocławia Głównego, potem pociągiem regionalnym albo autobusem do Siechnic.",
+      "Ostatni odcinek: ze stacji lub przystanku w Siechnicach otwórz mapę do ul. Opolskiej 30. Jeśli masz bagaż albo jest późno, weź taxi.",
+      "Samochód/taxi: wpisz w nawigacji ul. Opolska 30, 55-011 Siechnice i jedź bezpośrednio pod adres.",
+      "Na miejscu: jeśli nie widzisz wejścia, zadzwoń do kontaktu dla Siechnic i wyślij swoją lokalizację."
+    ],
+    en: [
+      "Destination: ul. Opolska 30, 55-011 Siechnice.",
+      "Public transport: travel to Wroclaw Glowny, then take a regional train or bus to Siechnice.",
+      "Final part: from the station or stop in Siechnice, open the map to ul. Opolska 30. If you have luggage or it is late, take a taxi.",
+      "Car/taxi: enter ul. Opolska 30, 55-011 Siechnice in navigation and go directly to the address.",
+      "On arrival: if you cannot find the entrance, call the Siechnice contact and send your location."
+    ]
+  });
+
+  setRoute("zgorzelec", {
+    pl: [
+      "Cel: Citronex, ul. Bohaterów II Armii Wojska Polskiego 64, 59-900 Zgorzelec.",
+      "Transport publiczny: jedź do Wrocławia, potem pociągiem albo autobusem do Zgorzelca.",
+      "Ostatni odcinek: ze stacji lub centrum Zgorzelca jedź taxi albo komunikacją miejską pod adres firmy.",
+      "Samochód/taxi: wpisz dokładnie ul. Bohaterów II Armii Wojska Polskiego 64, Zgorzelec.",
+      "Na miejscu: zgłoś się do podpisania dokumentów. Jeśli nie możesz znaleźć wejścia, zadzwoń do Anastasii."
+    ],
+    en: [
+      "Destination: Citronex, ul. Bohaterow II Armii Wojska Polskiego 64, 59-900 Zgorzelec.",
+      "Public transport: travel to Wroclaw, then take a train or bus to Zgorzelec.",
+      "Final part: from the station or centre of Zgorzelec, take a taxi or local transport to the company address.",
+      "Car/taxi: enter exactly ul. Bohaterow II Armii Wojska Polskiego 64, Zgorzelec.",
+      "On arrival: go to sign the documents. If you cannot find the entrance, call Anastasiia."
+    ]
+  });
+
+  setRoute("bogatynia", {
+    pl: [
+      "Cel: Niedów 9, 59-900 Niedów. Trasa zwykle prowadzi przez Wrocław i Zgorzelec.",
+      "Transport publiczny: jedź do Wrocławia, potem do Zgorzelca. Ze Zgorzelca jedź busem lub autobusem w kierunku Bogatyni albo Niedowa.",
+      "Ostatni odcinek: jeśli dojedziesz tylko do Bogatyni, dalej do Niedowa jedź taxi albo transportem ustalonym z koordynatorem.",
+      "Samochód/taxi: wpisz Niedów 9, 59-900 Niedów. Jeśli kierowca nie zna miejsca, pokaż mapę.",
+      "Problem: nie jedź do innej miejscowości w ciemno. Zostań w Zgorzelcu lub Bogatyni i zadzwoń do Natalii."
+    ],
+    en: [
+      "Destination: Niedow 9, 59-900 Niedow. The route usually goes through Wroclaw and Zgorzelec.",
+      "Public transport: travel to Wroclaw, then to Zgorzelec. From Zgorzelec take a bus toward Bogatynia or Niedow.",
+      "Final part: if you arrive only in Bogatynia, continue to Niedow by taxi or by transport agreed with the coordinator.",
+      "Car/taxi: enter Niedow 9, 59-900 Niedow. If the driver does not know the place, show the map.",
+      "Problem: do not continue blindly to another town. Stay in Zgorzelec or Bogatynia and call Nataliia."
+    ]
+  });
+
+  setRoute("ryczywol", {
+    pl: [
+      "Cel: Ryczywół / zakwaterowanie Wilczkowice Górne 40, 26-900 Kozienice.",
+      "Transport publiczny: jedź do Warszawy Zachodniej, potem autobusem lub busem do Kozienic.",
+      "Ostatni odcinek: z Kozienic jedź w kierunku Ryczywołu lub Ryczywół Szklarnia. Jeśli nie ma kursu, nie jedź dalej samodzielnie.",
+      "Samochód/taxi: wpisz Wilczkowice Górne 40, 26-900 Kozienice albo Ryczywół Szklarnia, zgodnie z instrukcją od kontaktu.",
+      "Problem: jeśli utkniesz w Warszawie albo Kozienicach, zostań w miejscu i zadzwoń do Ludmiły lub koordynatora."
+    ],
+    en: [
+      "Destination: Ryczywol / accommodation Wilczkowice Gorne 40, 26-900 Kozienice.",
+      "Public transport: travel to Warszawa Zachodnia, then take a bus or minibus to Kozienice.",
+      "Final part: from Kozienice go toward Ryczywol or Ryczywol Szklarnia. If there is no connection, do not continue alone.",
+      "Car/taxi: enter Wilczkowice Gorne 40, 26-900 Kozienice or Ryczywol Szklarnia, according to the contact instruction.",
+      "Problem: if you get stuck in Warsaw or Kozienice, stay where you are and call Ludmila or the coordinator."
+    ]
+  });
+
   window.CANDIDATE_LANGUAGE_LABELS = {
     es: {
       travelTo: "Vas a",
