@@ -1,9 +1,11 @@
-const CACHE_NAME = "arrival-guide-v12-hydra-link";
+const CACHE_NAME = "arrival-guide-v13-candidate-help";
 const ASSETS = [
   "./",
   "./index.html",
   "./styles.css",
+  "./candidate-improvements.css",
   "./app.js",
+  "./candidate-improvements.js",
   "./data/config.js",
   "./data/overrides.js",
   "./manifest.webmanifest",
