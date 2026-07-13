@@ -103,7 +103,7 @@
 
     $("guide").innerHTML = `
       ${panel(t("address"), `<p>${addressHtml}</p>`)}
-      ${panel(t("route"), `${list(localizedList(place.route))}${routeLinks(place.routeLinks)}`)}
+      ${panel(t("route"), `${routeSteps(localizedList(place.route))}${routeLinks(place.routeLinks)}`)}
       ${panel(t("workType"), list(workItems))}
       ${panel(t("arrivalRules"), `<p>${escapeHtml(t("reception"))}</p><p>${escapeHtml(t("noWeekend"))}</p><p>${escapeHtml(t("late"))}</p>`)}
       ${panel(t("whatToPack"), `<p><strong>${escapeHtml(packLabel(packKey))}</strong></p>${list(localizedList(config.packs[packKey]))}`)}
@@ -151,6 +151,19 @@
 
   function list(items) {
     return `<ul>${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
+  }
+
+  function routeSteps(items) {
+    return `
+      <ol class="route-steps">
+        ${items.map((item, index) => `
+          <li>
+            <span>${index + 1}</span>
+            <p>${escapeHtml(item)}</p>
+          </li>
+        `).join("")}
+      </ol>
+    `;
   }
 
   function routeLinks(links) {

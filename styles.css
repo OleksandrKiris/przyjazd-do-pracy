@@ -426,6 +426,45 @@ main {
   margin: 0.35rem 0;
 }
 
+.route-steps {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: none;
+}
+
+.route-steps li {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 10px;
+  align-items: start;
+  margin: 0;
+  padding: 10px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fffafa 0%, #ffffff 100%);
+  border: 1px solid #f3c7cb;
+}
+
+.route-steps span {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.route-steps p {
+  margin: 0;
+  line-height: 1.35;
+  font-weight: 700;
+}
+
 .route-links {
   margin-top: 12px;
   padding-top: 12px;
