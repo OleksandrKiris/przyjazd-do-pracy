@@ -40,6 +40,28 @@
     };
   }
 
+  function languageBadge(code) {
+    return {
+      pl: "PL",
+      uk: "UA",
+      ru: "RU",
+      en: "EN",
+      ka: "GE",
+      az: "AZ"
+    }[code] || String(code || "").toUpperCase();
+  }
+
+  function improveLanguageSwitcher() {
+    document.querySelectorAll("#languageGate [data-lang]").forEach((button) => {
+      const code = button.dataset.lang || "";
+      const label = button.querySelector("span")?.textContent.trim() || code;
+      const badge = button.querySelector("small");
+      button.setAttribute("aria-pressed", button.classList.contains("active") ? "true" : "false");
+      button.setAttribute("title", label);
+      if (badge) badge.textContent = languageBadge(code);
+    });
+  }
+
   function mapsFor(place) {
     if (!place) return mapUrl;
     if (place.name === "Siechnice") return mapUrl;
@@ -179,6 +201,7 @@
   }
 
   function refresh() {
+    improveLanguageSwitcher();
     ensureMobileHero();
     renderHelp();
     ensureStickyActions();
