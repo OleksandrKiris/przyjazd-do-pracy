@@ -27,7 +27,15 @@
         <div id="languageGate" class="language-gate"></div>
       </section>
 
-      <section class="summary-band">
+      <section class="location-picker">
+        <div class="section-head">
+          <h2 data-i18n="chooseLocation">Wybierz lokalizację</h2>
+          <p data-i18n="chooseLocationText">Kliknij kafelek miejsca, do którego jedziesz. Strona pokaże instrukcję tylko dla tej lokalizacji.</p>
+        </div>
+        <div id="locationTiles" class="location-tiles"></div>
+      </section>
+
+      <section id="instructionStart" class="summary-band">
         <div class="summary-item">
           <span data-i18n="employee">Pracownik</span>
           <strong id="employeeName">-</strong>
@@ -45,8 +53,6 @@
           <strong id="departmentName">-</strong>
         </div>
       </section>
-
-      <nav id="locationTabs" class="tabs" aria-label="Lokalizacje"></nav>
 
       <section id="guide" class="guide-grid"></section>
 

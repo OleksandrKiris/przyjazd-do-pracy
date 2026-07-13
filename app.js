@@ -11,7 +11,12 @@
     const saved = localStorage.getItem(storageKey);
     if (!saved) return structuredClone(window.ARRIVAL_DEFAULT_CONFIG);
     try {
-      return JSON.parse(saved);
+      const parsed = JSON.parse(saved);
+      if (parsed.version !== window.ARRIVAL_DEFAULT_CONFIG.version) {
+        localStorage.removeItem(storageKey);
+        return structuredClone(window.ARRIVAL_DEFAULT_CONFIG);
+      }
+      return parsed;
     } catch {
       return structuredClone(window.ARRIVAL_DEFAULT_CONFIG);
     }
@@ -25,7 +30,7 @@
       name: params.get("name") || params.get("imie") || "",
       surname: params.get("surname") || params.get("nazwisko") || "",
       date: params.get("date") || params.get("data") || "",
-      location: params.get("location") || params.get("lokalizacja") || "siechnice",
+      location: normalizeLocation(params.get("location") || params.get("lokalizacja") || "siechnice"),
       department: params.get("department") || params.get("dzial") || "production",
       hotel: ["yes", "tak", "true", "1"].includes((params.get("hotel") || "").toLowerCase()),
       country: params.get("country") || params.get("kraj") || "ukraine"
@@ -42,11 +47,12 @@
   }
 
   function setLocation(locationKey) {
-    state.location = locationKey;
+    state.location = normalizeLocation(locationKey);
     const url = new URL(location.href);
-    url.searchParams.set("location", locationKey);
+    url.searchParams.set("location", state.location);
     history.replaceState(null, "", url);
     render();
+    $("instructionStart").scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   function render() {
@@ -54,7 +60,7 @@
     renderLanguageControls();
     renderTexts();
     renderSummary();
-    renderTabs();
+    renderLocationTiles();
     renderGuide();
     renderContacts();
     $("configEditor").value = JSON.stringify(config, null, 2);
@@ -87,9 +93,17 @@
     $("departmentName").textContent = labelForDepartment(state.department);
   }
 
-  function renderTabs() {
-    $("locationTabs").innerHTML = Object.entries(config.locations)
-      .map(([key, place]) => `<button type="button" class="${key === state.location ? "active" : ""}" data-location="${key}">${escapeHtml(place.name)}</button>`)
+  function renderLocationTiles() {
+    const target = $("locationTiles");
+    if (!target) return;
+    target.innerHTML = Object.entries(config.locations)
+      .map(([key, place]) => `
+        <button type="button" class="location-tile ${key === state.location ? "active" : ""}" data-location="${key}" style="--tile-accent:${escapeHtml(place.accent || "#d71920")}">
+          <span>${escapeHtml(place.name)}</span>
+          <small>${escapeHtml(place.short || place.address[0])}</small>
+          <strong>${escapeHtml(t("showInstruction"))}</strong>
+        </button>
+      `)
       .join("");
   }
 
@@ -98,17 +112,17 @@
     document.documentElement.style.setProperty("--primary", place.accent || "#1f7a8c");
     const address = place.address.join(", ");
     const addressHtml = place.address.map((line) => escapeHtml(line)).join("<br>");
-    const workItems = place.work[state.department] || Object.values(place.work)[0] || [];
+    const workItems = localizedList(place.work[state.department] || Object.values(place.work)[0] || []);
     const packKey = state.country === "poland" ? "poland" : ["georgia", "azerbaijan", "ka", "az"].includes(state.country) ? "caucasus" : "ukraine";
 
     $("guide").innerHTML = `
       ${panel(t("address"), `<p>${addressHtml}</p>`)}
-      ${panel(t("route"), list(place.route))}
+      ${panel(t("route"), list(localizedList(place.route)))}
       ${panel(t("workType"), list(workItems))}
       ${panel(t("arrivalRules"), `<p>${escapeHtml(t("reception"))}</p><p>${escapeHtml(t("noWeekend"))}</p><p>${escapeHtml(t("late"))}</p>`)}
-      ${panel(t("whatToPack"), `<p><strong>${escapeHtml(packLabel(packKey))}</strong></p>${list(config.packs[packKey])}`)}
+      ${panel(t("whatToPack"), `<p><strong>${escapeHtml(packLabel(packKey))}</strong></p>${list(localizedList(config.packs[packKey]))}`)}
       ${state.hotel ? panel(t("housing"), `<p>${escapeHtml(t("hotelReady"))}</p>`) : ""}
-      ${place.note ? panel(t("contacts"), `<p>${escapeHtml(place.note)}</p>${place.coordinators ? list(place.coordinators) : ""}`) : ""}
+      ${place.note ? panel(t("contacts"), `<p>${escapeHtml(localizedText(place.note))}</p>${place.coordinators ? list(place.coordinators) : ""}`) : ""}
       <section class="panel wide">
         <h2>${escapeHtml(place.name)}</h2>
         <div class="action-grid">
@@ -160,12 +174,29 @@
   }
 
   function labelForDepartment(key) {
-    const labels = {
-      production: { pl: "Produkcja", uk: "Виробництво", ru: "Производство", en: "Production", ka: "წარმოება", az: "İstehsal" },
-      warehouse: { pl: "Magazyn", uk: "Склад", ru: "Склад", en: "Warehouse", ka: "საწყობი", az: "Anbar" },
-      greenhouse: { pl: "Szklarnia", uk: "Теплиця", ru: "Теплица", en: "Greenhouse", ka: "სათბური", az: "İstixana" }
-    };
+    const labels = config.departments || {};
     return (labels[key] && (labels[key][state.lang] || labels[key].pl)) || key || "-";
+  }
+
+  function localizedText(value) {
+    if (value && typeof value === "object" && !Array.isArray(value)) {
+      return value[state.lang] || value.en || value.pl || Object.values(value)[0] || "";
+    }
+    return value || "";
+  }
+
+  function localizedList(value) {
+    const localized = localizedText(value);
+    return Array.isArray(localized) ? localized : [localized].filter(Boolean);
+  }
+
+  function normalizeLocation(value) {
+    const key = String(value || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    if (key.includes("ryczy")) return "ryczywol";
+    if (key.includes("bogat")) return "bogatynia";
+    if (key.includes("zgorz")) return "zgorzelec";
+    if (key.includes("siech")) return "siechnice";
+    return config?.locations?.[key] ? key : "siechnice";
   }
 
   function copyText(text) {
@@ -198,39 +229,39 @@
     image.hidden = false;
   }
 
-  $("languageSelect").addEventListener("change", (event) => setLanguage(event.target.value));
-  $("languageGate").addEventListener("click", (event) => {
+  $("languageSelect")?.addEventListener("change", (event) => setLanguage(event.target.value));
+  $("languageGate")?.addEventListener("click", (event) => {
     const button = event.target.closest("[data-lang]");
     if (button) setLanguage(button.dataset.lang);
   });
-  $("locationTabs").addEventListener("click", (event) => {
+  $("locationTiles")?.addEventListener("click", (event) => {
     const button = event.target.closest("[data-location]");
     if (button) setLocation(button.dataset.location);
   });
-  $("copyLinkBtn").addEventListener("click", () => copyText(location.href));
-  $("qrBtn").addEventListener("click", () => drawQr(location.href));
-  $("printBtn").addEventListener("click", () => print());
-  $("adminToggle").addEventListener("click", () => $("adminPanel").classList.add("open"));
-  $("adminClose").addEventListener("click", () => $("adminPanel").classList.remove("open"));
-  $("saveConfigBtn").addEventListener("click", () => {
+  $("copyLinkBtn")?.addEventListener("click", () => copyText(location.href));
+  $("qrBtn")?.addEventListener("click", () => drawQr(location.href));
+  $("printBtn")?.addEventListener("click", () => print());
+  $("adminToggle")?.addEventListener("click", () => $("adminPanel").classList.add("open"));
+  $("adminClose")?.addEventListener("click", () => $("adminPanel").classList.remove("open"));
+  $("saveConfigBtn")?.addEventListener("click", () => {
     config = JSON.parse($("configEditor").value);
     localStorage.setItem(storageKey, JSON.stringify(config));
     toast(t("saved"));
     render();
   });
-  $("resetConfigBtn").addEventListener("click", () => {
+  $("resetConfigBtn")?.addEventListener("click", () => {
     localStorage.removeItem(storageKey);
     config = structuredClone(window.ARRIVAL_DEFAULT_CONFIG);
     render();
   });
-  $("exportConfigBtn").addEventListener("click", () => {
+  $("exportConfigBtn")?.addEventListener("click", () => {
     const blob = new Blob([JSON.stringify(config, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const link = Object.assign(document.createElement("a"), { href: url, download: "arrival-config.json" });
     link.click();
     URL.revokeObjectURL(url);
   });
-  $("importConfigInput").addEventListener("change", async (event) => {
+  $("importConfigInput")?.addEventListener("change", async (event) => {
     const file = event.target.files[0];
     if (!file) return;
     config = JSON.parse(await file.text());

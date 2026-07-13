@@ -208,7 +208,7 @@ main {
 
 .language-gate {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
   margin: 0;
 }
@@ -220,6 +220,96 @@ main {
   color: white;
   border: 1px solid rgba(255, 255, 255, .24);
   box-shadow: none;
+}
+
+.location-picker {
+  margin: 12px 0;
+}
+
+.section-head {
+  margin: 0 0 10px;
+}
+
+.section-head h2 {
+  margin: 0 0 5px;
+  font-size: 23px;
+  color: var(--ink);
+}
+
+.section-head p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.35;
+  font-weight: 700;
+}
+
+.location-tiles {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.location-tile {
+  min-height: 104px;
+  display: grid;
+  gap: 6px;
+  align-content: center;
+  text-align: left;
+  color: white;
+  background:
+    linear-gradient(135deg, rgba(255, 210, 63, .22), transparent 42%),
+    linear-gradient(135deg, #3b070a 0%, var(--tile-accent) 100%);
+  border-radius: 18px;
+  padding: 16px 14px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.location-tile::after {
+  content: "";
+  position: absolute;
+  right: -28px;
+  bottom: -32px;
+  width: 110px;
+  height: 110px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .13);
+}
+
+.location-tile span,
+.location-tile small,
+.location-tile strong {
+  position: relative;
+  z-index: 1;
+}
+
+.location-tile span {
+  font-size: 26px;
+  line-height: 1;
+  font-weight: 900;
+}
+
+.location-tile small {
+  color: #fff7c2;
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.location-tile strong {
+  width: max-content;
+  max-width: 100%;
+  padding: 5px 8px;
+  border-radius: 999px;
+  color: #3b070a;
+  background: var(--yellow);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.location-tile.active {
+  outline: 4px solid rgba(255, 210, 63, .55);
 }
 
 .summary-band {
@@ -264,27 +354,6 @@ main {
   font-size: 18px;
   color: var(--ink);
   overflow-wrap: anywhere;
-}
-
-.tabs {
-  display: flex;
-  gap: 0.5rem;
-  margin: 1rem 0;
-  overflow-x: auto;
-  padding: 2px 2px 8px;
-  scroll-snap-type: x proximity;
-}
-
-.tabs button {
-  white-space: nowrap;
-  min-height: 50px;
-  flex: 0 0 auto;
-  scroll-snap-align: start;
-}
-
-.tabs button.active {
-  background: var(--primary);
-  color: #fff;
 }
 
 .guide-grid {
@@ -445,6 +514,10 @@ textarea {
     width: min(100%, 760px);
   }
 
+  .location-tiles {
+    grid-template-columns: 1fr 1fr;
+  }
+
   .guide-grid {
     grid-template-columns: 1fr 1fr;
   }
@@ -457,7 +530,7 @@ textarea {
 @media print {
   .topbar,
   .language-gate,
-  .tabs,
+  .location-picker,
   .tools-section,
   .admin-panel,
   .toast {

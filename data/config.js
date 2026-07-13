@@ -1,4 +1,5 @@
 window.ARRIVAL_DEFAULT_CONFIG = {
+  version: 2,
   languages: {
     pl: "Polski",
     uk: "Українська",
@@ -11,11 +12,15 @@ window.ARRIVAL_DEFAULT_CONFIG = {
     pl: {
       moduleLabel: "Moduł informacyjny",
       title: "Przyjazd do pracy",
+      chooseLanguage: "Wybierz język",
+      chooseLocation: "Wybierz lokalizację",
+      chooseLocationText: "Kliknij kafelek miejsca, do którego jedziesz. Strona pokaże instrukcję tylko dla tej lokalizacji.",
+      selectedLocation: "Wybrana lokalizacja",
+      showInstruction: "Pokaż instrukcję",
       employee: "Pracownik",
       arrivalDate: "Data przyjazdu",
       location: "Lokalizacja",
       department: "Dział",
-      chooseLanguage: "Wybierz język",
       address: "Adres",
       route: "Dojazd",
       workType: "Rodzaj pracy",
@@ -52,11 +57,15 @@ window.ARRIVAL_DEFAULT_CONFIG = {
     uk: {
       moduleLabel: "Інформаційний модуль",
       title: "Приїзд на роботу",
+      chooseLanguage: "Оберіть мову",
+      chooseLocation: "Оберіть локацію",
+      chooseLocationText: "Натисніть на місце, куди ви їдете. Сторінка покаже інструкцію саме для цієї локації.",
+      selectedLocation: "Обрана локація",
+      showInstruction: "Показати інструкцію",
       employee: "Працівник",
       arrivalDate: "Дата приїзду",
       location: "Локація",
       department: "Відділ",
-      chooseLanguage: "Оберіть мову",
       address: "Адреса",
       route: "Як доїхати",
       workType: "Тип роботи",
@@ -93,11 +102,15 @@ window.ARRIVAL_DEFAULT_CONFIG = {
     ru: {
       moduleLabel: "Информационный модуль",
       title: "Приезд на работу",
+      chooseLanguage: "Выберите язык",
+      chooseLocation: "Выберите локацию",
+      chooseLocationText: "Нажмите на место, куда вы едете. Страница покажет инструкцию именно для этой локации.",
+      selectedLocation: "Выбранная локация",
+      showInstruction: "Показать инструкцию",
       employee: "Работник",
       arrivalDate: "Дата приезда",
       location: "Локация",
       department: "Отдел",
-      chooseLanguage: "Выберите язык",
       address: "Адрес",
       route: "Как доехать",
       workType: "Тип работы",
@@ -134,11 +147,15 @@ window.ARRIVAL_DEFAULT_CONFIG = {
     en: {
       moduleLabel: "Information module",
       title: "Arrival for work",
+      chooseLanguage: "Choose language",
+      chooseLocation: "Choose location",
+      chooseLocationText: "Tap the location you are travelling to. The page will show instructions for that place.",
+      selectedLocation: "Selected location",
+      showInstruction: "Show instruction",
       employee: "Employee",
       arrivalDate: "Arrival date",
       location: "Location",
       department: "Department",
-      chooseLanguage: "Choose language",
       address: "Address",
       route: "Travel route",
       workType: "Type of work",
@@ -175,11 +192,15 @@ window.ARRIVAL_DEFAULT_CONFIG = {
     ka: {
       moduleLabel: "საინფორმაციო მოდული",
       title: "სამუშაოზე ჩამოსვლა",
+      chooseLanguage: "აირჩიეთ ენა",
+      chooseLocation: "აირჩიეთ ლოკაცია",
+      chooseLocationText: "დააჭირეთ იმ ადგილს, სადაც მიდიხართ. გვერდი გაჩვენებთ ინსტრუქციას ამ ლოკაციისთვის.",
+      selectedLocation: "არჩეული ლოკაცია",
+      showInstruction: "ინსტრუქციის ჩვენება",
       employee: "თანამშრომელი",
       arrivalDate: "ჩამოსვლის თარიღი",
       location: "ლოკაცია",
       department: "განყოფილება",
-      chooseLanguage: "აირჩიეთ ენა",
       address: "მისამართი",
       route: "როგორ მივიდეთ",
       workType: "სამუშაოს ტიპი",
@@ -216,11 +237,15 @@ window.ARRIVAL_DEFAULT_CONFIG = {
     az: {
       moduleLabel: "Məlumat modulu",
       title: "İşə gəliş",
+      chooseLanguage: "Dil seçin",
+      chooseLocation: "Məkanı seçin",
+      chooseLocationText: "Getdiyiniz məkanı basın. Səhifə həmin yer üçün təlimatı göstərəcək.",
+      selectedLocation: "Seçilmiş məkan",
+      showInstruction: "Təlimatı göstər",
       employee: "İşçi",
       arrivalDate: "Gəliş tarixi",
       location: "Məkan",
       department: "Şöbə",
-      chooseLanguage: "Dil seçin",
       address: "Ünvan",
       route: "Necə gəlmək",
       workType: "İş növü",
@@ -256,56 +281,136 @@ window.ARRIVAL_DEFAULT_CONFIG = {
     }
   },
   packs: {
-    ukraine: ["paszport zagraniczny", "ubezpieczenie minimum 10 dni", "dokument wjazdowy", "pieniądze", "pościel", "podstawowe naczynia"],
-    poland: ["paszport lub karta pobytu", "pieniądze", "pościel", "naczynia"],
-    caucasus: ["paszport", "wiza", "ubezpieczenie", "pieniądze", "pościel", "naczynia"]
+    ukraine: {
+      pl: ["paszport zagraniczny", "ubezpieczenie minimum 10 dni", "dokument wjazdowy", "pieniądze", "pościel", "podstawowe naczynia"],
+      uk: ["закордонний паспорт", "страхування мінімум на 10 днів", "документ для в'їзду", "гроші", "постільна білизна", "основний посуд"],
+      ru: ["заграничный паспорт", "страховка минимум на 10 дней", "документ для въезда", "деньги", "постельное белье", "основная посуда"],
+      en: ["international passport", "insurance for at least 10 days", "entry document", "money", "bedding", "basic dishes"],
+      ka: ["საზღვარგარეთის პასპორტი", "დაზღვევა მინიმუმ 10 დღით", "შესვლის დოკუმენტი", "ფული", "თეთრეული", "ძირითადი ჭურჭელი"],
+      az: ["xarici pasport", "minimum 10 günlük sığorta", "giriş sənədi", "pul", "yataq dəsti", "əsas qab-qacaq"]
+    },
+    poland: {
+      pl: ["paszport lub karta pobytu", "pieniądze", "pościel", "naczynia"],
+      uk: ["паспорт або карта побиту", "гроші", "постільна білизна", "посуд"],
+      ru: ["паспорт или карта побыту", "деньги", "постельное белье", "посуда"],
+      en: ["passport or residence card", "money", "bedding", "dishes"],
+      ka: ["პასპორტი ან ბინადრობის ბარათი", "ფული", "თეთრეული", "ჭურჭელი"],
+      az: ["pasport və ya yaşayış kartı", "pul", "yataq dəsti", "qab-qacaq"]
+    },
+    caucasus: {
+      pl: ["paszport", "wiza", "ubezpieczenie", "pieniądze", "pościel", "naczynia"],
+      uk: ["паспорт", "віза", "страхування", "гроші", "постільна білизна", "посуд"],
+      ru: ["паспорт", "виза", "страховка", "деньги", "постельное белье", "посуда"],
+      en: ["passport", "visa", "insurance", "money", "bedding", "dishes"],
+      ka: ["პასპორტი", "ვიზა", "დაზღვევა", "ფული", "თეთრეული", "ჭურჭელი"],
+      az: ["pasport", "viza", "sığorta", "pul", "yataq dəsti", "qab-qacaq"]
+    }
+  },
+  departments: {
+    production: { pl: "Produkcja", uk: "Виробництво", ru: "Производство", en: "Production", ka: "წარმოება", az: "İstehsal" },
+    warehouse: { pl: "Magazyn", uk: "Склад", ru: "Склад", en: "Warehouse", ka: "საწყობი", az: "Anbar" },
+    greenhouse: { pl: "Szklarnia", uk: "Теплиця", ru: "Теплица", en: "Greenhouse", ka: "სათბური", az: "İstixana" }
   },
   locations: {
     siechnice: {
       name: "Siechnice",
-      accent: "#1f7a8c",
+      short: "ul. Opolska 30",
+      accent: "#d71920",
       address: ["ul. Opolska 30", "55-011 Siechnice", "Polska"],
       mapQuery: "ul. Opolska 30, 55-011 Siechnice, Polska",
       phone: "+48506845667",
       whatsapp: "+48506845667",
-      route: ["przewoźnik", "autobus / pociąg do Wrocławia", "następnie taxi do ul. Opolska 30"],
+      route: {
+        pl: ["Najprościej: przyjazd przewoźnikiem bezpośrednio pod adres ul. Opolska 30.", "Jeżeli jedziesz samodzielnie, dojedź pociągiem lub autobusem do Wrocławia.", "Z Wrocławia dojedź pociągiem lub autobusem w kierunku Siechnic, a ostatni odcinek pokonaj taxi pod ul. Opolską 30.", "Przed wyjazdem zapisz adres w telefonie i wyślij koordynatorowi godzinę przyjazdu.", "Jeżeli nie możesz znaleźć adresu, zadzwoń do koordynatora i wyślij lokalizację z telefonu."],
+        uk: ["Найпростіше: приїхати перевізником прямо на адресу ul. Opolska 30.", "Якщо їдете самостійно, доїдьте поїздом або автобусом до Вроцлава.", "З Вроцлава їдьте поїздом або автобусом у напрямку Siechnice, останній відрізок краще проїхати таксі до ul. Opolska 30.", "Перед виїздом збережіть адресу в телефоні та повідомте координатору час прибуття.", "Якщо не можете знайти адресу, зателефонуйте координатору і надішліть свою геолокацію."],
+        ru: ["Проще всего: приехать перевозчиком прямо по адресу ul. Opolska 30.", "Если едете самостоятельно, доедьте поездом или автобусом до Вроцлава.", "Из Вроцлава езжайте поездом или автобусом в сторону Siechnice, последний участок лучше проехать на такси до ul. Opolska 30.", "Перед выездом сохраните адрес в телефоне и сообщите координатору время приезда.", "Если не можете найти адрес, позвоните координатору и отправьте геолокацию."],
+        en: ["The easiest option is to arrive with the carrier directly to ul. Opolska 30.", "If travelling on your own, first get to Wrocław by train or bus.", "From Wrocław, travel towards Siechnice by train or bus, then take a taxi for the final part to ul. Opolska 30.", "Before leaving, save the address on your phone and tell the coordinator your arrival time.", "If you cannot find the address, call the coordinator and send your phone location."],
+        ka: ["ყველაზე მარტივია გადამყვანით პირდაპირ მისამართზე ul. Opolska 30 მისვლა.", "თუ დამოუკიდებლად მოდიხართ, ჯერ მატარებლით ან ავტობუსით ჩადით ვროცლავში.", "ვროცლავიდან იმგზავრეთ Siechnice-ის მიმართულებით და ბოლო მონაკვეთი ტაქსით გაიარეთ ul. Opolska 30-მდე.", "გამგზავრებამდე შეინახეთ მისამართი ტელეფონში და კოორდინატორს აცნობეთ ჩამოსვლის დრო.", "თუ მისამართს ვერ პოულობთ, დაურეკეთ კოორდინატორს და გაუგზავნეთ თქვენი ლოკაცია."],
+        az: ["Ən rahat yol: daşıyıcı ilə birbaşa ul. Opolska 30 ünvanına gəlməkdir.", "Özünüz gəlirsinizsə, əvvəlcə qatar və ya avtobusla Wrocław şəhərinə gəlin.", "Wrocławdan Siechnice istiqamətinə qatar və ya avtobusla gedin, son hissəni taksi ilə ul. Opolska 30 ünvanına gedin.", "Yola çıxmazdan əvvəl ünvanı telefonda saxlayın və gəliş vaxtını koordinatora bildirin.", "Ünvanı tapa bilmirsinizsə, koordinatora zəng edin və telefon lokasiyanızı göndərin."]
+      },
       work: {
-        production: ["pielęgnacja roślin", "zbiór", "usuwanie liści", "opuszczanie roślin", "likwidacja szklarni", "mycie szklarni", "przygotowanie do nowego sezonu", "inne prace pomocnicze"],
-        warehouse: ["pakowanie", "sortowanie", "kompletacja", "przygotowanie zamówień", "inne prace magazynowe"]
+        production: { pl: ["pielęgnacja roślin", "zbiór", "usuwanie liści", "opuszczanie roślin", "likwidacja szklarni", "mycie szklarni", "przygotowanie do nowego sezonu", "inne prace pomocnicze"], en: ["plant care", "harvesting", "leaf removal", "lowering plants", "greenhouse liquidation", "greenhouse washing", "new season preparation", "other support tasks"] },
+        warehouse: { pl: ["pakowanie", "sortowanie", "kompletacja", "przygotowanie zamówień", "inne prace magazynowe"], en: ["packing", "sorting", "order picking", "order preparation", "other warehouse tasks"] }
       }
     },
     ryczywol: {
       name: "Ryczywół",
-      accent: "#2f855a",
-      address: ["Wilczkowice Górne 40", "26-900 Kozienice"],
+      short: "Ryczywół Szklarnia",
+      accent: "#238636",
+      address: ["Wilczkowice Górne 40", "26-900 Kozienice", "Polska"],
       mapQuery: "Wilczkowice Górne 40, 26-900 Kozienice, Polska",
       phone: "+48536110591",
       whatsapp: "+48536110591",
-      route: ["Warszawa Zachodnia", "autobus do Kozienic", "przystanek Ryczywół Szklarnia"],
-      note: "Po przyjeździe pracownik musi zadzwonić do administratora: Ludmiła, +48 536 110 591.",
+      note: {
+        pl: "Po przyjeździe pracownik musi zadzwonić do administratora: Ludmiła, +48 536 110 591.",
+        uk: "Після приїзду працівник має зателефонувати адміністратору: Людмила, +48 536 110 591.",
+        ru: "После приезда работник должен позвонить администратору: Людмила, +48 536 110 591.",
+        en: "After arrival, the employee must call the administrator: Ludmiła, +48 536 110 591.",
+        ka: "ჩამოსვლის შემდეგ თანამშრომელმა უნდა დაურეკოს ადმინისტრატორს: Ludmiła, +48 536 110 591.",
+        az: "Gəldikdən sonra işçi administratora zəng etməlidir: Ludmiła, +48 536 110 591."
+      },
+      route: {
+        pl: ["Dojedź do Warszawy Zachodniej.", "Na dworcu Warszawa Zachodnia znajdź autobus w kierunku Kozienic.", "Wysiądź na przystanku Ryczywół Szklarnia.", "Po wyjściu z autobusu zadzwoń do administratora albo koordynatora.", "Adres zakwaterowania: Wilczkowice Górne 40, 26-900 Kozienice."],
+        uk: ["Доїдьте до Warszawa Zachodnia.", "На станції Warszawa Zachodnia знайдіть автобус у напрямку Kozienice.", "Вийдіть на зупинці Ryczywół Szklarnia.", "Після виходу з автобуса зателефонуйте адміністратору або координатору.", "Адреса проживання: Wilczkowice Górne 40, 26-900 Kozienice."],
+        ru: ["Доедьте до Warszawa Zachodnia.", "На станции Warszawa Zachodnia найдите автобус в направлении Kozienice.", "Выйдите на остановке Ryczywół Szklarnia.", "После выхода из автобуса позвоните администратору или координатору.", "Адрес проживания: Wilczkowice Górne 40, 26-900 Kozienice."],
+        en: ["Travel to Warszawa Zachodnia.", "At Warszawa Zachodnia, find a bus towards Kozienice.", "Get off at the Ryczywół Szklarnia stop.", "After leaving the bus, call the administrator or coordinator.", "Accommodation address: Wilczkowice Górne 40, 26-900 Kozienice."],
+        ka: ["ჩადით Warszawa Zachodnia-ზე.", "Warszawa Zachodnia-ზე მოძებნეთ ავტობუსი Kozienice-ის მიმართულებით.", "ჩამოდით გაჩერებაზე Ryczywół Szklarnia.", "ავტობუსიდან ჩამოსვლის შემდეგ დაურეკეთ ადმინისტრატორს ან კოორდინატორს.", "საცხოვრებლის მისამართი: Wilczkowice Górne 40, 26-900 Kozienice."],
+        az: ["Warszawa Zachodnia stansiyasına gəlin.", "Warszawa Zachodnia-da Kozienice istiqamətinə gedən avtobusu tapın.", "Ryczywół Szklarnia dayanacağında düşün.", "Avtobusdan düşdükdən sonra administratora və ya koordinatora zəng edin.", "Yaşayış ünvanı: Wilczkowice Górne 40, 26-900 Kozienice."]
+      },
       coordinators: ["Maksym +48 506 845 637", "Mykhailo +48 785 580 050"],
-      work: { greenhouse: ["szklarnia"] }
+      work: { greenhouse: { pl: ["szklarnia"], en: ["greenhouse"] } }
     },
     bogatynia: {
       name: "Bogatynia",
-      accent: "#2563eb",
-      address: ["Niedów 9", "59-900 Niedów"],
+      short: "Niedów 9",
+      accent: "#2364d2",
+      address: ["Niedów 9", "59-900 Niedów", "Polska"],
       mapQuery: "Niedów 9, 59-900 Niedów, Polska",
       phone: "+48609809601",
       whatsapp: "+48609809601",
-      route: ["kontakt z koordynatorem przed przyjazdem", "dojazd zgodnie z ustaleniami rekrutacji"],
-      note: "Po przyjeździe pracownik ma obowiązkowo zadzwonić: Nataliia Berladyn, +48 609 809 601.",
-      work: { production: ["produkcja", "szklarnia", "prace pomocnicze"] }
+      note: {
+        pl: "Po przyjeździe pracownik ma obowiązkowo zadzwonić: Nataliia Berladyn, +48 609 809 601.",
+        uk: "Після приїзду працівник обов'язково має зателефонувати: Nataliia Berladyn, +48 609 809 601.",
+        ru: "После приезда работник обязательно должен позвонить: Nataliia Berladyn, +48 609 809 601.",
+        en: "After arrival, the employee must call: Nataliia Berladyn, +48 609 809 601.",
+        ka: "ჩამოსვლის შემდეგ თანამშრომელმა აუცილებლად უნდა დარეკოს: Nataliia Berladyn, +48 609 809 601.",
+        az: "Gəldikdən sonra işçi mütləq zəng etməlidir: Nataliia Berladyn, +48 609 809 601."
+      },
+      route: {
+        pl: ["Dojedź do Zgorzelca, Bogatyni albo najbliższego punktu ustalonego z rekrutacją.", "Przed wyjazdem potwierdź z koordynatorem, gdzie dokładnie masz wysiąść.", "Adres zakwaterowania to Niedów 9, 59-900 Niedów.", "Po dotarciu w okolice Bogatyni/Niedowa zadzwoń do Natalii Berladyn.", "Jeżeli jedziesz taxi, pokaż kierowcy adres Niedów 9."],
+        uk: ["Доїдьте до Zgorzelec, Bogatynia або найближчого пункту, узгодженого з рекрутацією.", "Перед виїздом підтвердьте з координатором, де саме вам вийти.", "Адреса проживання: Niedów 9, 59-900 Niedów.", "Після прибуття в район Bogatynia/Niedów зателефонуйте Natalii Berladyn.", "Якщо їдете таксі, покажіть водію адресу Niedów 9."],
+        ru: ["Доедьте до Zgorzelec, Bogatynia или ближайшего пункта, согласованного с рекрутингом.", "Перед выездом подтвердите с координатором, где именно вам выйти.", "Адрес проживания: Niedów 9, 59-900 Niedów.", "После прибытия в район Bogatynia/Niedów позвоните Natalii Berladyn.", "Если едете на такси, покажите водителю адрес Niedów 9."],
+        en: ["Travel to Zgorzelec, Bogatynia or the nearest meeting point agreed with recruitment.", "Before departure, confirm with the coordinator exactly where you should get off.", "Accommodation address: Niedów 9, 59-900 Niedów.", "After reaching the Bogatynia/Niedów area, call Nataliia Berladyn.", "If taking a taxi, show the driver the address Niedów 9."],
+        ka: ["ჩადით Zgorzelec-ში, Bogatynia-ში ან რეკრუტერთან შეთანხმებულ უახლოეს პუნქტში.", "გამგზავრებამდე კოორდინატორთან დააზუსტეთ, სად უნდა ჩამოხვიდეთ.", "საცხოვრებლის მისამართი: Niedów 9, 59-900 Niedów.", "Bogatynia/Niedów-ის მიდამოში მისვლის შემდეგ დაურეკეთ Nataliia Berladyn-ს.", "თუ ტაქსით მიდიხართ, მძღოლს აჩვენეთ მისამართი Niedów 9."],
+        az: ["Zgorzelec, Bogatynia və ya rekrutasiya ilə razılaşdırılmış ən yaxın nöqtəyə gəlin.", "Yola çıxmazdan əvvəl harada düşəcəyinizi koordinatorla dəqiqləşdirin.", "Yaşayış ünvanı: Niedów 9, 59-900 Niedów.", "Bogatynia/Niedów ərazisinə çatdıqdan sonra Nataliia Berladyn-ə zəng edin.", "Taksi ilə gedirsinizsə, sürücüyə Niedów 9 ünvanını göstərin."]
+      },
+      work: { production: { pl: ["produkcja", "szklarnia", "prace pomocnicze"], en: ["production", "greenhouse", "support tasks"] } }
     },
     zgorzelec: {
       name: "Zgorzelec",
+      short: "Citronex, ul. Bohaterów II Armii Wojska Polskiego 64",
       accent: "#7c3aed",
-      address: ["Citronex Sp. z o.o.", "ul. Bohaterów II Armii Wojska Polskiego 64", "59-900 Zgorzelec"],
+      address: ["Citronex Sp. z o.o.", "ul. Bohaterów II Armii Wojska Polskiego 64", "59-900 Zgorzelec", "Polska"],
       mapQuery: "Citronex Sp. z o.o., ul. Bohaterów II Armii Wojska Polskiego 64, 59-900 Zgorzelec, Polska",
       phone: "+48797684159",
       whatsapp: "+48797684159",
-      route: ["zgłoś się do podpisania dokumentów", "kontakt: Anastasiia Derepa, +48 797 684 159"],
-      work: { warehouse: ["magazyn", "logistyka", "operator UDT", "pakowanie", "sortowanie"] }
+      note: {
+        pl: "Po przyjeździe należy zgłosić się do podpisania dokumentów. Kontakt: Anastasiia Derepa, +48 797 684 159.",
+        uk: "Після приїзду потрібно з'явитися для підписання документів. Контакт: Anastasiia Derepa, +48 797 684 159.",
+        ru: "После приезда нужно явиться для подписания документов. Контакт: Anastasiia Derepa, +48 797 684 159.",
+        en: "After arrival, report for document signing. Contact: Anastasiia Derepa, +48 797 684 159.",
+        ka: "ჩამოსვლის შემდეგ უნდა გამოცხადდეთ დოკუმენტების ხელმოსაწერად. კონტაქტი: Anastasiia Derepa, +48 797 684 159.",
+        az: "Gəldikdən sonra sənədləri imzalamaq üçün müraciət edin. Əlaqə: Anastasiia Derepa, +48 797 684 159."
+      },
+      route: {
+        pl: ["Dojedź pociągiem lub autobusem do Zgorzelca.", "Jako cel wpisz: Citronex Sp. z o.o., ul. Bohaterów II Armii Wojska Polskiego 64.", "Z dworca lub przystanku w Zgorzelcu dojedź taxi albo lokalnym transportem pod adres firmy.", "Po przyjeździe zgłoś się do podpisania dokumentów.", "Jeżeli spóźniasz się albo nie możesz znaleźć wejścia, zadzwoń do Anastasii Derepy."],
+        uk: ["Доїдьте поїздом або автобусом до Zgorzelec.", "Введіть ціль: Citronex Sp. z o.o., ul. Bohaterów II Armii Wojska Polskiego 64.", "З вокзалу або зупинки в Zgorzelec доїдьте таксі або місцевим транспортом до адреси фірми.", "Після приїзду з'явіться для підписання документів.", "Якщо запізнюєтесь або не можете знайти вхід, зателефонуйте Anastasii Derepa."],
+        ru: ["Доедьте поездом или автобусом до Zgorzelec.", "Укажите цель: Citronex Sp. z o.o., ul. Bohaterów II Armii Wojska Polskiego 64.", "От вокзала или остановки в Zgorzelec доедьте на такси или местным транспортом до адреса фирмы.", "После приезда явитесь для подписания документов.", "Если опаздываете или не можете найти вход, позвоните Anastasii Derepa."],
+        en: ["Travel by train or bus to Zgorzelec.", "Use this destination: Citronex Sp. z o.o., ul. Bohaterów II Armii Wojska Polskiego 64.", "From the station or stop in Zgorzelec, take a taxi or local transport to the company address.", "After arrival, report for document signing.", "If you are late or cannot find the entrance, call Anastasiia Derepa."],
+        ka: ["მატარებლით ან ავტობუსით ჩადით Zgorzelec-ში.", "მიზნად მიუთითეთ: Citronex Sp. z o.o., ul. Bohaterów II Armii Wojska Polskiego 64.", "Zgorzelec-ის სადგურიდან ან გაჩერებიდან ტაქსით ან ადგილობრივი ტრანსპორტით მიდით კომპანიის მისამართზე.", "ჩამოსვლის შემდეგ გამოცხადდით დოკუმენტების ხელმოსაწერად.", "თუ აგვიანებთ ან შესასვლელს ვერ პოულობთ, დაურეკეთ Anastasiia Derepa-ს."],
+        az: ["Qatar və ya avtobusla Zgorzelec şəhərinə gəlin.", "Məqsəd kimi yazın: Citronex Sp. z o.o., ul. Bohaterów II Armii Wojska Polskiego 64.", "Zgorzelec stansiyasından və ya dayanacağından şirkət ünvanına taksi və ya yerli nəqliyyatla gedin.", "Gəldikdən sonra sənədləri imzalamaq üçün müraciət edin.", "Gecikirsinizsə və ya girişi tapa bilmirsinizsə, Anastasiia Derepa-ya zəng edin."]
+      },
+      work: { warehouse: { pl: ["magazyn", "logistyka", "operator UDT", "pakowanie", "sortowanie"], en: ["warehouse", "logistics", "UDT operator", "packing", "sorting"] } }
     }
   },
   contacts: {
