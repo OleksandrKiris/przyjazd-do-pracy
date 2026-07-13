@@ -1826,3 +1826,237 @@ main {
     font-size: 22px;
   }
 }
+
+/* v30: refine existing UI only: cleaner color, better spacing, stronger readability. */
+:root {
+  --page-bg: #f5f7fb;
+  --ink: #101828;
+  --text: #243044;
+  --muted: #667085;
+  --card-bg: #ffffff;
+  --card-border: #e3e9f2;
+  --brand-red: #d71920;
+  --brand-red-dark: #8f1119;
+  --map-blue: #2563eb;
+  --help-green: #16a34a;
+  --soft-red: #fff3f4;
+  --soft-blue: #eff6ff;
+  --soft-green: #ecfdf3;
+  --surface-shadow: 0 6px 18px rgba(16, 24, 40, .065);
+}
+
+body {
+  background:
+    radial-gradient(circle at 50% -80px, rgba(215, 25, 32, .10), transparent 235px),
+    linear-gradient(180deg, #ffffff 0, var(--page-bg) 210px),
+    var(--page-bg);
+  color: var(--text);
+}
+
+.topbar {
+  background: rgba(255, 255, 255, .98);
+  border-bottom-color: #edf0f5;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, .06);
+}
+
+.brand-logo-lockup {
+  border-color: #f7cdd1;
+  background: linear-gradient(180deg, #ffffff 0%, #fff8f9 100%);
+}
+
+.brand-logo-lockup strong,
+.topbar h1 {
+  color: var(--ink);
+}
+
+.top-language-switcher select {
+  border-color: var(--card-border);
+  background: #ffffff;
+  color: var(--ink);
+}
+
+.top-language-switcher select:focus {
+  outline: 3px solid rgba(37, 99, 235, .18);
+  border-color: var(--map-blue);
+}
+
+.location-picker,
+.mobile-candidate-hero,
+.panel,
+.contacts-section {
+  border-color: var(--card-border);
+  background: var(--card-bg);
+  box-shadow: var(--surface-shadow);
+}
+
+.location-picker {
+  border-top: 1px solid var(--card-border);
+}
+
+.section-head h2,
+.panel h2,
+.contacts-section h2 {
+  color: var(--ink);
+  font-weight: 900;
+}
+
+.section-head p,
+.mobile-candidate-hero p,
+.panel p,
+.panel li,
+.route-steps p {
+  color: var(--muted);
+}
+
+.location-tile {
+  border-color: var(--card-border);
+  background: linear-gradient(180deg, #ffffff 0%, #fbfcfe 100%);
+  transition: transform .12s ease, border-color .12s ease, background .12s ease;
+}
+
+.location-tile:active {
+  transform: scale(.99);
+}
+
+.location-tile span {
+  color: var(--ink);
+  font-weight: 950;
+}
+
+.location-tile small {
+  color: var(--muted);
+}
+
+.location-tile.active {
+  background: linear-gradient(180deg, #fff8f8 0%, #fff1f2 100%);
+  border-color: #fecdd3;
+  outline-color: rgba(215, 25, 32, .20);
+}
+
+.mobile-candidate-hero {
+  border-left-color: var(--brand-red);
+  background:
+    linear-gradient(180deg, #ffffff 0%, #fffafb 100%);
+}
+
+.mobile-hero-label,
+.contact-role {
+  background: var(--soft-red);
+  color: var(--brand-red-dark);
+  border-color: #fecdd3;
+}
+
+.mobile-hero-contact {
+  background: #f8fafc;
+  border-color: var(--card-border);
+}
+
+.mobile-hero-contact strong {
+  color: var(--ink);
+}
+
+.mobile-hero-actions button,
+.candidate-sticky-actions button {
+  box-shadow: none;
+  font-weight: 950;
+}
+
+.mobile-hero-actions button[data-help-action="maps"],
+.candidate-sticky-actions button[data-help-action="maps"] {
+  background: var(--map-blue);
+  border-color: var(--map-blue);
+}
+
+.mobile-hero-actions button[data-help-action="call"],
+.candidate-sticky-actions button[data-help-action="call"] {
+  background: var(--brand-red);
+  border-color: var(--brand-red);
+}
+
+.mobile-hero-actions button[data-help-action="whatsapp"],
+.candidate-sticky-actions button[data-help-action="whatsapp"] {
+  background: var(--help-green);
+  border-color: var(--help-green);
+}
+
+.panel {
+  border-left: 0;
+}
+
+.panel::before,
+.contacts-section::before {
+  width: 4px;
+  background: var(--brand-red);
+}
+
+.route-steps li {
+  background: #fbfcfe;
+  border-color: var(--card-border);
+}
+
+.route-steps span {
+  background: var(--brand-red);
+}
+
+.contact-card {
+  background: #fbfcfe;
+  border-color: var(--card-border);
+  border-left-color: var(--brand-red);
+}
+
+.contact-card h3 {
+  color: var(--ink);
+}
+
+.contact-card .contact-phone,
+.contact-card .contact-whatsapp {
+  font-weight: 950;
+}
+
+.contact-card .contact-phone {
+  background: var(--soft-red);
+  color: var(--brand-red-dark);
+  border-color: #fecdd3;
+}
+
+.contact-card .contact-whatsapp {
+  background: var(--soft-green);
+  color: #047335;
+  border-color: #bbf7d0;
+}
+
+.candidate-sticky-actions {
+  background: rgba(255, 255, 255, .985);
+  border-top-color: #e3e9f2;
+  box-shadow: 0 -8px 22px rgba(16, 24, 40, .12);
+}
+
+@media (max-width: 430px) {
+  .topbar {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  main {
+    gap: 8px;
+  }
+
+  .location-picker,
+  .mobile-candidate-hero,
+  .panel,
+  .contacts-section {
+    box-shadow: 0 4px 14px rgba(16, 24, 40, .055);
+  }
+
+  .section-head {
+    margin-bottom: 8px;
+  }
+
+  .location-tile {
+    min-height: 72px;
+  }
+
+  .mobile-candidate-hero {
+    padding: 12px;
+  }
+}

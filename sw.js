@@ -1,4 +1,4 @@
-const CACHE_NAME = "arrival-guide-v29-phone-fit";
+const CACHE_NAME = "arrival-guide-v30-style-refine";
 const ASSETS = [
   "./",
   "./index.html",
