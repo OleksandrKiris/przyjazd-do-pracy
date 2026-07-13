@@ -66,9 +66,30 @@
     if (title) title.textContent = "Kontakt w razie problemu";
   }
 
+  function contactTitleForCurrentLocation() {
+    const place = currentPlace();
+    if (!place) return "Siechnice";
+    if (place.name === "Bogatynia" || place.name === "Zgorzelec") return "Bogatynia / Zgorzelec";
+    return place.name;
+  }
+
+  function filterContacts() {
+    const section = $("contactsPage");
+    if (!section) return;
+    const wantedTitle = contactTitleForCurrentLocation();
+    Array.from(section.children).forEach((node) => {
+      if (node.tagName !== "H3") return;
+      const grid = node.nextElementSibling;
+      const keep = node.textContent.trim() === wantedTitle;
+      node.hidden = !keep;
+      if (grid && grid.classList.contains("contact-grid")) grid.hidden = !keep;
+    });
+  }
+
   function refresh() {
     renderHelp();
     updateContactTitle();
+    filterContacts();
   }
 
   document.addEventListener("click", (event) => {
