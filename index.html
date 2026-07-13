@@ -9,19 +9,23 @@
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <header class="topbar">
-      <div>
-        <p class="eyebrow" data-i18n="moduleLabel">Modul informacyjny</p>
-        <h1 data-i18n="title">Przyjazd do pracy</h1>
-      </div>
-      <div class="top-actions">
-        <select id="languageSelect" aria-label="Jezyk"></select>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand-head">
+          <p class="brand-kicker" data-i18n="moduleLabel">Modul informacyjny</p>
+          <h1 data-i18n="title">Przyjazd do pracy</h1>
+        </div>
         <button id="adminToggle" class="icon-button" title="Panel admina" aria-label="Panel admina">⚙</button>
-      </div>
-    </header>
+      </header>
 
-    <main>
-      <section id="languageGate" class="language-gate"></section>
+      <main>
+      <section class="setup-card">
+        <h2 data-i18n="chooseLanguage">Wybierz język</h2>
+        <div class="language-select-line">
+          <select id="languageSelect" aria-label="Jezyk"></select>
+        </div>
+        <div id="languageGate" class="language-gate"></div>
+      </section>
 
       <section class="summary-band">
         <div class="summary-item">
@@ -60,7 +64,8 @@
         </div>
         <img id="qrImage" class="qr-canvas" alt="QR code" hidden>
       </section>
-    </main>
+      </main>
+    </div>
 
     <aside id="adminPanel" class="admin-panel" aria-hidden="true">
       <div class="admin-header">
