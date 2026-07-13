@@ -506,3 +506,303 @@ body {
     border-radius: 18px 18px 0 0;
   }
 }
+
+/* Mobile-first refinement for high-volume candidate use. */
+html {
+  scroll-padding-top: 12px;
+}
+
+main {
+  padding-bottom: 104px;
+}
+
+.topbar {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.setup-card,
+.location-picker,
+.mobile-candidate-hero,
+.help-section,
+.panel,
+.contacts-section {
+  scroll-margin-top: 12px;
+}
+
+.section-head p {
+  max-width: 62ch;
+}
+
+.location-tile,
+.language-gate button,
+.help-actions button,
+.mobile-hero-actions button,
+.candidate-sticky-actions button,
+.contact-actions a,
+.route-links a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.location-tile {
+  isolation: isolate;
+  border: 1px solid rgba(255, 255, 255, .38);
+}
+
+.location-tile span,
+.location-tile small,
+.location-tile strong {
+  overflow-wrap: anywhere;
+}
+
+.location-tile.active {
+  outline: 3px solid rgba(255, 216, 77, .82);
+  outline-offset: 2px;
+}
+
+.mobile-hero-actions button,
+.help-actions button,
+.candidate-sticky-actions button {
+  white-space: nowrap;
+}
+
+.panel p,
+.panel li,
+.route-steps p,
+.contacts-section p {
+  line-height: 1.42;
+}
+
+.route-steps li {
+  background: #ffffff;
+  box-shadow: 0 8px 18px rgba(17, 24, 39, .06);
+}
+
+.route-steps span {
+  box-shadow: 0 8px 16px rgba(201, 22, 29, .20);
+}
+
+.contact-card {
+  border-radius: 14px;
+  box-shadow: 0 10px 22px rgba(17, 24, 39, .08);
+}
+
+.contact-actions a {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 520px) {
+  body {
+    font-size: 17px;
+  }
+
+  main {
+    padding-inline: 10px;
+  }
+
+  .app {
+    width: 100%;
+    box-shadow: none;
+  }
+
+  .topbar {
+    padding: 14px 12px 13px;
+    border-radius: 0 0 14px 14px;
+  }
+
+  .brand-kicker {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+
+  .brand-head h1 {
+    font-size: 25px;
+    line-height: 1.05;
+  }
+
+  .setup-card {
+    margin-top: 8px;
+  }
+
+  .setup-card,
+  .panel,
+  .contacts-section,
+  .help-section {
+    box-shadow: 0 8px 18px rgba(17, 24, 39, .08);
+  }
+
+  .language-gate {
+    gap: 6px;
+  }
+
+  .language-gate button {
+    min-height: 46px;
+    border-radius: 10px;
+  }
+
+  .language-gate button small {
+    font-size: 14px;
+    padding: 8px 0;
+  }
+
+  .section-head {
+    margin-bottom: 8px;
+  }
+
+  .section-head h2 {
+    font-size: 20px;
+  }
+
+  .section-head p {
+    font-size: 14px;
+    line-height: 1.35;
+  }
+
+  .location-tiles {
+    gap: 7px;
+  }
+
+  .location-tile {
+    min-height: 104px;
+    padding: 12px 10px;
+    border-radius: 13px;
+  }
+
+  .location-tile span {
+    font-size: clamp(18px, 5.6vw, 21px);
+    line-height: 1.05;
+  }
+
+  .location-tile small {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .location-tile strong {
+    width: 100%;
+    text-align: center;
+    font-size: 9px;
+    padding: 5px 6px;
+  }
+
+  .mobile-candidate-hero {
+    padding: 14px;
+    gap: 9px;
+    border-radius: 14px;
+  }
+
+  .mobile-candidate-hero h2 {
+    font-size: clamp(25px, 8vw, 30px);
+  }
+
+  .mobile-candidate-hero p {
+    font-size: 14px;
+  }
+
+  .mobile-hero-actions {
+    gap: 7px;
+  }
+
+  .mobile-hero-actions button {
+    min-height: 48px;
+    padding-inline: 6px;
+    font-size: 13px;
+  }
+
+  .help-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .help-actions button {
+    min-height: 50px;
+  }
+
+  .guide-grid {
+    gap: 10px;
+  }
+
+  .panel h2,
+  .contacts-section h2,
+  .help-copy h2 {
+    font-size: 20px;
+  }
+
+  .route-steps {
+    gap: 8px;
+  }
+
+  .route-steps li {
+    grid-template-columns: 30px 1fr;
+    gap: 8px;
+    padding: 9px;
+    border-radius: 12px;
+  }
+
+  .route-steps span {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
+
+  .route-steps p {
+    font-size: 15px;
+  }
+
+  .contact-card {
+    padding: 12px;
+    border-left-width: 6px;
+  }
+
+  .contact-card h3 {
+    font-size: 18px;
+  }
+
+  .contact-role {
+    font-size: 11px;
+    margin-bottom: 6px;
+  }
+
+  .contact-actions {
+    gap: 7px;
+  }
+
+  .contact-actions a {
+    min-height: 48px;
+    font-size: 16px;
+  }
+
+  .candidate-sticky-actions {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 7px;
+    padding: 8px 9px calc(8px + env(safe-area-inset-bottom));
+  }
+
+  .candidate-sticky-actions button {
+    min-height: 50px;
+    padding: 6px 4px;
+    border-radius: 11px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 360px) {
+  .location-tiles {
+    grid-template-columns: 1fr;
+  }
+
+  .location-tile {
+    min-height: 88px;
+  }
+
+  .mobile-hero-actions,
+  .candidate-sticky-actions {
+    gap: 5px;
+  }
+
+  .candidate-sticky-actions button {
+    font-size: 12px;
+  }
+}
