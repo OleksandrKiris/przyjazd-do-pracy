@@ -195,6 +195,7 @@
     return `
       <div class="route-links">
         <h3>${escapeHtml(t("checkConnections"))}</h3>
+        <p class="route-links-hint">${escapeHtml(t("travelToolHint"))}</p>
         <div>
           ${links.map((link) => `<a href="${escapeHtml(link.url)}" target="_blank" rel="noopener">${escapeHtml(link.label)}</a>`).join("")}
         </div>

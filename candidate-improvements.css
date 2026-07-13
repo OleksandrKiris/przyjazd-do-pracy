@@ -3030,6 +3030,18 @@ main {
   font-weight: 950;
 }
 
+.route-links-hint {
+  margin: -3px 0 10px;
+  padding: 9px 10px;
+  border: 1px solid rgba(217, 147, 0, .22);
+  border-radius: 10px;
+  background: rgba(255, 246, 223, .72);
+  color: #6f510c;
+  font-size: 12.5px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
 .route-links > div {
   display: grid;
   gap: 8px;

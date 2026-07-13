@@ -505,10 +505,55 @@
 
   Object.entries(completeRoutes).forEach(([key, route]) => setRoute(key, route));
 
+  const routeToolText = {
+    pl: {
+      checkConnections: "Sprawdź połączenie",
+      travelToolHint: "Najpierw miasto lub stacja. Potem mapa do dokładnego adresu."
+    },
+    ru: {
+      checkConnections: "Проверить маршрут",
+      travelToolHint: "Сначала город или станция. Потом карта до точного адреса."
+    },
+    uk: {
+      checkConnections: "Перевірити маршрут",
+      travelToolHint: "Спочатку місто або станція. Потім карта до точної адреси."
+    },
+    en: {
+      checkConnections: "Check the connection",
+      travelToolHint: "First city or station. Then map to the exact address."
+    },
+    az: {
+      checkConnections: "Marşrutu yoxla",
+      travelToolHint: "Əvvəlcə şəhər və ya stansiya. Sonra dəqiq ünvana xəritə."
+    },
+    es: {
+      checkConnections: "Comprobar la conexión",
+      travelToolHint: "Primero ciudad o estación. Después mapa a la dirección exacta."
+    },
+    fil: {
+      checkConnections: "Suriin ang biyahe",
+      travelToolHint: "Una: city o station. Pagkatapos: mapa sa eksaktong address."
+    },
+    id: {
+      checkConnections: "Cek koneksi",
+      travelToolHint: "Pertama kota atau stasiun. Lalu peta ke alamat tepat."
+    },
+    ne: {
+      checkConnections: "यात्रा जाँच गर्नुहोस्",
+      travelToolHint: "पहिले शहर वा station। त्यसपछि exact address को map."
+    }
+  };
+
+  Object.entries(routeToolText).forEach(([lang, values]) => {
+    ui[lang] = { ...(ui[lang] || base), ...values };
+  });
+  config.ui = ui;
+
   const jakdojadeRoute = (city, from, to) =>
     `https://jakdojade.pl/${city}/trasa/z--${encodeURIComponent(from)}--do--${encodeURIComponent(to)}`;
   const googleTransit = (from, to) =>
     `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(from)}&destination=${encodeURIComponent(to)}&travelmode=transit`;
+  const ePodroznikBus = "https://www.e-podroznik.pl/rozklad-jazdy-pks-autobusy";
   const setRouteLinks = (key, links) => {
     if (config.locations && config.locations[key]) {
       config.locations[key].routeLinks = links;
@@ -555,11 +600,11 @@
       url: jakdojadeRoute("wroclaw", "Wrocław", "Zgorzelec")
     },
     {
-      label: "e-podróżnik: busy/autobusy Zgorzelec → Bogatynia",
-      url: "https://www.e-podroznik.pl/"
+      label: "e-podróżnik BUS: Zgorzelec → Bogatynia",
+      url: ePodroznikBus
     },
     {
-      label: "Google Maps: transport publiczny do Niedów 9",
+      label: "Google Maps: Zgorzelec → Niedów 9",
       url: googleTransit("Zgorzelec", "Niedów 9, 59-900 Niedów")
     }
   ]);
@@ -570,11 +615,11 @@
       url: jakdojadeRoute("warszawa", "Warszawa Zachodnia", "Kozienice")
     },
     {
-      label: "e-podróżnik: busy/autobusy Warszawa → Kozienice",
-      url: "https://www.e-podroznik.pl/"
+      label: "e-podróżnik BUS: Warszawa → Kozienice",
+      url: ePodroznikBus
     },
     {
-      label: "Google Maps: transport publiczny do zakwaterowania",
+      label: "Google Maps: Warszawa Zachodnia → zakwaterowanie",
       url: googleTransit("Warszawa Zachodnia", "Wilczkowice Górne 40, 26-900 Kozienice")
     }
   ]);
