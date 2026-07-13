@@ -1,4 +1,4 @@
-const CACHE_NAME = "arrival-guide-v23-normal-translations";
+const CACHE_NAME = "arrival-guide-v24-clean-mobile-theme";
 const ASSETS = [
   "./",
   "./index.html",
