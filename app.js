@@ -397,7 +397,14 @@
     navigator.serviceWorker.addEventListener("controllerchange", () => {
       if (refreshing) return;
       refreshing = true;
-      location.reload();
+      try {
+        const key = "arrival-guide-sw-reload-v46";
+        if (sessionStorage.getItem(key)) return;
+        sessionStorage.setItem(key, "1");
+      } catch (error) {
+        // Session storage can be unavailable in private modes.
+      }
+      setTimeout(() => location.reload(), 250);
     });
 
     navigator.serviceWorker.register("./sw.js").then((registration) => {

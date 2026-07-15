@@ -1,4 +1,4 @@
-const CACHE_NAME = "arrival-guide-v45-resilient-cache";
+﻿const CACHE_NAME = "arrival-guide-v46-fast-navigation";
 const APP_SHELL = "./index.html";
 const ASSETS = [
   "./",
@@ -52,34 +52,41 @@ function shouldCache(request) {
   return requestUrl.origin === self.location.origin;
 }
 
-function cacheFirst(request) {
-  return caches.match(request, { ignoreSearch: true }).then((cached) => {
-    const networkFetch = fetch(request)
-      .then((response) => {
-        if (response && response.ok) {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
-        }
-        return response;
-      })
-      .catch(() => cached);
-
-    return cached || networkFetch;
+function networkTimeout(ms = 1400) {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(null), ms);
   });
 }
 
-function networkFirst(request) {
-  return fetch(request)
-    .then((response) => {
-      if (response && response.ok) {
-        const copy = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(APP_SHELL, copy));
-      }
+async function cacheFirst(request, fallback = APP_SHELL) {
+  const cached = await caches.match(request, { ignoreSearch: true });
+  if (cached) {
+    fetch(request)
+      .then((response) => {
+        if (response && response.ok) {
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
+        }
+      })
+      .catch(() => {});
+    return cached;
+  }
+
+  try {
+    const response = await Promise.race([fetch(request), networkTimeout()]);
+    if (response && response.ok) {
+      const copy = response.clone();
+      caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
       return response;
-    })
-    .catch(() =>
-      caches.match(APP_SHELL, { ignoreSearch: true }).then((cached) => cached || caches.match("./"))
-    );
+    }
+  } catch (error) {
+    // Fall back below.
+  }
+
+  return caches.match(fallback, { ignoreSearch: true }).then((fallbackResponse) => fallbackResponse || caches.match("./"));
+}
+
+function networkFirst(request) {
+  return cacheFirst(request, APP_SHELL);
 }
 
 self.addEventListener("fetch", (event) => {

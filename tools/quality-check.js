@@ -382,8 +382,8 @@ async function validatePublic() {
     fetched[key] = await response.text();
   }
 
-  if (fetched.index && !fetched.index.includes("v44-contact-name")) fail("Public index is not v44");
-  if (fetched.serviceWorker && !fetched.serviceWorker.includes("arrival-guide-v44-contact-name")) fail("Public service worker is not v44");
+  if (fetched.index && !fetched.index.includes("v46-fast-navigation")) fail("Public index is not v46");
+  if (fetched.serviceWorker && !fetched.serviceWorker.includes("arrival-guide-v46-fast-navigation")) fail("Public service worker is not v46");
   Object.entries(fetched).forEach(([key, content]) => {
     if (key === "validator") return;
     if (hasBrokenEncoding(content)) fail(`Public ${key}: broken encoding token found`);
