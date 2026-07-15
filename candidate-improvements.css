@@ -3149,3 +3149,116 @@ main {
     font-size: 12.5px;
   }
 }
+
+/* Frontend standard 2026-07-15: compact phone-safe polish, no route/data changes. */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app-shell,
+.topbar,
+.setup-card,
+.location-grid,
+.location-tile,
+.summary-grid,
+.summary-item,
+.panel,
+.contact-card,
+.route-steps,
+.route-links {
+  min-width: 0;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 10px 24px rgba(17, 24, 39, .08);
+}
+
+.location-tile,
+.summary-item,
+.panel,
+.contact-card,
+.route-steps li {
+  overflow-wrap: anywhere;
+}
+
+.location-tile,
+button,
+.route-links a,
+.contact-card a {
+  touch-action: manipulation;
+}
+
+button,
+.route-links a,
+.contact-card a {
+  min-height: 54px;
+}
+
+.location-tile {
+  will-change: transform;
+}
+
+.location-tile span,
+.location-tile small,
+.location-tile strong,
+.panel h2,
+.panel h3,
+.panel p,
+.contact-card h3,
+.contact-card p,
+.route-links a {
+  overflow-wrap: anywhere;
+}
+
+.is-pressed {
+  transform: scale(.985);
+  filter: brightness(.98);
+}
+
+@media (max-width: 390px) {
+  .app-shell {
+    padding-inline: 10px;
+  }
+
+  .topbar {
+    gap: 8px;
+    padding: 9px 10px;
+  }
+
+  .location-grid,
+  .summary-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px;
+  }
+
+  .location-tile,
+  .panel,
+  .setup-card {
+    padding: 14px;
+  }
+
+  .route-links a {
+    min-height: 54px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+  }
+}

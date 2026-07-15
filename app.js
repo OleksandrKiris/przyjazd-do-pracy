@@ -369,6 +369,15 @@
     image.hidden = false;
   }
 
+  function setupFrontendStandard() {
+    document.addEventListener("click", (event) => {
+      const target = event.target.closest("button, .location-tile, .route-links a, .contact-card a, .hydra-link");
+      if (!target) return;
+      target.classList.add("is-pressed");
+      setTimeout(() => target.classList.remove("is-pressed"), 220);
+    }, { capture: true });
+  }
+
   $("languageGate")?.addEventListener("click", (event) => {
     const button = event.target.closest("[data-lang]");
     if (button) setLanguage(button.dataset.lang);
@@ -386,6 +395,7 @@
       config = loadConfig();
       state = readState();
       syncUrlWithState();
+      setupFrontendStandard();
       render();
     } catch (error) {
       showFatalError(error);
@@ -398,7 +408,7 @@
       if (refreshing) return;
       refreshing = true;
       try {
-        const key = "arrival-guide-sw-reload-v46";
+        const key = "arrival-guide-sw-reload-v47";
         if (sessionStorage.getItem(key)) return;
         sessionStorage.setItem(key, "1");
       } catch (error) {
