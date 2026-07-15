@@ -408,7 +408,7 @@
       if (refreshing) return;
       refreshing = true;
       try {
-        const key = "arrival-guide-sw-reload-v47";
+        const key = "arrival-guide-sw-reload-v48";
         if (sessionStorage.getItem(key)) return;
         sessionStorage.setItem(key, "1");
       } catch (error) {

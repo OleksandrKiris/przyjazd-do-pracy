@@ -3211,6 +3211,8 @@ button,
 .location-tile span,
 .location-tile small,
 .location-tile strong,
+.brand-logo-lockup,
+.brand-logo-lockup strong,
 .panel h2,
 .panel h3,
 .panel p,
@@ -3223,6 +3225,17 @@ button,
 .is-pressed {
   transform: scale(.985);
   filter: brightness(.98);
+}
+
+.brand-logo-lockup {
+  min-width: 0;
+}
+
+.brand-logo-lockup strong {
+  max-width: 100%;
+  min-width: 0;
+  white-space: normal !important;
+  line-height: 1.08;
 }
 
 @media (max-width: 390px) {
@@ -3249,6 +3262,14 @@ button,
 
   .route-links a {
     min-height: 54px;
+  }
+
+  .brand-logo-lockup {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .brand-logo-lockup strong {
+    font-size: 11px !important;
   }
 }
 

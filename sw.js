@@ -1,4 +1,4 @@
-﻿const CACHE_NAME = "arrival-guide-v47-frontend-standard";
+﻿const CACHE_NAME = "arrival-guide-v48-full-audit1";
 const APP_SHELL = "./index.html";
 const ASSETS = [
   "./",
