@@ -1,4 +1,4 @@
-﻿const CACHE_NAME = "arrival-guide-v48-full-audit1";
+const CACHE_NAME = "arrival-guide-v49-hardening1";
 const APP_SHELL = "./index.html";
 const ASSETS = [
   "./",
@@ -58,7 +58,7 @@ function networkTimeout(ms = 1400) {
   });
 }
 
-async function cacheFirst(request, fallback = APP_SHELL) {
+async function cacheFirst(request, fallback = null) {
   const cached = await caches.match(request, { ignoreSearch: true });
   if (cached) {
     fetch(request)
@@ -82,7 +82,8 @@ async function cacheFirst(request, fallback = APP_SHELL) {
     // Fall back below.
   }
 
-  return caches.match(fallback, { ignoreSearch: true }).then((fallbackResponse) => fallbackResponse || caches.match("./"));
+  if (!fallback) return Response.error();
+  return caches.match(fallback, { ignoreSearch: true }).then((fallbackResponse) => fallbackResponse || Response.error());
 }
 
 function networkFirst(request) {
@@ -97,5 +98,5 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  event.respondWith(cacheFirst(event.request));
+  event.respondWith(cacheFirst(event.request, null));
 });
