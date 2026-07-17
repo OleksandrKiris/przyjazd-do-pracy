@@ -1,5 +1,16 @@
 (function () {
   const languageKey = "arrival-guide-language";
+  const hydraLabels = {
+    pl: "Wróć do Hydry",
+    ru: "Вернуться в Hydra",
+    uk: "Повернутися до Hydra",
+    en: "Back to Hydra",
+    az: "Hydra-ya qayıt",
+    es: "Volver a Hydra",
+    fil: "Bumalik sa Hydra",
+    id: "Kembali ke Hydra",
+    ne: "Hydra मा फर्कनुहोस्"
+  };
   let config;
   let state;
 
@@ -91,6 +102,9 @@
     const link = $("hydraLink");
     if (!link) return;
     link.href = `https://oleksandrkiris.github.io/citronex-hydra-project/?lang=${encodeURIComponent(state.lang)}`;
+    const label = hydraLabels[state.lang] || hydraLabels.en;
+    link.textContent = label;
+    link.setAttribute("aria-label", label);
   }
 
   function renderLanguageControls() {
