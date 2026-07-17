@@ -3283,3 +3283,13 @@ button,
     transition-duration: .01ms !important;
   }
 }
+
+/* Compact reading layer: shorten previews, keep the full route instructions available. */
+.location-tile small,
+.route-links a {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.location-tile strong { overflow-wrap: anywhere; }
