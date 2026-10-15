@@ -1,6 +1,7 @@
 {
   "private": true,
   "scripts": {
+    "test": "npm run validate && npm run quality && node --test tools/quality-check.test.cjs",
     "validate": "node tools/validate-site.js",
     "quality": "node tools/quality-check.js",
     "quality:public": "node tools/quality-check.js --public https://oleksandrkiris.github.io/przyjazd-do-pracy/"

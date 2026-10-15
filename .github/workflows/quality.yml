@@ -23,3 +23,6 @@ jobs:
 
       - name: Run quality gate
         run: npm run quality
+
+      - name: Test public release checks without network
+        run: node --test tools/quality-check.test.cjs
