@@ -2,6 +2,12 @@
 
 Strona informacyjna dla kandydatów przyjeżdżających do pracy w Polsce.
 
+## Kontrola jakości
+
+`npm test` sprawdza dane, macierz języków/lokalizacji i 12 testów walidatora publikacji bez połączeń sieciowych.
+`npm run quality:public` sprawdza publiczną stronę: znacznik wersji HTML i nazwę cache porównuje z aktualnie sprawdzanym lokalnym źródłem, a nie ze stałą historyczną wersją.
+Uruchamiaj kontrolę publiczną z rewizji, której publikację sprawdzasz; rozbieżność podczas wdrażania jest prawidłowo zgłaszana jako błąd.
+
 ## Link do wysyłania kandydatom
 
 ```text

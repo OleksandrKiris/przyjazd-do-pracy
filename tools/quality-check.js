@@ -382,8 +382,10 @@ async function validatePublic() {
     fetched[key] = await response.text();
   }
 
-  if (fetched.index && !fetched.index.includes("v46-fast-navigation")) fail("Public index is not v46");
-  if (fetched.serviceWorker && !fetched.serviceWorker.includes("arrival-guide-v46-fast-navigation")) fail("Public service worker is not v46");
+  const expectedVersion = read("index.html").match(/name="candidate-page-version" content="([^"]+)"/)?.[1];
+  const expectedCache = read("sw.js").match(/const CACHE_NAME = "([^"]+)"/)?.[1];
+  if (!expectedVersion || !fetched.index?.includes(`name="candidate-page-version" content="${expectedVersion}"`)) fail("Public index does not match the checked release");
+  if (!expectedCache || !fetched.serviceWorker?.includes(`const CACHE_NAME = "${expectedCache}"`)) fail("Public service worker does not match the checked release");
   Object.entries(fetched).forEach(([key, content]) => {
     if (key === "validator") return;
     if (hasBrokenEncoding(content)) fail(`Public ${key}: broken encoding token found`);
