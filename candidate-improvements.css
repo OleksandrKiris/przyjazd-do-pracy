@@ -3294,3 +3294,76 @@ button,
 }
 .location-tile strong { overflow-wrap: anywhere; }
 .brand-logo-lockup strong { text-transform: none !important; }
+
+/* PrimServ service identity; original location instructions and accents stay intact. */
+.primserv-arrival {
+  --brand-red: #354c61;
+  --brand-red-dark: #1c2e3e;
+  --brand-red-soft: #edf2f6;
+  background: #f1f5f9;
+}
+.primserv-arrival .mobile-candidate-hero {
+  background: linear-gradient(135deg, #354c61, #1c2e3e);
+  border-color: #354c61;
+}
+.primserv-arrival .brand-logo-lockup {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  align-items: center;
+  width: 100%;
+  max-width: 280px;
+  background: #fff;
+  border-color: #cbd5e1;
+}
+.primserv-arrival .brand-logo-lockup img {
+  display: block;
+  width: 40px;
+  height: 56px;
+  object-fit: contain;
+  border-radius: 0;
+}
+.primserv-arrival .brand-logo-lockup strong {
+  color: #0f172a;
+  font-size: 17px !important;
+  line-height: 1.2;
+}
+.primserv-arrival .topbar h1 {
+  display: block !important;
+  margin: 8px 0 0;
+  color: #334155;
+  font-size: 14px;
+  line-height: 1.4;
+}
+.primserv-services {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 12px 0;
+}
+.primserv-services a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background: #fff;
+  color: #1e293b;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: center;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.primserv-services a:focus-visible,
+.primserv-footer a:focus-visible { outline: 3px solid #475569; outline-offset: 3px; }
+.primserv-services a:hover { background: #e2e8f0; }
+.primserv-footer { padding: 24px 12px; color: #475569; text-align: center; }
+.primserv-footer a { color: #1e293b; font-weight: 700; }
+.language-fallback { color: #334155; text-align: center; }
+@media (max-width: 430px) {
+  .primserv-services { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .primserv-services a:last-child { grid-column: 1 / -1; }
+}

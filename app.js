@@ -1,5 +1,16 @@
 (function () {
   const languageKey = "arrival-guide-language";
+  const serviceLabels = {
+    pl: ["Firma PrimServ", "Oferty pracy", "Bot Telegram"],
+    ru: ["Компания PrimServ", "Вакансии", "Telegram-бот"],
+    uk: ["Компанія PrimServ", "Вакансії", "Telegram-бот"],
+    en: ["Company PrimServ", "Vacancies", "Telegram bot"],
+    az: ["PrimServ şirkəti", "Vakansiyalar", "Telegram botu"],
+    es: ["Empresa PrimServ", "Vacantes", "Bot de Telegram"],
+    fil: ["Kumpanya PrimServ", "Mga bakanteng trabaho", "Telegram bot"],
+    id: ["Perusahaan PrimServ", "Lowongan kerja", "Bot Telegram"],
+    ne: ["PrimServ कम्पनी", "रिक्त पदहरू", "Telegram बोट"]
+  };
   const hydraLabels = {
     pl: "Wróć do Hydry",
     ru: "Вернуться в Hydra",
@@ -35,6 +46,7 @@
     const requestedLang = params.get("lang") || savedLang || "pl";
     return {
       lang: normalizeLanguage(requestedLang),
+      languageFallback: ["ka", "hy"].includes(String(requestedLang).toLowerCase()),
       name: params.get("name") || params.get("imie") || "",
       surname: params.get("surname") || params.get("nazwisko") || "",
       date: params.get("date") || params.get("data") || "",
@@ -47,6 +59,7 @@
 
   function setLanguage(lang) {
     state.lang = normalizeLanguage(lang);
+    state.languageFallback = false;
     storeLanguage(state.lang);
     const url = new URL(location.href);
     url.searchParams.set("lang", state.lang);
@@ -65,7 +78,9 @@
 
   function render() {
     document.documentElement.lang = state.lang;
+    document.title = `${t("title")} · PrimServ`;
     renderHydraLink();
+    renderServiceLinks();
     renderLanguageControls();
     renderTexts();
     renderSummary();
@@ -101,10 +116,27 @@
   function renderHydraLink() {
     const link = $("hydraLink");
     if (!link) return;
-    link.href = `https://oleksandrkiris.github.io/citronex-hydra-project/?lang=${encodeURIComponent(state.lang)}`;
+    const hydraLang = state.lang === "uk" ? "ua" : state.lang;
+    link.href = `https://oleksandrkiris.github.io/citronex-hydra-project/?lang=${encodeURIComponent(hydraLang)}`;
     const label = hydraLabels[state.lang] || hydraLabels.en;
     link.textContent = label;
     link.setAttribute("aria-label", label);
+  }
+
+  function renderServiceLinks() {
+    const labels = serviceLabels[state.lang] || serviceLabels.en;
+    ["companyLink", "jobsLink", "botLink"].forEach((id, index) => {
+      const link = $(id);
+      if (link) link.textContent = labels[index];
+    });
+    const jobsLink = $("jobsLink");
+    if (jobsLink) {
+      const url = new URL("https://oleksandrkiris.github.io/kiris-jobs/");
+      url.searchParams.set("lang", state.lang);
+      jobsLink.href = url.toString();
+    }
+    const fallback = $("languageFallback");
+    if (fallback) fallback.hidden = !state.languageFallback;
   }
 
   function renderLanguageControls() {
@@ -284,6 +316,8 @@
     const key = String(value || "").toLowerCase();
     const aliases = {
       ua: "uk",
+      ka: "en",
+      hy: "en",
       ukrainian: "uk",
       ukrainianu: "uk",
       ukr: "uk",
