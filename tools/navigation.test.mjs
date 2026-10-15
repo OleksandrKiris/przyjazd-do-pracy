@@ -124,6 +124,8 @@ test("official assets, accessible link defaults and coherent cache references", 
   const logo = await fs.readFile(new URL("assets/primserv-logo.svg", root));
   assert.equal(crypto.createHash("sha256").update(logo).digest("hex"), "1a29802a4a0065ad84e8f8dbdd5bc46dcb9b67bbecb2190de6a99464feaf5157");
   for (const match of html.matchAll(/<a\b[^>]*target="_blank"[^>]*>/g)) assert.ok(/rel="[^"]*noopener[^\"]*noreferrer/.test(match[0]));
+  const hydraLink = html.match(/<a\b[^>]*id="hydraLink"[^>]*>/)?.[0];
+  assert.ok(hydraLink?.includes('rel="noopener noreferrer"'), "The return link must not disclose a personal arrival URL through Referer");
   assert.ok(html.includes('href="https://www.primserv.pl/"'));
   assert.ok(html.includes('href="https://t.me/KirisWorkPoland_bot"'));
   assert.ok(html.includes('id="languageFallback"'));
