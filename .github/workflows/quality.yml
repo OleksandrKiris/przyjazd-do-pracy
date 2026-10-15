@@ -26,3 +26,6 @@ jobs:
 
       - name: Test public release checks without network
         run: node --test tools/quality-check.test.cjs
+
+      - name: Test service navigation
+        run: npm run test:navigation

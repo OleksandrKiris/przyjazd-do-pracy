@@ -1,4 +1,4 @@
-const CACHE_NAME = "arrival-guide-v50-hydra-brand-compact";
+const CACHE_NAME = "arrival-guide-v51-primserv-navigation";
 const APP_SHELL = "./index.html";
 const ASSETS = [
   "./",
@@ -13,7 +13,8 @@ const ASSETS = [
   "./data/overrides.js",
   "./manifest.webmanifest",
   "./assets/icon.svg",
-  "./assets/citronex-hydra-logo.png"
+  "./assets/primserv-logo.svg",
+  "./assets/primserv-icon-192.png"
 ];
 
 self.addEventListener("install", (event) => {
