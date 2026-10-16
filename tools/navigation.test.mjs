@@ -80,6 +80,22 @@ function boot(lang, place = "bogatynia", options = {}) {
   };
 }
 
+test("Ryczywół arrival and contact screens use today's confirmed accommodation number in every language", () => {
+  for (const lang of locales) {
+    const c = boot(lang, "ryczywol");
+    const place = c.window.ARRIVAL_DEFAULT_CONFIG.locations.ryczywol;
+    assert.equal(place.phone, "+48511472583");
+    assert.equal(place.whatsapp, "+48511472583");
+    c.refreshEnhancements();
+    const rendered = c.node("guide").innerHTML + c.node("contactsPage").innerHTML;
+    assert.match(rendered, /511 472 583/);
+    assert.match(rendered, /tel:[+]?48511472583/);
+    assert.ok(!/536.?110.?591|Ludmi|Людмил/i.test(rendered));
+    assert.equal(c.window.ARRIVAL_DEFAULT_CONFIG.locations.bogatynia.phone, "+48609809601");
+    assert.equal(JSON.stringify(c.window.ARRIVAL_DEFAULT_CONFIG), c.originalConfig);
+  }
+});
+
 for (const lang of locales) for (const place of locations) {
   test(`${lang}/${place}: language-safe PrimServ links preserve arrival context`, () => {
     const c = boot(lang, place);
