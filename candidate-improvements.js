@@ -310,7 +310,9 @@
   function scrollToContacts() {
     const section = $("contactsPage");
     if (!section) return;
-    section.scrollIntoView({ behavior: "smooth", block: "start" });
+    section.focus({ preventScroll: true });
+    const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    section.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
   }
 
   function ensureMobileHero() {
@@ -422,7 +424,7 @@
     `).join("");
 
     section.innerHTML = `
-      <h2>${escapeHtml(tr("contactTitle"))}</h2>
+      <h2 id="contactsTitle">${escapeHtml(tr("contactTitle"))}</h2>
       <h3>${escapeHtml(contactTitleForKey(key))}</h3>
       <div class="contact-grid">${cards}</div>
       <p><strong>${escapeHtml(tr("contactHint"))}</strong></p>

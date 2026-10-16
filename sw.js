@@ -1,4 +1,4 @@
-const CACHE_NAME = "arrival-guide-v51-primserv-navigation";
+const CACHE_NAME = "arrival-guide-v52-accessible-navigation";
 const APP_SHELL = "./index.html";
 const ASSETS = [
   "./",

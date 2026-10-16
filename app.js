@@ -57,7 +57,7 @@
     };
   }
 
-  function setLanguage(lang) {
+  function setLanguage(lang, restoreFocus = false) {
     state.lang = normalizeLanguage(lang);
     state.languageFallback = false;
     storeLanguage(state.lang);
@@ -65,6 +65,9 @@
     url.searchParams.set("lang", state.lang);
     history.replaceState(null, "", url);
     render();
+    if (restoreFocus) {
+      $("languageGate").querySelector(`[data-lang="${state.lang}"]`)?.focus({ preventScroll: true });
+    }
   }
 
   function setLocation(locationKey) {
@@ -73,7 +76,10 @@
     url.searchParams.set("location", state.location);
     history.replaceState(null, "", url);
     render();
-    $("instructionStart").scrollIntoView({ behavior: "smooth", block: "start" });
+    const target = $("instructionStart");
+    target.focus({ preventScroll: true });
+    const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    target.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
   }
 
   function render() {
@@ -142,7 +148,7 @@
   function renderLanguageControls() {
     $("languageGate").innerHTML = Object.entries(config.languages)
       .map(([code, label]) => `
-        <button type="button" class="${code === state.lang ? "active" : ""}" data-lang="${code}">
+        <button type="button" class="${code === state.lang ? "active" : ""}" aria-pressed="${code === state.lang}" data-lang="${code}">
           <span>${escapeHtml(label)}</span>
           <small>${escapeHtml(code.toUpperCase())}</small>
         </button>
@@ -170,7 +176,7 @@
     if (!target) return;
     target.innerHTML = Object.entries(config.locations)
       .map(([key, place]) => `
-        <button type="button" class="location-tile ${key === state.location ? "active" : ""}" data-location="${key}" style="--tile-accent:${escapeHtml(place.accent || "#d71920")}">
+        <button type="button" class="location-tile ${key === state.location ? "active" : ""}" aria-pressed="${key === state.location}" data-location="${key}" style="--tile-accent:${escapeHtml(place.accent || "#d71920")}">
           <span>${escapeHtml(place.name)}</span>
           <small>${escapeHtml(place.short || place.address[0])}</small>
           <strong>${escapeHtml(t("showInstruction"))}</strong>
@@ -228,7 +234,7 @@
       `).join("");
       return `<h3>${escapeHtml(title)}</h3><div class="contact-grid">${cards}</div>`;
     }).join("");
-    $("contactsPage").innerHTML = `<h2>${escapeHtml(t("contacts"))}</h2>${groups}<p><strong>${escapeHtml(t("questions"))}</strong></p>`;
+    $("contactsPage").innerHTML = `<h2 id="contactsTitle">${escapeHtml(t("contacts"))}</h2>${groups}<p><strong>${escapeHtml(t("questions"))}</strong></p>`;
   }
 
   function panel(title, body) {
@@ -428,7 +434,7 @@
 
   $("languageGate")?.addEventListener("click", (event) => {
     const button = event.target.closest("[data-lang]");
-    if (button) setLanguage(button.dataset.lang);
+    if (button) setLanguage(button.dataset.lang, document.activeElement === button);
   });
   $("locationTiles")?.addEventListener("click", (event) => {
     const button = event.target.closest("[data-location]");
