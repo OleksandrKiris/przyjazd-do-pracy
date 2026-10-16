@@ -1,4 +1,4 @@
-const CACHE_NAME = "arrival-guide-v52-accessible-navigation";
+const CACHE_NAME = "arrival-guide-v53-history-resilience";
 const APP_SHELL = "./index.html";
 const ASSETS = [
   "./",

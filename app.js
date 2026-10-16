@@ -61,9 +61,7 @@
     state.lang = normalizeLanguage(lang);
     state.languageFallback = false;
     storeLanguage(state.lang);
-    const url = new URL(location.href);
-    url.searchParams.set("lang", state.lang);
-    history.replaceState(null, "", url);
+    syncUrlWithState();
     render();
     if (restoreFocus) {
       $("languageGate").querySelector(`[data-lang="${state.lang}"]`)?.focus({ preventScroll: true });
@@ -72,9 +70,7 @@
 
   function setLocation(locationKey) {
     state.location = normalizeLocation(locationKey);
-    const url = new URL(location.href);
-    url.searchParams.set("location", state.location);
-    history.replaceState(null, "", url);
+    syncUrlWithState();
     render();
     const target = $("instructionStart");
     target.focus({ preventScroll: true });
@@ -84,6 +80,7 @@
 
   function render() {
     document.documentElement.lang = state.lang;
+    document.documentElement.dataset.arrivalLocation = state.location;
     document.title = `${t("title")} · PrimServ`;
     renderHydraLink();
     renderServiceLinks();
@@ -116,7 +113,14 @@
       changed = true;
     }
 
-    if (changed) history.replaceState(null, "", url);
+    if (changed) {
+      try {
+        history.replaceState(history.state, "", url);
+      } catch (error) {
+        // Restricted browser contexts may block URL updates. Keep the selected
+        // language/location usable in memory; do not interrupt rendering.
+      }
+    }
   }
 
   function renderHydraLink() {

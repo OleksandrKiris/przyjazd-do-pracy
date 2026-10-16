@@ -5,7 +5,8 @@
 
   function currentLang() {
     const params = new URLSearchParams(location.search);
-    const code = params.get("lang") || document.documentElement.lang || "pl";
+    const renderedLang = document.documentElement.dataset?.arrivalLocation && document.documentElement.lang;
+    const code = renderedLang || params.get("lang") || document.documentElement.lang || "pl";
     return labels[code] ? code : "pl";
   }
 

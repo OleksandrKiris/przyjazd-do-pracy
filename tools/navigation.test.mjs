@@ -7,6 +7,8 @@ import crypto from "node:crypto";
 const root = new URL("../", import.meta.url);
 const paths = ["data/config.js", "data/overrides.js", "language-options.js", "app.js"];
 const scripts = await Promise.all(paths.map(path => fs.readFile(new URL(path, root), "utf8")));
+const improvements = await fs.readFile(new URL("candidate-improvements.js", root), "utf8");
+const translations = await fs.readFile(new URL("translations.js", root), "utf8");
 const locales = ["pl", "ru", "uk", "en", "az", "es", "fil", "id", "ne"];
 const locations = ["siechnice", "ryczywol", "bogatynia", "zgorzelec"];
 
@@ -15,17 +17,28 @@ function boot(lang, place = "bogatynia", options = {}) {
   url.search = new URLSearchParams({ lang, location: place, name: "Fixture", surname: "Example", date: "2026-11-02", department: "production", hotel: "yes", country: "poland" });
   url.hash = "#instructionStart";
   const location = { href: url.href, search: url.search, protocol: url.protocol };
+  const history = {
+    state: { entry: "keep-existing-state" }, attempts: 0, blocked: !!options.blockedHistory,
+    replaceState(state, _title, target) {
+      this.attempts++;
+      if (this.blocked) throw new DOMException("History unavailable", "SecurityError");
+      this.state = state;
+      location.href = target.href;
+      location.search = target.search;
+    },
+    pushState() { throw Error("Navigation must not add Back entries"); }
+  };
   const nodes = new Map();
   function node(id) {
     if (!nodes.has(id)) {
       const handlers = {};
-      nodes.set(id, { handlers, hidden: false, textContent: "", innerHTML: "", href: "",
+      nodes.set(id, { handlers, children: [], dataset: {}, hidden: false, textContent: "", innerHTML: "", href: "",
         setAttribute(name, value) { this[name] = value; },
         addEventListener(name, callback) { handlers[name] = callback; },
         querySelector(selector) { return node(`${id}:${selector}`); },
         scrollIntoView(options) { this.lastScroll = options; },
         focus(options) { document.activeElement = this; this.lastFocus = options; },
-        classList: { add() {}, remove() {} }
+        classList: { add() {}, remove() {}, contains() { return false; } }
       });
     }
     return nodes.get(id);
@@ -36,15 +49,16 @@ function boot(lang, place = "bogatynia", options = {}) {
   };
   const document = {
     getElementById: node,
-    documentElement: { lang: "", style: { setProperty() {} } },
+    documentElement: { lang: "", dataset: {}, style: { setProperty() {} } },
     addEventListener() {}, querySelectorAll: () => [],
+    querySelector: selector => selector === ".topbar" ? null : node(selector),
     body: { insertAdjacentHTML() { throw new Error("Unexpected application error"); } }
   };
   const window = { localStorage, location };
   if (!options.noMatchMedia) window.matchMedia = () => ({ matches: !!options.reducedMotion });
   const context = vm.createContext({ window, document, location, localStorage,
     navigator: {}, URL, URLSearchParams, structuredClone, console,
-    history: { replaceState(_state, _title, target) { location.href = target.href; location.search = target.search; } },
+    history, DOMException,
     open() { throw new Error("External actions are forbidden"); },
     fetch() { throw new Error("Network requests are forbidden"); },
     setTimeout() { throw new Error("No operational action may be triggered"); }
@@ -52,7 +66,11 @@ function boot(lang, place = "bogatynia", options = {}) {
   scripts.slice(0, 3).forEach((script, i) => vm.runInContext(script, context, { filename: paths[i] }));
   const originalConfig = JSON.stringify(window.ARRIVAL_DEFAULT_CONFIG);
   vm.runInContext(scripts[3], context, { filename: paths[3] });
-  return { node, document, location, window, originalConfig,
+  return { node, document, location, window, history, originalConfig,
+    refreshEnhancements() {
+      vm.runInContext(improvements, context);
+      vm.runInContext(translations, context);
+    },
     chooseLanguage(value, origin = "button") {
       const button = { dataset: { lang: value } };
       document.activeElement = origin === "button" ? button : node("topLanguageSelect");
@@ -83,6 +101,63 @@ for (const lang of locales) for (const place of locations) {
     assert.equal(JSON.stringify(c.window.ARRIVAL_DEFAULT_CONFIG), c.originalConfig, "No original instructions, contacts or routes may change");
   });
 }
+
+for (const alias of ["ua", "ka", "hy"]) {
+  test(`${alias}: denied history cannot block the initial instructions or fallback`, () => {
+    const c = boot(alias, "ryczywol", { blockedHistory: true, blockedStorage: true });
+    const expected = alias === "ua" ? "uk" : "en";
+    assert.equal(c.document.documentElement.lang, expected);
+    assert.equal(c.node("languageFallback").hidden, alias === "ua");
+    assert.ok(c.node("guide").innerHTML.length > 100);
+    assert.ok(c.node("contactsPage").innerHTML.length > 100);
+    assert.equal(c.node("locationName").textContent, "Ryczywół");
+    c.refreshEnhancements();
+    assert.equal(c.node(".mobile-hero-label").textContent, c.window.CANDIDATE_LANGUAGE_LABELS[expected].travelTo);
+    assert.ok(c.node("mobileCandidateHero").innerHTML.includes("<h2>Ryczywół</h2>"));
+    assert.equal(JSON.stringify(c.window.ARRIVAL_DEFAULT_CONFIG), c.originalConfig);
+  });
+}
+
+for (const lang of locales) {
+  test(`${lang}: denied history/storage still permits language and city navigation`, () => {
+    const c = boot("pl", "siechnice", { blockedHistory: true, blockedStorage: true });
+    const originalUrl = c.location.href;
+    c.chooseLanguage(lang);
+    c.chooseLocation("zgorzelec");
+    assert.equal(c.document.documentElement.lang, lang);
+    assert.equal(c.node("locationName").textContent, "Zgorzelec");
+    assert.equal(c.document.activeElement, c.node("instructionStart"));
+    assert.match(c.node("locationTiles").innerHTML, /aria-pressed="true"[^>]*data-location="zgorzelec"/);
+    assert.equal(c.location.href, originalUrl, "A blocked history write must not be reported as persisted");
+    assert.equal(new URL(c.node("jobsLink").href).searchParams.get("lang"), lang);
+    assert.equal(JSON.stringify(c.window.ARRIVAL_DEFAULT_CONFIG), c.originalConfig);
+  });
+}
+
+test("a later successful history write includes the latest language and city", () => {
+  const c = boot("pl", "siechnice", { blockedHistory: true });
+  c.chooseLanguage("uk");
+  c.chooseLocation("zgorzelec");
+  c.history.blocked = false;
+  c.chooseLocation("bogatynia");
+  const current = new URL(c.location.href);
+  assert.equal(current.searchParams.get("lang"), "uk");
+  assert.equal(current.searchParams.get("location"), "bogatynia");
+  assert.equal(current.searchParams.get("name"), "Fixture");
+  assert.equal(current.hash, "#instructionStart");
+  assert.deepEqual(c.history.state, { entry: "keep-existing-state" });
+});
+
+test("URL synchronization preserves existing history state and avoids redundant writes", () => {
+  const c = boot("pl", "siechnice");
+  c.chooseLanguage("pl");
+  c.chooseLocation("siechnice");
+  assert.equal(c.history.attempts, 0);
+  c.chooseLanguage("uk");
+  c.chooseLocation("bogatynia");
+  assert.equal(c.history.attempts, 2);
+  assert.deepEqual(c.history.state, { entry: "keep-existing-state" });
+});
 
 test("switching language and location preserves the existing arrival query and hash", () => {
   const c = boot("pl", "zgorzelec");
@@ -201,7 +276,35 @@ test("instruction and contact destinations are named, programmatically focusable
   assert.ok(boot("en").node("contactsPage").innerHTML.includes('id="contactsTitle"'));
 });
 
-const improvements = await fs.readFile(new URL("candidate-improvements.js", root), "utf8");
+for (const lang of locales) for (const place of locations) {
+  test(`${lang}/${place}: enhanced contacts and labels follow selection when the URL is blocked`, () => {
+    const c = boot("pl", "siechnice", { blockedHistory: true, blockedStorage: true });
+    c.chooseLanguage(lang);
+    c.chooseLocation(place);
+    c.refreshEnhancements();
+    const config = c.window.ARRIVAL_DEFAULT_CONFIG;
+    const group = ["zgorzelec", "bogatynia"].includes(place) ? "bogatynia_zgorzelec" : place;
+    assert.ok(c.node("mobileCandidateHero").innerHTML.includes(`<h2>${config.locations[place].name}</h2>`));
+    for (const person of config.contacts[group]) {
+      assert.ok(c.node("contactsPage").innerHTML.includes(person.phone.replace(/\D/g, "")), person.name);
+    }
+    assert.equal(c.node(".mobile-hero-label").textContent, c.window.CANDIDATE_LANGUAGE_LABELS[lang].travelTo);
+    assert.equal(c.node("#contactsPage h2").textContent, c.window.CANDIDATE_LANGUAGE_LABELS[lang].contactTitle);
+    assert.equal(JSON.stringify(config), c.originalConfig);
+  });
+}
+
+for (const lang of locales) {
+  test(`${lang}: enhancement fallback retains URL choices before core state is available`, () => {
+    const c = boot(lang, "ryczywol");
+    delete c.document.documentElement.dataset.arrivalLocation;
+    c.document.documentElement.lang = "pl";
+    c.refreshEnhancements();
+    assert.equal(c.node(".mobile-hero-label").textContent, c.window.CANDIDATE_LANGUAGE_LABELS[lang].travelTo);
+    assert.ok(c.node("mobileCandidateHero").innerHTML.includes("<h2>Ryczywół</h2>"));
+  });
+}
+
 function contactBoot(reducedMotion, noMatchMedia = false) {
   const handlers = [];
   const nodes = new Map();
