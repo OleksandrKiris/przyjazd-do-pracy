@@ -24,6 +24,17 @@
   };
   let config;
   let state;
+  const packingKey = "primserv.arrival.packing.v1";
+  let packing;
+  let packingRaw = null;
+  let packingWritable = true;
+  let packingSaved = false;
+  const packingLabels = {
+    pl: ["Zaznacz spakowane rzeczy. Zapis tylko na tym urządzeniu; bez wysyłania.", "Zapisano na tym urządzeniu.", "Nie zapisano. Zaznaczenia działają tylko w tej sesji; poprzednie dane pozostają bez zmian."],
+    uk: ["Позначайте зібрані речі. Збереження лише на цьому пристрої; без надсилання.", "Збережено на цьому пристрої.", "Не збережено. Позначки діють лише в цьому сеансі; попередні дані не змінено."],
+    ru: ["Отмечайте собранные вещи. Сохранение только на этом устройстве; без отправки.", "Сохранено на этом устройстве.", "Не сохранено. Отметки действуют только в этом сеансе; предыдущие данные не изменены."],
+    en: ["Mark packed items. Saved only on this device; nothing is sent.", "Saved on this device.", "Not saved. Marks work only in this session; previous data is unchanged."]
+  };
 
   const $ = (id) => document.getElementById(id);
   const t = (key) => (config.ui[state.lang] && config.ui[state.lang][key]) || config.ui.pl[key] || key;
@@ -202,7 +213,7 @@
       ${panel(t("route"), `${routeSteps(localizedList(place.route))}${routeLinks(place.routeLinks)}`)}
       ${panel(t("workType"), list(workItems))}
       ${panel(t("arrivalRules"), `<p>${escapeHtml(t("reception"))}</p><p>${escapeHtml(t("noWeekend"))}</p><p>${escapeHtml(t("late"))}</p>`)}
-      ${panel(t("whatToPack"), `<p><strong>${escapeHtml(packLabel(packKey))}</strong></p>${list(localizedList(config.packs[packKey]))}`)}
+      ${panel(t("whatToPack"), `<p><strong>${escapeHtml(packLabel(packKey))}</strong></p>${packingList(packKey)}`)}
       ${state.hotel ? panel(t("housing"), `<p>${escapeHtml(t("hotelReady"))}</p>`) : ""}
       ${place.note ? panel(t("contacts"), `<p>${escapeHtml(localizedText(place.note))}</p>${place.coordinators ? list(place.coordinators) : ""}`) : ""}
       <section class="panel wide">
@@ -244,6 +255,76 @@
   function panel(title, body) {
     return `<section class="panel"><h2>${escapeHtml(title)}</h2>${body}</section>`;
   }
+
+  function loadPacking() {
+    // Only public list identity and boolean marks; never arrival state/URL data.
+    packing = { version: 1, lists: {} };
+    for (const [key, value] of Object.entries(config.packs)) {
+      packing.lists[key] = { items: [...value.en], checked: value.en.map(() => false) };
+    }
+    try {
+      packingRaw = localStorage.getItem(packingKey);
+      if (packingRaw === null) return;
+      const saved = JSON.parse(packingRaw);
+      if (!saved || saved.version !== 1 || Object.keys(saved).sort().join() !== "lists,version" ||
+          !saved.lists || Object.keys(saved.lists).sort().join() !== Object.keys(packing.lists).sort().join()) throw Error("Unknown format");
+      for (const key of Object.keys(packing.lists)) {
+        const entry = saved.lists[key];
+        if (!entry || Object.keys(entry).sort().join() !== "checked,items" ||
+            JSON.stringify(entry.items) !== JSON.stringify(packing.lists[key].items) ||
+            !Array.isArray(entry.checked) || entry.checked.length !== entry.items.length ||
+            !entry.checked.every(value => typeof value === "boolean")) throw Error("Changed list");
+      }
+      packing = saved;
+      packingSaved = true;
+    } catch (error) {
+      // Never replace unreadable, unknown, older-content or future saved data.
+      packingWritable = false;
+    }
+  }
+
+  function packingMessage(index) {
+    const lang = packingLabels[state.lang] ? state.lang : "en";
+    const prefix = lang !== state.lang ? "English (EN): " : "";
+    return { lang, text: prefix + packingLabels[lang][index] };
+  }
+
+  function packingList(key) {
+    const hint = packingMessage(0);
+    const status = packingMessage(!packingWritable ? 2 : packingSaved ? 1 : 0);
+    const items = localizedList(config.packs[key]);
+    return `<p id="packingHint" lang="${hint.lang}">${escapeHtml(hint.text)}</p>
+      <ul class="packing-list">${items.map((item, index) => `<li><label>
+        <input type="checkbox" data-pack="${key}" data-pack-index="${index}" aria-describedby="packingHint" ${packing.lists[key].checked[index] ? "checked" : ""}>
+        <span>${escapeHtml(item)}</span></label></li>`).join("")}</ul>
+      <p id="packingStatus" role="status" aria-live="polite" lang="${status.lang}">${escapeHtml(status.text)}</p>`;
+  }
+
+  $("guide")?.addEventListener("change", (event) => {
+    const input = event.target;
+    const key = input.dataset?.pack;
+    const index = Number(input.dataset?.packIndex);
+    if (input.type !== "checkbox" || !Object.hasOwn(packing.lists, key) ||
+        !Number.isInteger(index) || index < 0 || index >= packing.lists[key].checked.length) return;
+    packing.lists[key].checked[index] = input.checked;
+    packingSaved = false;
+    if (packingWritable) {
+      try {
+        // Fail closed on a concurrent tab/update instead of overwriting its data.
+        if (localStorage.getItem(packingKey) !== packingRaw) throw Error("Changed storage");
+        const next = JSON.stringify(packing);
+        localStorage.setItem(packingKey, next);
+        packingRaw = next;
+        packingSaved = true;
+      } catch (error) {
+        packingWritable = false;
+      }
+    }
+    const status = packingMessage(packingSaved ? 1 : 2);
+    $("packingStatus").textContent = status.text;
+    $("packingStatus").setAttribute("lang", status.lang);
+    // Do not re-render the checkbox: keyboard focus and current scroll survive.
+  });
 
   function list(items) {
     return `<ul>${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
@@ -452,6 +533,7 @@
     try {
       config = loadConfig();
       state = readState();
+      loadPacking();
       syncUrlWithState();
       setupFrontendStandard();
       render();
