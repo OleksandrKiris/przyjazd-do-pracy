@@ -3367,3 +3367,11 @@ button,
   .primserv-services { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .primserv-services a:last-child { grid-column: 1 / -1; }
 }
+
+/* Keep the keyboard position visible after in-page navigation. */
+.primserv-arrival button:focus-visible,
+.primserv-arrival #instructionStart:focus-visible,
+.primserv-arrival #contactsPage:focus-visible {
+  outline: 3px solid #475569;
+  outline-offset: 4px;
+}

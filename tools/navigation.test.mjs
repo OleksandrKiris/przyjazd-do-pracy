@@ -23,7 +23,8 @@ function boot(lang, place = "bogatynia", options = {}) {
         setAttribute(name, value) { this[name] = value; },
         addEventListener(name, callback) { handlers[name] = callback; },
         querySelector(selector) { return node(`${id}:${selector}`); },
-        scrollIntoView() {},
+        scrollIntoView(options) { this.lastScroll = options; },
+        focus(options) { document.activeElement = this; this.lastFocus = options; },
         classList: { add() {}, remove() {} }
       });
     }
@@ -40,6 +41,7 @@ function boot(lang, place = "bogatynia", options = {}) {
     body: { insertAdjacentHTML() { throw new Error("Unexpected application error"); } }
   };
   const window = { localStorage, location };
+  if (!options.noMatchMedia) window.matchMedia = () => ({ matches: !!options.reducedMotion });
   const context = vm.createContext({ window, document, location, localStorage,
     navigator: {}, URL, URLSearchParams, structuredClone, console,
     history: { replaceState(_state, _title, target) { location.href = target.href; location.search = target.search; } },
@@ -51,7 +53,11 @@ function boot(lang, place = "bogatynia", options = {}) {
   const originalConfig = JSON.stringify(window.ARRIVAL_DEFAULT_CONFIG);
   vm.runInContext(scripts[3], context, { filename: paths[3] });
   return { node, document, location, window, originalConfig,
-    chooseLanguage(value) { node("languageGate").handlers.click({ target: { closest: () => ({ dataset: { lang: value } }) } }); },
+    chooseLanguage(value, origin = "button") {
+      const button = { dataset: { lang: value } };
+      document.activeElement = origin === "button" ? button : node("topLanguageSelect");
+      node("languageGate").handlers.click({ target: { closest: () => button } });
+    },
     chooseLocation(value) { node("locationTiles").handlers.click({ target: { closest: () => ({ dataset: { location: value } }) } }); }
   };
 }
@@ -138,4 +144,125 @@ test("official assets, accessible link defaults and coherent cache references", 
   assert.ok(sw.includes("./assets/primserv-logo.svg"));
   assert.ok(sw.includes("./assets/primserv-icon-192.png"));
   assert.equal(sw.includes("./assets/citronex-hydra-logo.png"), false);
+});
+
+for (const lang of locales) {
+  test(`${lang}: keyboard language selection restores focus to the new button`, () => {
+    const c = boot("pl");
+    c.chooseLanguage(lang);
+    const button = c.node(`languageGate:[data-lang="${lang}"]`);
+    assert.equal(c.document.activeElement, button);
+    assert.equal(button.lastFocus.preventScroll, true);
+    assert.match(c.node("languageGate").innerHTML, new RegExp(`aria-pressed="true"[^>]*data-lang="${lang}"`));
+    assert.equal((c.node("languageGate").innerHTML.match(/aria-pressed="true"/g) || []).length, 1);
+  });
+}
+
+test("top language select retains focus when it activates a language button programmatically", () => {
+  const c = boot("pl");
+  c.chooseLanguage("uk", "select");
+  assert.equal(c.document.activeElement, c.node("topLanguageSelect"));
+  assert.equal(c.document.documentElement.lang, "uk");
+});
+
+for (const place of locations) for (const reducedMotion of [false, true]) {
+  test(`${place}, reduced motion ${reducedMotion}: location opens and focuses the named instruction`, () => {
+    const c = boot("uk", "siechnice", { reducedMotion });
+    c.chooseLocation(place);
+    const target = c.node("instructionStart");
+    assert.equal(c.document.activeElement, target);
+    assert.equal(target.lastFocus.preventScroll, true);
+    assert.equal(target.lastScroll.behavior, reducedMotion ? "auto" : "smooth");
+    assert.equal((c.node("locationTiles").innerHTML.match(/aria-pressed="true"/g) || []).length, 1);
+    assert.match(c.node("locationTiles").innerHTML, new RegExp(`aria-pressed="true"[^>]*data-location="${place}"`));
+  });
+}
+
+test("location navigation still works without matchMedia", () => {
+  const c = boot("en", "siechnice", { noMatchMedia: true });
+  c.chooseLocation("bogatynia");
+  assert.equal(c.document.activeElement, c.node("instructionStart"));
+  assert.equal(c.node("instructionStart").lastScroll.behavior, "smooth");
+});
+
+test("initial rendering does not steal focus", () => {
+  assert.equal(boot("en").document.activeElement, undefined);
+});
+
+test("instruction and contact destinations are named, programmatically focusable and visible on keyboard focus", async () => {
+  const html = await fs.readFile(new URL("index.html", root), "utf8");
+  const css = await fs.readFile(new URL("candidate-improvements.css", root), "utf8");
+  for (const [id, label] of [["instructionStart", "locationName"], ["contactsPage", "contactsTitle"]]) {
+    const tag = html.match(new RegExp(`<section[^>]*id="${id}"[^>]*>`))?.[0];
+    assert.ok(tag?.includes('tabindex="-1"'));
+    assert.ok(tag?.includes(`aria-labelledby="${label}"`));
+    assert.ok(css.includes(`#${id}:focus-visible`));
+  }
+  assert.ok(boot("en").node("contactsPage").innerHTML.includes('id="contactsTitle"'));
+});
+
+const improvements = await fs.readFile(new URL("candidate-improvements.js", root), "utf8");
+function contactBoot(reducedMotion, noMatchMedia = false) {
+  const handlers = [];
+  const nodes = new Map();
+  const document = {
+    activeElement: null, documentElement: { lang: "uk" },
+    getElementById: id => nodes.get(id) || null,
+    querySelector: () => null, querySelectorAll: () => [],
+    createElement: () => makeNode(),
+    body: { appendChild(node) { nodes.set(node.id, node); } },
+    addEventListener(type, callback, capture) { handlers.push({ callback, capture }); }
+  };
+  function makeNode() {
+    return { children: [], dataset: {}, innerHTML: "",
+      setAttribute() {},
+      insertAdjacentElement(_where, node) { nodes.set(node.id, node); },
+      focus(options) { document.activeElement = this; this.lastFocus = options; },
+      scrollIntoView(options) { this.lastScroll = options; }
+    };
+  }
+  for (const id of ["contactsPage", "instructionStart", "translatedCandidateCss"]) nodes.set(id, makeNode());
+  const location = { search: "?lang=uk&location=bogatynia" };
+  const window = {};
+  if (!noMatchMedia) window.matchMedia = () => ({ matches: reducedMotion });
+  const forbidden = () => { throw Error("No operational action is allowed"); };
+  const context = vm.createContext({ window, document, location, URLSearchParams,
+    open: forbidden, fetch: forbidden, setTimeout: forbidden, navigator: {} });
+  vm.runInContext(scripts[0], context);
+  vm.runInContext(improvements, context);
+  return { document, nodes,
+    activate(kind, action) {
+      const button = { dataset: { helpAction: action } };
+      let prevented = false, stopped = false;
+      document.activeElement = button;
+      const event = {
+        target: { closest: selector => selector === (kind === "help" ? "[data-help-action]" : `[data-action="${action}"]`) ? button : null },
+        preventDefault() { prevented = true; }, stopImmediatePropagation() { stopped = true; }
+      };
+      for (const h of [...handlers.filter(h => h.capture), ...handlers.filter(h => !h.capture)]) {
+        h.callback(event);
+        if (stopped) break;
+      }
+      return { prevented, stopped };
+    }
+  };
+}
+for (const reducedMotion of [false, true]) for (const kind of ["help", "direct"]) for (const action of ["call", "whatsapp"]) {
+  test(`${kind}/${action}, reduced motion ${reducedMotion}: focus reaches contacts without sending`, () => {
+    const c = contactBoot(reducedMotion);
+    const result = c.activate(kind, action);
+    const section = c.nodes.get("contactsPage");
+    assert.equal(c.document.activeElement, section);
+    assert.equal(section.lastFocus.preventScroll, true);
+    assert.equal(section.lastScroll.behavior, reducedMotion ? "auto" : "smooth");
+    assert.ok(section.innerHTML.includes('id="contactsTitle"'));
+    if (kind === "direct") assert.deepEqual(result, { prevented: true, stopped: true });
+  });
+}
+
+test("contact navigation tolerates browsers without matchMedia", () => {
+  const c = contactBoot(false, true);
+  c.activate("help", "call");
+  assert.equal(c.document.activeElement, c.nodes.get("contactsPage"));
+  assert.equal(c.nodes.get("contactsPage").lastScroll.behavior, "smooth");
 });

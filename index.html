@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex, nofollow, noarchive">
     <meta name="theme-color" content="#1e293b">
-    <meta name="candidate-page-version" content="v51-primserv-navigation">
+    <meta name="candidate-page-version" content="v52-accessible-navigation">
     <meta name="description" content="PrimServ · HYDRA — przyjazd do pracy i wybór lokalizacji.">
     <meta property="og:title" content="PrimServ · Przyjazd do pracy">
     <meta property="og:description" content="HYDRA — instrukcje przyjazdu i kontakty dla wybranej lokalizacji.">
@@ -19,8 +19,8 @@
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" href="assets/primserv-icon-192.png" type="image/png">
     <link rel="apple-touch-icon" href="assets/primserv-icon-192.png">
-    <link rel="stylesheet" href="styles.css?v=51-primserv-navigation">
-    <link rel="stylesheet" href="candidate-improvements.css?v=51-primserv-navigation">
+    <link rel="stylesheet" href="styles.css?v=52-accessible-navigation">
+    <link rel="stylesheet" href="candidate-improvements.css?v=52-accessible-navigation">
   </head>
   <body class="primserv-arrival">
     <div class="app">
@@ -57,7 +57,7 @@
         <div id="locationTiles" class="location-tiles"></div>
       </section>
 
-      <section id="instructionStart" class="summary-band">
+      <section id="instructionStart" class="summary-band" tabindex="-1" aria-labelledby="locationName">
         <div class="summary-item">
           <span data-i18n="employee">Pracownik</span>
           <strong id="employeeName">-</strong>
@@ -80,18 +80,18 @@
 
       <section id="guide" class="guide-grid"></section>
 
-      <section id="contactsPage" class="contacts-section"></section>
+      <section id="contactsPage" class="contacts-section" tabindex="-1" aria-labelledby="contactsTitle"></section>
       </main>
       <footer class="primserv-footer"><a href="https://www.primserv.pl/" target="_blank" rel="noopener noreferrer">PrimServ</a> · HYDRA</footer>
     </div>
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-    <script src="data/config.js?v=51-primserv-navigation"></script>
-    <script src="data/overrides.js?v=51-primserv-navigation"></script>
-    <script src="language-options.js?v=51-primserv-navigation"></script>
-    <script src="app.js?v=51-primserv-navigation"></script>
-    <script src="candidate-improvements.js?v=51-primserv-navigation"></script>
-    <script src="translations.js?v=51-primserv-navigation"></script>
+    <script src="data/config.js?v=52-accessible-navigation"></script>
+    <script src="data/overrides.js?v=52-accessible-navigation"></script>
+    <script src="language-options.js?v=52-accessible-navigation"></script>
+    <script src="app.js?v=52-accessible-navigation"></script>
+    <script src="candidate-improvements.js?v=52-accessible-navigation"></script>
+    <script src="translations.js?v=52-accessible-navigation"></script>
   </body>
 </html>
