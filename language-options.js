@@ -591,63 +591,63 @@
         "Najpierw dojedź do Warszawy Zachodniej. To najłatwiejszy punkt przesiadki.",
         "Z Warszawy Zachodniej sprawdź autobus lub bus do Kozienic.",
         "Z Kozienic jedź w kierunku Ryczywołu lub Ryczywół Szklarnia. Jeżeli nie ma kursu, nie jedź dalej samodzielnie.",
-        "Jeśli utkniesz w Warszawie albo Kozienicach, zostań w miejscu i zadzwoń do Ludmiły lub koordynatora."
+        "Jeśli utkniesz w Warszawie albo Kozienicach, zostań w miejscu i zadzwoń do Dmytra (Dimy) lub koordynatora."
       ],
       ru: [
         "Цель: Ryczywół / проживание Wilczkowice Górne 40, 26-900 Kozienice.",
         "Сначала доедьте до Warszawa Zachodnia. Это самый удобный пункт пересадки.",
         "От Warszawa Zachodnia проверьте автобус или бус до Kozienice.",
         "Из Kozienice ехайте в сторону Ryczywół или Ryczywół Szklarnia. Если рейса нет, не продолжайте самостоятельно.",
-        "Если вы застряли в Варшаве или Kozienice, оставайтесь на месте и звоните Ludmiła или координатору."
+        "Если вы застряли в Варшаве или Kozienice, оставайтесь на месте и звоните Дмитру (Диме) или координатору."
       ],
       uk: [
         "Ціль: Ryczywół / проживання Wilczkowice Górne 40, 26-900 Kozienice.",
         "Спочатку доїдьте до Warszawa Zachodnia. Це найзручніший пункт пересадки.",
         "Від Warszawa Zachodnia перевірте автобус або бус до Kozienice.",
         "Із Kozienice їдьте в напрямку Ryczywół або Ryczywół Szklarnia. Якщо рейсу немає, не продовжуйте самостійно.",
-        "Якщо ви застрягли у Варшаві або Kozienice, залишайтеся на місці і телефонуйте Ludmiła або координатору."
+        "Якщо ви застрягли у Варшаві або Kozienice, залишайтеся на місці і телефонуйте Дмитру (Дімі) або координатору."
       ],
       en: [
         "Destination: Ryczywół / accommodation Wilczkowice Górne 40, 26-900 Kozienice.",
         "First travel to Warszawa Zachodnia. This is the easiest transfer point.",
         "From Warszawa Zachodnia check a bus or minibus to Kozienice.",
         "From Kozienice go toward Ryczywół or Ryczywół Szklarnia. If there is no connection, do not continue alone.",
-        "If you get stuck in Warsaw or Kozienice, stay where you are and call Ludmiła or the coordinator."
+        "If you get stuck in Warsaw or Kozienice, stay where you are and call Dmytro (Dima) or the coordinator."
       ],
       az: [
         "Məqsəd: Ryczywół / yaşayış Wilczkowice Górne 40, 26-900 Kozienice.",
         "Əvvəlcə Warszawa Zachodnia-ya gedin. Bu ən rahat keçid nöqtəsidir.",
         "Warszawa Zachodnia-dan Kozienice-yə avtobus və ya mikroavtobus yoxlayın.",
         "Kozienice-dən Ryczywół və ya Ryczywół Szklarnia istiqamətinə gedin. Reys yoxdursa, tək davam etməyin.",
-        "Warszawa və ya Kozienice-də qalsanız, olduğunuz yerdə qalın və Ludmiła-ya və ya koordinatora zəng edin."
+        "Warszawa və ya Kozienice-də qalsanız, olduğunuz yerdə qalın və Dmytro (Dima)-ya və ya koordinatora zəng edin."
       ],
       es: [
         "Destino: Ryczywół / alojamiento Wilczkowice Górne 40, 26-900 Kozienice.",
         "Primero llega a Warszawa Zachodnia. Es el punto de transbordo más fácil.",
         "Desde Warszawa Zachodnia comprueba un autobús o minibús a Kozienice.",
         "Desde Kozienice ve hacia Ryczywół o Ryczywół Szklarnia. Si no hay conexión, no continúes solo.",
-        "Si te quedas bloqueado en Varsovia o Kozienice, quédate donde estás y llama a Ludmiła o al coordinador."
+        "Si te quedas bloqueado en Varsovia o Kozienice, quédate donde estás y llama a Dmytro (Dima) o al coordinador."
       ],
       fil: [
         "Patutunguhan: Ryczywół / tirahan Wilczkowice Górne 40, 26-900 Kozienice.",
         "Una, pumunta sa Warszawa Zachodnia. Ito ang pinakamadaling transfer point.",
         "Mula Warszawa Zachodnia, tingnan ang bus o minibus papuntang Kozienice.",
         "Mula Kozienice, pumunta sa direksyon ng Ryczywół o Ryczywół Szklarnia. Kung walang biyahe, huwag magpatuloy mag-isa.",
-        "Kung ma-stuck ka sa Warsaw o Kozienice, manatili sa lugar at tawagan si Ludmiła o ang coordinator."
+        "Kung ma-stuck ka sa Warsaw o Kozienice, manatili sa lugar at tawagan si Dmytro (Dima) o ang coordinator."
       ],
       id: [
         "Tujuan: Ryczywół / akomodasi Wilczkowice Górne 40, 26-900 Kozienice.",
         "Pertama pergi ke Warszawa Zachodnia. Ini titik transit paling mudah.",
         "Dari Warszawa Zachodnia cek bus atau minibus ke Kozienice.",
         "Dari Kozienice pergi ke arah Ryczywół atau Ryczywół Szklarnia. Jika tidak ada koneksi, jangan lanjut sendirian.",
-        "Jika terjebak di Warsaw atau Kozienice, tetap di tempat dan telepon Ludmiła atau koordinator."
+        "Jika terjebak di Warsaw atau Kozienice, tetap di tempat dan telepon Dmytro (Dima) atau koordinator."
       ],
       ne: [
         "गन्तव्य: Ryczywół / बसोबास Wilczkowice Górne 40, 26-900 Kozienice.",
         "पहिले Warszawa Zachodnia पुग्नुहोस्। यो सबैभन्दा सजिलो ट्रान्सफर स्थान हो।",
         "Warszawa Zachodnia बाट Kozienice जाने bus वा minibus जाँच गर्नुहोस्।",
         "Kozienice बाट Ryczywół वा Ryczywół Szklarnia तर्फ जानुहोस्। connection छैन भने एक्लै अगाडि नजानुहोस्।",
-        "Warsaw वा Kozienice मा अड्किनुभयो भने, त्यहीँ बस्नुहोस् र Ludmiła वा coordinator लाई कल गर्नुहोस्।"
+        "Warsaw वा Kozienice मा अड्किनुभयो भने, त्यहीँ बस्नुहोस् र Dmytro (Dima) वा coordinator लाई कल गर्नुहोस्।"
       ]
     }
   };
@@ -687,15 +687,15 @@
       "पुगेपछि Nataliia लाई कल गर्नुहोस्: +48 609 809 601."
     ),
     ryczywol: text(
-      "Po przyjeździe zadzwoń do Ludmiły: +48 536 110 591.",
-      "После приезда позвоните Ludmiła: +48 536 110 591.",
-      "Після приїзду зателефонуйте Ludmiła: +48 536 110 591.",
-      "After arrival, call Ludmiła: +48 536 110 591.",
-      "Gəldikdən sonra Ludmiła-ya zəng edin: +48 536 110 591.",
-      "Al llegar, llama a Ludmiła: +48 536 110 591.",
-      "Pagdating, tawagan si Ludmiła: +48 536 110 591.",
-      "Setelah tiba, telepon Ludmiła: +48 536 110 591.",
-      "पुगेपछि Ludmiła लाई कल गर्नुहोस्: +48 536 110 591."
+      "Po przyjeździe zadzwoń do Dmytra (Dimy): +48 511 472 583.",
+      "После приезда позвоните Дмитру (Диме): +48 511 472 583.",
+      "Після приїзду зателефонуйте Дмитру (Дімі): +48 511 472 583.",
+      "After arrival, call Dmytro (Dima): +48 511 472 583.",
+      "Gəldikdən sonra Dmytro (Dima)-ya zəng edin: +48 511 472 583.",
+      "Al llegar, llama a Dmytro (Dima): +48 511 472 583.",
+      "Pagdating, tawagan si Dmytro (Dima): +48 511 472 583.",
+      "Setelah tiba, telepon Dmytro (Dima): +48 511 472 583.",
+      "पुगेपछि Dmytro (Dima) लाई कल गर्नुहोस्: +48 511 472 583."
     )
   };
 
@@ -848,7 +848,7 @@
       list.unshift(person);
     }
   }
-  ensureContact("ryczywol", { name: "Ludmiła", phone: "+48 536 110 591", role: "Zakwaterowanie" });
+  ensureContact("ryczywol", { name: "Dmytro (Dima)", phone: "+48 511 472 583", role: "Zakwaterowanie" });
   ensureContact("bogatynia_zgorzelec", { name: "Nataliia", phone: "+48 609 809 601", role: "Zakwaterowanie" });
 
   const candidateLabels = {

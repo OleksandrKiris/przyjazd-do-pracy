@@ -39,7 +39,7 @@
     }
   };
 
-  ensureContact("ryczywol", { name: "Ludmiła", phone: "+48 536 110 591", role: "Zakwaterowanie" });
+  ensureContact("ryczywol", { name: "Dmytro (Dima)", phone: "+48 511 472 583", role: "Zakwaterowanie" });
   ensureContact("bogatynia_zgorzelec", { name: "Nataliia", phone: "+48 609 809 601", role: "Zakwaterowanie" });
 
   if (routes.ryczywol) {

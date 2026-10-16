@@ -351,18 +351,18 @@ window.ARRIVAL_DEFAULT_CONFIG = {
       accent: "#238636",
       address: ["Wilczkowice Górne 40", "26-900 Kozienice", "Polska"],
       mapQuery: "Wilczkowice Górne 40, 26-900 Kozienice, Polska",
-      phone: "+48536110591",
-      whatsapp: "+48536110591",
+      phone: "+48511472583",
+      whatsapp: "+48511472583",
       note: {
-        pl: "Po przyjeździe pracownik musi zadzwonić do administratora: Ludmiła, +48 536 110 591.",
-        uk: "Після приїзду працівник має зателефонувати адміністратору: Людмила, +48 536 110 591.",
-        ru: "После приезда работник должен позвонить администратору: Людмила, +48 536 110 591.",
-        en: "After arrival, the employee must call the administrator: Ludmiła, +48 536 110 591.",
-        ka: "ჩამოსვლის შემდეგ თანამშრომელმა უნდა დაურეკოს ადმინისტრატორს: Ludmiła, +48 536 110 591.",
-        az: "Gəldikdən sonra işçi administratora zəng etməlidir: Ludmiła, +48 536 110 591."
+        pl: "Po przyjeździe pracownik musi zadzwonić do administratora: Dmytro (Dima), +48 511 472 583.",
+        uk: "Після приїзду працівник має зателефонувати адміністратору: Дмитро (Діма), +48 511 472 583.",
+        ru: "После приезда работник должен позвонить администратору: Дмитро (Дима), +48 511 472 583.",
+        en: "After arrival, the employee must call the administrator: Dmytro (Dima), +48 511 472 583.",
+        ka: "ჩამოსვლის შემდეგ თანამშრომელმა უნდა დაურეკოს ადმინისტრატორს: Dmytro (Dima), +48 511 472 583.",
+        az: "Gəldikdən sonra işçi administratora zəng etməlidir: Dmytro (Dima), +48 511 472 583."
       },
       route: {
-        pl: ["Najpierw dojedź do Warszawy Zachodniej. To główny punkt przesiadki na trasie do Kozienic.", "Na dworcu Warszawa Zachodnia znajdź autobus albo bus do Kozienic. Przed wyjazdem sprawdź godzinę kursu w aktualnym rozkładzie.", "W Kozienicach przesiądź się na transport w kierunku Ryczywołu. Jeżeli jest kurs do przystanku Ryczywół Szklarnia, wysiądź właśnie tam.", "Jeżeli nie ma dobrego połączenia z Kozienic do Ryczywołu, nie jedź dalej samodzielnie. Zostań w Kozienicach i zadzwoń do koordynatora.", "Adres zakwaterowania: Wilczkowice Górne 40, 26-900 Kozienice. Ten adres pokaż kierowcy taxi, jeżeli jedziesz taksówką.", "Po przyjeździe obowiązkowo zadzwoń do administratora Ludmiły albo do koordynatora. Nie czekaj bez kontaktu."],
+        pl: ["Najpierw dojedź do Warszawy Zachodniej. To główny punkt przesiadki na trasie do Kozienic.", "Na dworcu Warszawa Zachodnia znajdź autobus albo bus do Kozienic. Przed wyjazdem sprawdź godzinę kursu w aktualnym rozkładzie.", "W Kozienicach przesiądź się na transport w kierunku Ryczywołu. Jeżeli jest kurs do przystanku Ryczywół Szklarnia, wysiądź właśnie tam.", "Jeżeli nie ma dobrego połączenia z Kozienic do Ryczywołu, nie jedź dalej samodzielnie. Zostań w Kozienicach i zadzwoń do koordynatora.", "Adres zakwaterowania: Wilczkowice Górne 40, 26-900 Kozienice. Ten adres pokaż kierowcy taxi, jeżeli jedziesz taksówką.", "Po przyjeździe obowiązkowo zadzwoń do administratora Dmytra (Dimy) albo do koordynatora. Nie czekaj bez kontaktu."],
         uk: ["Доїдьте до Warszawa Zachodnia.", "На станції Warszawa Zachodnia знайдіть автобус у напрямку Kozienice.", "Вийдіть на зупинці Ryczywół Szklarnia.", "Після виходу з автобуса зателефонуйте адміністратору або координатору.", "Адреса проживання: Wilczkowice Górne 40, 26-900 Kozienice."],
         ru: ["Доедьте до Warszawa Zachodnia.", "На станции Warszawa Zachodnia найдите автобус в направлении Kozienice.", "Выйдите на остановке Ryczywół Szklarnia.", "После выхода из автобуса позвоните администратору или координатору.", "Адрес проживания: Wilczkowice Górne 40, 26-900 Kozienice."],
         en: ["Travel to Warszawa Zachodnia.", "At Warszawa Zachodnia, find a bus towards Kozienice.", "Get off at the Ryczywół Szklarnia stop.", "After leaving the bus, call the administrator or coordinator.", "Accommodation address: Wilczkowice Górne 40, 26-900 Kozienice."],
