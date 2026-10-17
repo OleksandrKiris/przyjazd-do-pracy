@@ -1,0 +1,42 @@
+name: Packing browser acceptance
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      TESTED_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+      TESTED_BASE: ${{ github.event.pull_request.base.sha || 'dfac43ca1f5d9f79eefecf5201896eca7ca9c0e8' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TESTED_HEAD }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Verify exact head and current base ancestry
+        run: |
+          test "$(git rev-parse HEAD)" = "$TESTED_HEAD"
+          git merge-base --is-ancestor "$TESTED_BASE" "$TESTED_HEAD"
+      - run: npm test
+      - name: Install isolated browser test dependency
+        run: |
+          npm install --prefix "$RUNNER_TEMP/arrival-browser" --no-package-lock --no-audit --no-fund playwright@1.56.1
+          "$RUNNER_TEMP/arrival-browser/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Real Chromium acceptance
+        run: |
+          export PLAYWRIGHT_PACKAGE="$RUNNER_TEMP/arrival-browser/node_modules/playwright"
+          export BROWSER_REPORT="$RUNNER_TEMP/arrival-acceptance"
+          node tools/packing-browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: arrival-acceptance-${{ env.TESTED_HEAD }}
+          path: ${{ runner.temp }}/arrival-acceptance
+          retention-days: 14
