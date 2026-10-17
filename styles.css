@@ -649,3 +649,9 @@ main {
     padding: 0;
   }
 }
+/* Native checkboxes retain keyboard interaction and a generous label target. */
+.packing-list { list-style: none; padding-left: 0; }
+.packing-list label { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 6px 0; cursor: pointer; }
+.packing-list input { flex: 0 0 22px; width: 22px; height: 22px; margin: 0; }
+.packing-list span { min-width: 0; overflow-wrap: anywhere; }
+.packing-list input:focus-visible { outline: 3px solid #1d5fd6; outline-offset: 3px; }

@@ -1,4 +1,4 @@
-const CACHE_NAME = "arrival-guide-v54-housing-contact";
+const CACHE_NAME = "arrival-guide-v57-packing-visible";
 const APP_SHELL = "./index.html";
 const ASSETS = [
   "./",
@@ -47,57 +47,53 @@ self.addEventListener("message", (event) => {
   }
 });
 
-function shouldCache(request) {
-  if (request.method !== "GET") return false;
-  const requestUrl = new URL(request.url);
-  return requestUrl.origin === self.location.origin;
+const SHELL_URL = new URL(APP_SHELL, self.location.href).href;
+const ROOT_URL = new URL("./", self.location.href).href;
+const PUBLIC_URLS = new Set(ASSETS.map(asset => new URL(asset, self.location.href).href));
+
+function publicRequest(request) {
+  if (request.method !== "GET" || request.headers.has("Authorization") || request.headers.has("Range")) return null;
+  const url = new URL(request.url);
+  url.search = "";
+  url.hash = "";
+  if (!PUBLIC_URLS.has(url.href)) return null;
+  // The URL still stays in the page for its existing UI, but never in CacheStorage
+  // keys or cached Response.url. Only the approved static file is fetched here.
+  if (url.href === ROOT_URL) url.href = SHELL_URL;
+  return new Request(url.href, { credentials: "omit", cache: "no-cache", redirect: "error" });
 }
 
-function networkTimeout(ms = 1400) {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(null), ms);
-  });
-}
-
-async function cacheFirst(request, fallback = null) {
-  const cached = await caches.match(request, { ignoreSearch: true });
+async function cacheFirst(request, event) {
+  let cache;
+  try { cache = await caches.open(CACHE_NAME); } catch { /* Read-only/network use remains possible. */ }
+  const cached = cache ? await cache.match(request).catch(() => null) : null;
+  const refresh = async () => {
+    const response = await fetch(request);
+    if (response && response.ok && cache) {
+      try { await cache.put(request, response.clone()); } catch { /* Quota cannot discard a usable response. */ }
+    }
+    return response;
+  };
   if (cached) {
-    fetch(request)
-      .then((response) => {
-        if (response && response.ok) {
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
-        }
-      })
-      .catch(() => {});
+    event.waitUntil(refresh().catch(() => {}));
     return cached;
   }
 
+  let timer;
   try {
-    const response = await Promise.race([fetch(request), networkTimeout()]);
-    if (response && response.ok) {
-      const copy = response.clone();
-      caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
-      return response;
-    }
+    const pending = refresh();
+    event.waitUntil(pending.catch(() => {}));
+    const response = await Promise.race([pending, new Promise(resolve => { timer = setTimeout(() => resolve(null), 1400); })]);
+    if (response) return response;
   } catch (error) {
-    // Fall back below.
+    // Only this version's approved static cache is eligible for offline fallback.
+  } finally {
+    clearTimeout(timer);
   }
-
-  if (!fallback) return Response.error();
-  return caches.match(fallback, { ignoreSearch: true }).then((fallbackResponse) => fallbackResponse || Response.error());
-}
-
-function networkFirst(request) {
-  return cacheFirst(request, APP_SHELL);
+  return Response.error();
 }
 
 self.addEventListener("fetch", (event) => {
-  if (!shouldCache(event.request)) return;
-
-  if (event.request.mode === "navigate") {
-    event.respondWith(networkFirst(event.request));
-    return;
-  }
-
-  event.respondWith(cacheFirst(event.request, null));
+  const request = publicRequest(event.request);
+  if (request) event.respondWith(cacheFirst(request, event));
 });

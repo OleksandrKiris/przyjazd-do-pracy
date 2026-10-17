@@ -11,10 +11,102 @@ const improvements = await fs.readFile(new URL("candidate-improvements.js", root
 const translations = await fs.readFile(new URL("translations.js", root), "utf8");
 const locales = ["pl", "ru", "uk", "en", "az", "es", "fil", "id", "ne"];
 const locations = ["siechnice", "ryczywol", "bogatynia", "zgorzelec"];
+const packingKey = "primserv.arrival.packing.v1";
+
+test("packing panel remains outside the legacy hidden-panel selectors", async () => {
+  const css = await fs.readFile(new URL("candidate-improvements.css", root), "utf8");
+  assert.match(boot("en").node("guide").innerHTML, /<section class="panel packing-panel">/);
+  const selectors = css.match(/\.guide-grid > \.panel[^\n]*:nth-of-type\(n\+3\)/g);
+  assert.equal(selectors.length, 2);
+  for (const selector of selectors) assert.ok(selector.includes(":not(.packing-panel)"));
+});
+
+for (const lang of locales) test(`${lang}: existing packing items become labelled local checkboxes`, () => {
+  for(const [country,key] of [["poland","poland"],["ukraine","ukraine"],["georgia","caucasus"]]) {
+    const c=boot(lang,"ryczywol",{country});
+    const items=c.window.ARRIVAL_DEFAULT_CONFIG.packs[key][lang];
+    assert.equal((c.node("guide").innerHTML.match(/type="checkbox"/g)||[]).length,items.length);
+    for(const item of items) assert.ok(c.node("guide").innerHTML.includes(item));
+    assert.match(c.node("guide").innerHTML, /<label>\s*<input type="checkbox"/);
+    assert.match(c.node("guide").innerHTML, /id="packingStatus" role="status" aria-live="polite"/);
+    c.mark(key,0);
+    c.chooseLanguage("uk");c.chooseLocation("bogatynia");
+    assert.match(c.node("guide").innerHTML,new RegExp(`data-pack="${key}" data-pack-index="0"[^>]*checked`));
+    const reload=boot("en","siechnice",{country,saved:c.saved});
+    assert.match(reload.node("guide").innerHTML,new RegExp(`data-pack="${key}" data-pack-index="0"[^>]*checked`));
+    assert.equal(JSON.stringify(c.window.ARRIVAL_DEFAULT_CONFIG),c.originalConfig);
+  }
+});
+
+test("packing writes only list identity and boolean marks, never arrival data",()=>{
+  const c=boot("ru");c.saved.set("unrelated","retain");c.mark("poland",1);
+  const raw=c.saved.get(packingKey);
+  assert.deepEqual(Object.keys(JSON.parse(raw)).sort(),["lists","version"]);
+  assert.doesNotMatch(raw,/Fixture|Example|2026-11-02|"(?:surname|department|location|lang|phone|name)":/);
+  assert.equal(c.saved.get("unrelated"),"retain");
+  assert.equal(c.writes.length,1);
+  c.mark("poland",1,false);
+  assert.equal(JSON.parse(c.saved.get(packingKey)).lists.poland.checked[1],false);
+});
+
+test("packing variants remain independent and marks survive navigation between them",()=>{
+  const saved=new Map();const p=boot("en","siechnice",{saved});p.mark("poland",0);
+  const u=boot("uk","ryczywol",{saved,country:"ukraine"});
+  assert.doesNotMatch(u.node("guide").innerHTML,/data-pack="ukraine"[^>]* checked/);
+  u.mark("ukraine",2);
+  const data=JSON.parse(saved.get(packingKey));
+  assert.equal(data.lists.poland.checked[0],true);assert.equal(data.lists.ukraine.checked[2],true);
+  assert.ok(data.lists.caucasus.checked.every(value=>!value));
+});
+
+test("empty storage is not written merely by opening or rendering",()=>{
+  const c=boot("en");assert.equal(c.saved.has(packingKey),false);
+  c.chooseLocation("ryczywol");assert.equal(c.saved.has(packingKey),false);
+});
+
+for(const raw of ["{broken","null","[]",'{"version":2,"lists":{}}','{"version":1,"lists":{},"unknown":"retain"}'])test(`unknown packing storage stays untouched: ${raw}`,()=>{
+  const saved=new Map([[packingKey,raw]]);const c=boot("en","siechnice",{saved});
+  c.mark("poland",0);c.chooseLanguage("ru");
+  assert.equal(saved.get(packingKey),raw);assert.equal(c.writes.filter(([k])=>k===packingKey).length,0);
+  assert.match(c.node("guide").innerHTML,/data-pack="poland" data-pack-index="0"[^>]*checked/);
+  assert.match(c.node("packingStatus").textContent,/Not saved/);
+});
+
+test("changed list identity and invalid saved mark are preserved rather than migrated destructively",()=>{
+  for(const change of [d=>d.lists.poland.items.reverse(),d=>d.lists.poland.checked[0]="yes",d=>d.lists.poland.checked.pop()]){
+    const c=boot("en");c.mark("poland",0);const data=JSON.parse(c.saved.get(packingKey));change(data);
+    const raw=JSON.stringify(data);const saved=new Map([[packingKey,raw]]);
+    const updated=boot("en","siechnice",{saved});updated.mark("poland",1);
+    assert.equal(saved.get(packingKey),raw);
+    assert.match(updated.node("packingStatus").textContent,/Not saved/);
+  }
+});
+
+for(const option of ["blockedStorage","blockedWrite"])test(`${option}: packing works in memory with warning and does not corrupt prior data`,()=>{
+  const saved=new Map([["unrelated","keep"]]);
+  const c=boot("en","ryczywol",{saved,[option]:true});c.mark("poland",0);c.chooseLocation("bogatynia");
+  assert.match(c.node("guide").innerHTML,/data-pack="poland" data-pack-index="0"[^>]*checked/);
+  assert.match(c.node("packingStatus").textContent,/Not saved/);
+  assert.equal(saved.get("unrelated"),"keep");assert.equal(saved.has(packingKey),false);
+});
+
+test("concurrent storage change is never overwritten",()=>{
+  const c=boot("en");c.mark("poland",0);const newer='{"version":9}';c.saved.set(packingKey,newer);
+  c.mark("poland",1);assert.equal(c.saved.get(packingKey),newer);
+  assert.match(c.node("packingStatus").textContent,/Not saved/);
+});
+
+test("new helper text has an explicit English fallback, existing list language stays selected",()=>{
+  for(const lang of ["az","es","fil","id","ne"]){
+    const c=boot(lang);
+    assert.match(c.node("guide").innerHTML, /id="packingHint" lang="en">English \(EN\):/);
+    assert.equal(c.document.documentElement.lang,lang);
+  }
+});
 
 function boot(lang, place = "bogatynia", options = {}) {
   const url = new URL("https://oleksandrkiris.github.io/przyjazd-do-pracy/");
-  url.search = new URLSearchParams({ lang, location: place, name: "Fixture", surname: "Example", date: "2026-11-02", department: "production", hotel: "yes", country: "poland" });
+  url.search = new URLSearchParams({ lang, location: place, name: "Fixture", surname: "Example", date: "2026-11-02", department: "production", hotel: "yes", country: options.country || "poland" });
   url.hash = "#instructionStart";
   const location = { href: url.href, search: url.search, protocol: url.protocol };
   const history = {
@@ -43,9 +135,11 @@ function boot(lang, place = "bogatynia", options = {}) {
     }
     return nodes.get(id);
   }
+  const saved = options.saved || new Map();
+  const writes = [];
   const localStorage = {
-    getItem() { if (options.blockedStorage) throw Error("Storage blocked"); return options.storedLang || null; },
-    setItem() { if (options.blockedStorage) throw Error("Storage blocked"); }
+    getItem(key) { if (options.blockedStorage) throw Error("Storage blocked"); return saved.get(key) ?? (key === "arrival-guide-language" ? options.storedLang || null : null); },
+    setItem(key, value) { if (options.blockedStorage || options.blockedWrite) throw Error("Storage blocked"); saved.set(key,value); writes.push([key,value]); }
   };
   const document = {
     getElementById: node,
@@ -66,7 +160,13 @@ function boot(lang, place = "bogatynia", options = {}) {
   scripts.slice(0, 3).forEach((script, i) => vm.runInContext(script, context, { filename: paths[i] }));
   const originalConfig = JSON.stringify(window.ARRIVAL_DEFAULT_CONFIG);
   vm.runInContext(scripts[3], context, { filename: paths[3] });
-  return { node, document, location, window, history, originalConfig,
+  return { node, document, location, window, history, originalConfig, saved, writes,
+    mark(key,index,checked=true) {
+      const input={type:"checkbox",dataset:{pack:key,packIndex:String(index)},checked};
+      document.activeElement=input;
+      node("guide").handlers.change({target:input});
+      assert.equal(document.activeElement,input,"Checkbox focus must survive changes");
+    },
     refreshEnhancements() {
       vm.runInContext(improvements, context);
       vm.runInContext(translations, context);
