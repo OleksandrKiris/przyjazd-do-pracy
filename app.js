@@ -213,7 +213,7 @@
       ${panel(t("route"), `${routeSteps(localizedList(place.route))}${routeLinks(place.routeLinks)}`)}
       ${panel(t("workType"), list(workItems))}
       ${panel(t("arrivalRules"), `<p>${escapeHtml(t("reception"))}</p><p>${escapeHtml(t("noWeekend"))}</p><p>${escapeHtml(t("late"))}</p>`)}
-      ${panel(t("whatToPack"), `<p><strong>${escapeHtml(packLabel(packKey))}</strong></p>${packingList(packKey)}`)}
+      ${panel(t("whatToPack"), `<p><strong>${escapeHtml(packLabel(packKey))}</strong></p>${packingList(packKey)}`, "packing-panel")}
       ${state.hotel ? panel(t("housing"), `<p>${escapeHtml(t("hotelReady"))}</p>`) : ""}
       ${place.note ? panel(t("contacts"), `<p>${escapeHtml(localizedText(place.note))}</p>${place.coordinators ? list(place.coordinators) : ""}`) : ""}
       <section class="panel wide">
@@ -252,8 +252,8 @@
     $("contactsPage").innerHTML = `<h2 id="contactsTitle">${escapeHtml(t("contacts"))}</h2>${groups}<p><strong>${escapeHtml(t("questions"))}</strong></p>`;
   }
 
-  function panel(title, body) {
-    return `<section class="panel"><h2>${escapeHtml(title)}</h2>${body}</section>`;
+  function panel(title, body, extraClass = "") {
+    return `<section class="panel${extraClass ? ` ${escapeHtml(extraClass)}` : ""}"><h2>${escapeHtml(title)}</h2>${body}</section>`;
   }
 
   function loadPacking() {

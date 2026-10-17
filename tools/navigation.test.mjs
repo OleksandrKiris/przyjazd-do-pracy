@@ -13,6 +13,14 @@ const locales = ["pl", "ru", "uk", "en", "az", "es", "fil", "id", "ne"];
 const locations = ["siechnice", "ryczywol", "bogatynia", "zgorzelec"];
 const packingKey = "primserv.arrival.packing.v1";
 
+test("packing panel remains outside the legacy hidden-panel selectors", async () => {
+  const css = await fs.readFile(new URL("candidate-improvements.css", root), "utf8");
+  assert.match(boot("en").node("guide").innerHTML, /<section class="panel packing-panel">/);
+  const selectors = css.match(/\.guide-grid > \.panel[^\n]*:nth-of-type\(n\+3\)/g);
+  assert.equal(selectors.length, 2);
+  for (const selector of selectors) assert.ok(selector.includes(":not(.packing-panel)"));
+});
+
 for (const lang of locales) test(`${lang}: existing packing items become labelled local checkboxes`, () => {
   for(const [country,key] of [["poland","poland"],["ukraine","ukraine"],["georgia","caucasus"]]) {
     const c=boot(lang,"ryczywol",{country});

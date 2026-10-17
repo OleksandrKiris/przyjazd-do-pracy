@@ -1171,7 +1171,7 @@ main {
   gap: 12px;
 }
 
-.guide-grid > .panel:not(.wide):nth-of-type(n+3) {
+.guide-grid > .panel:not(.wide):not(.packing-panel):nth-of-type(n+3) {
   display: none !important;
 }
 
@@ -1675,7 +1675,7 @@ main {
   gap: 9px;
 }
 
-.guide-grid > .panel:not(.wide):nth-of-type(n+3),
+.guide-grid > .panel:not(.wide):not(.packing-panel):nth-of-type(n+3),
 .panel.wide {
   display: none !important;
 }

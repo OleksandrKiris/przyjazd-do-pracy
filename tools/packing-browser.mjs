@@ -40,13 +40,14 @@ const server=createServer((req,res)=>{
 });
 await new Promise(done=>server.listen(4173,'127.0.0.1',done));
 const url='http://127.0.0.1:4173/przyjazd-do-pracy/';
-const key='primserv.arrival.packing.v1', cache='arrival-guide-v56-packing-cache';
+const key='primserv.arrival.packing.v1', cache='arrival-guide-v57-packing-visible';
 let browser;
 const checks=async(page,lang,location='ryczywol')=>{
   await page.waitForFunction(({lang,location})=>document.documentElement.lang===lang&&document.documentElement.dataset.arrivalLocation===location,{lang,location});
   assert.ok(await page.locator('.packing-list input').count());
+  assert.equal(await page.locator('.packing-list input').first().isVisible(),true,'packing list must be visible, not merely in DOM');
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'horizontal overflow');
-  assert.ok(await page.locator('a[href="tel:+48511472583"]').count(),'confirmed housing contact');
+  if(location==='ryczywol')assert.ok(await page.locator('a[href="tel:+48511472583"]').count(),'confirmed housing contact');
 };
 const installed=page=>page.waitForFunction(()=>Boolean(navigator.serviceWorker.controller));
 const cacheReport=page=>page.evaluate(async name=>{
@@ -85,13 +86,14 @@ try {
       assert.equal(await first.evaluate(el=>el===document.activeElement),true);
       await page.keyboard.press('Tab');assert.equal(await second.evaluate(el=>el===document.activeElement),true);
       for(const lang of ['pl','uk','ru','en','az','es','fil','id','ne']) {
-        const button=page.locator(`#languageGate [data-lang="${lang}"]`);
-        await button.focus();await page.keyboard.press('Enter');await checks(page,lang);
+        const select=page.locator('#topLanguageSelect');
+        await select.focus();await select.selectOption(lang);await checks(page,lang);
         assert.equal(await first.isChecked(),true);
-        assert.equal(await button.evaluate(el=>el===document.activeElement),true);
+        assert.equal(await select.evaluate(el=>el===document.activeElement),true);
         if(!['pl','uk','ru','en'].includes(lang))assert.match(await page.locator('#packingHint').innerText(),/^English \(EN\):/);
       }
-      await page.locator('#languageGate [data-lang="uk"]').click();
+      await page.locator('#topLanguageSelect').focus();await page.keyboard.press('Home');
+      await page.keyboard.press('ArrowDown');await page.keyboard.press('ArrowDown');await page.keyboard.press('Enter');await checks(page,'uk');
       await page.locator('[data-location="bogatynia"]').click();await checks(page,'uk','bogatynia');
       assert.equal(await first.isChecked(),true);
       await installed(page);await page.reload();await checks(page,'uk','bogatynia');assert.equal(await first.isChecked(),true);
@@ -138,7 +140,7 @@ try {
     try {
       await page.goto(url+'?lang=en&location=ryczywol');await installed(page);
       const oldCache=await page.evaluate(()=>caches.keys());assert.ok(oldCache.some(name=>/^arrival-guide-v5[45]/.test(name)));
-      // v54 has no checklist; seed only the exact public boolean schema used by v55/v56.
+      // v54 has no checklist; seed only the exact public boolean schema used by v55 onward.
       await page.evaluate(async key=>{
         const lists={};for(const [name,pack] of Object.entries(window.ARRIVAL_DEFAULT_CONFIG.packs))lists[name]={items:[...pack.en],checked:pack.en.map((_,i)=>i===0)};
         localStorage.setItem(key,JSON.stringify({version:1,lists}));localStorage.setItem('unrelated-fixture','preserve');

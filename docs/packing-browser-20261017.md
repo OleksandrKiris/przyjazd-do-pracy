@@ -2,9 +2,15 @@
 
 Issue: https://github.com/OleksandrKiris/przyjazd-do-pracy/issues/6
 
-This continuation adds acceptance coverage, not a second feature. Runtime remains
-v56-packing-cache; app bytes, materials, routes, translations and confirmed Dmytro
-(Dima) +48511472583 contact are unchanged. Runtime size/request delta: zero.
+This continuation completes the existing feature, not a second feature. The first
+real Chromium run on 795e672 failed at keyboard Space: the list existed in the DOM
+but both legacy nth-of-type(n+3) CSS rules hid its entire panel. A packing-panel
+class now exempts only this section from both hide rules. Other hidden panels stay
+unchanged. Added structural regression and explicit browser visibility assertion.
+Runtime version is v57-packing-visible; materials, routes, translations and the
+confirmed Dmytro (Dima) +48511472583 contact are unchanged. No new runtime requests.
+The visible top language select, not the intentionally hidden legacy language
+buttons, is used for acceptance. Runtime byte delta is recorded in the PR.
 
 `Packing browser acceptance` checks out the exact PR head, verifies base ancestry,
 runs `npm test`, then pinned Playwright 1.56.1 Chromium. Test dependencies live only
@@ -18,7 +24,7 @@ file, Chromium version, screenshot/trace, cache entries and bounded request coun
 Matrix: 1280/320px, Tab/Space/focus, all nine languages, explicit English helper
 fallback, ka fallback, independent packing variants, city changes, reload and Back,
 Chromium offline reload and edits, corrupt/future/denied storage, real v54/v55 worker
-upgrade to v56 preserving marks and an unrelated cache. 320px is not a phone test.
+upgrade to v57 preserving marks and an unrelated cache. 320px is not a phone test.
 Fault injection is distinct from actual offline networking in a fresh test context.
 
 Run the workflow on the PR; inspect `acceptance.json`, screenshots, trace and job
