@@ -137,6 +137,7 @@ try {
   for(const oldRef of [base,'5d08e94c2ebacbe6ebb3e207da4bee25dd585ed1']) {
     serving=Object.fromEntries(files.map(file=>[file,gitFile(oldRef,file)]));
     const {ctx,blocked}=await context(320),page=await ctx.newPage();
+    await ctx.tracing.start({screenshots:true,snapshots:true});
     try {
       await page.goto(url+'?lang=en&location=ryczywol');await installed(page);
       const oldCache=await page.evaluate(()=>caches.keys());assert.ok(oldCache.some(name=>/^arrival-guide-v5[45]/.test(name)));
@@ -147,8 +148,21 @@ try {
         await (await caches.open('foreign-fixture')).put('./foreign-fixture',new Response('preserve'));
       },key);
       const before=await page.evaluate(key=>localStorage.getItem(key),key);
-      serving=current;await page.evaluate(async()=>{await (await navigator.serviceWorker.getRegistration()).update();});
+      serving=current;await page.evaluate(async()=>{
+        window.previousTestController=navigator.serviceWorker.controller;
+        await (await navigator.serviceWorker.getRegistration()).update();
+      });
+      // Cache creation/deletion precedes clients.claim; only the new controller
+      // can prove that the following navigation uses the installed release.
+      await page.waitForFunction(()=>navigator.serviceWorker.controller &&
+        navigator.serviceWorker.controller!==window.previousTestController &&
+        navigator.serviceWorker.controller.state==='activated');
       await page.waitForFunction(async name=>{const keys=await caches.keys();return keys.includes(name)&&!keys.some(key=>key.startsWith('arrival-guide-')&&key!==name);},cache);
+      const cachedApp=await page.evaluate(async name=>{
+        const response=await (await caches.open(name)).match(new URL('./app.js',location.href));
+        return response ? await response.text() : null;
+      },cache);
+      assert.equal(createHash('sha256').update(cachedApp||'').digest('hex'),report.files['app.js'].sha256,'new worker must cache exact current app.js');
       await page.reload();await checks(page,'en');await ctx.setOffline(true);await page.reload();await checks(page,'en');
       assert.equal(await page.locator('.packing-list input').first().isChecked(),true);
       assert.equal(await page.evaluate(key=>localStorage.getItem(key),key),before);
@@ -156,7 +170,11 @@ try {
       assert.equal(await page.evaluate(async()=>await (await caches.open('foreign-fixture')).match('./foreign-fixture').then(r=>r.text())),'preserve');
       assert.deepEqual(blocked,[]);await page.screenshot({path:join(output,`upgrade-${oldRef.slice(0,7)}.png`)});
       report.results.push({oldRef,status:'passed',steps:['actual old worker','new worker activation','foreign cache/marks preserved','offline reload']});
-    } finally {serving=current;await ctx.close();}
+    } finally {
+      serving=current;
+      await page.screenshot({path:join(output,`upgrade-${oldRef.slice(0,7)}-last.png`)}).catch(()=>{});
+      await ctx.tracing.stop({path:join(output,`upgrade-${oldRef.slice(0,7)}-trace.zip`)});await ctx.close();
+    }
   }
   assert.ok(requests.every(r=>['GET','HEAD'].includes(r.method)));
   report.requests={count:requests.length,uniquePaths:[...new Set(requests.map(r=>r.path))],nonGet:0};

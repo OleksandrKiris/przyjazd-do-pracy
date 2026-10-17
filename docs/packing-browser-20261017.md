@@ -12,6 +12,15 @@ confirmed Dmytro (Dima) +48511472583 contact are unchanged. No new runtime reque
 The visible top language select, not the intentionally hidden legacy language
 buttons, is used for acceptance. Runtime byte delta is recorded in the PR.
 
+Follow-up: CI39014694492 passed the new-version keyboard/language/320px/offline
+and damaged/denied-storage scenarios, but failed while upgrading the old worker.
+The upgrade test now waits for the new activated controller, not only cache names
+(the activate handler deletes caches before clients.claim). It also verifies the
+cached app.js SHA-256 against this exact head and saves an upgrade trace on failure.
+This changes test synchronization/evidence only; it does not declare the upgrade
+fixed or weaken the visible-checklist/preserved-marks requirements. The successful
+run, if obtained, is recorded in the PR. Runtime remains v57-packing-visible.
+
 `Packing browser acceptance` checks out the exact PR head, verifies base ancestry,
 runs `npm test`, then pinned Playwright 1.56.1 Chromium. Test dependencies live only
 in runner temp. No package/runtime dependency, backend or public preview is added.
