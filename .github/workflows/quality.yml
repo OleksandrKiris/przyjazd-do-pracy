@@ -29,3 +29,6 @@ jobs:
 
       - name: Test service navigation
         run: npm run test:navigation
+
+      - name: Test public cache isolation without network
+        run: npm run test:cache
