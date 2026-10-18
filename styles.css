@@ -655,3 +655,21 @@ main {
 .packing-list input { flex: 0 0 22px; width: 22px; height: 22px; margin: 0; }
 .packing-list span { min-width: 0; overflow-wrap: anywhere; }
 .packing-list input:focus-visible { outline: 3px solid #1d5fd6; outline-offset: 3px; }
+
+.address-copy-fallback[hidden] { display: none; }
+.address-copy-fallback { margin-top: 12px; }
+.address-copy-fallback textarea {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-height: 96px;
+  padding: 10px;
+  border: 2px solid var(--primary-dark);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--text);
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.5;
+  resize: vertical;
+}

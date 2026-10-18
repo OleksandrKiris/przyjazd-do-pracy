@@ -41,6 +41,18 @@
     ne: ["तयार पारेका सामानमा चिन्ह लगाउनुहोस्। यस उपकरणमा मात्र सुरक्षित हुन्छ; केही पठाइँदैन।", "यस उपकरणमा सुरक्षित भयो।", "सुरक्षित भएन। चिन्हहरू यस सत्रमा मात्र रहन्छन्; पहिलेका डेटा परिवर्तन भएका छैनन्।"]
   };
 
+  const copyFallbackLabels = {
+    pl: "Nie udało się skopiować automatycznie. Zaznacz i skopiuj adres z pola poniżej.",
+    ru: "Автоматическое копирование не удалось. Выделите и скопируйте адрес из поля ниже.",
+    uk: "Не вдалося скопіювати автоматично. Виділіть і скопіюйте адресу з поля нижче.",
+    en: "Automatic copying failed. Select and copy the address from the field below.",
+    az: "Avtomatik köçürmə alınmadı. Aşağıdakı xanadakı ünvanı seçib köçürün.",
+    es: "No se ha podido copiar automáticamente. Selecciona y copia la dirección del campo de abajo.",
+    fil: "Hindi awtomatikong nakopya. Piliin at kopyahin ang address sa field sa ibaba.",
+    id: "Penyalinan otomatis gagal. Pilih dan salin alamat dari kolom di bawah.",
+    ne: "स्वचालित रूपमा प्रतिलिपि गर्न सकिएन। तलको बाकसबाट ठेगाना छानेर प्रतिलिपि गर्नुहोस्।"
+  };
+
   const $ = (id) => document.getElementById(id);
   const t = (key) => (config.ui[state.lang] && config.ui[state.lang][key]) || config.ui.pl[key] || key;
 
@@ -214,7 +226,12 @@
     const packKey = state.country === "poland" ? "poland" : ["georgia", "azerbaijan", "ka", "az"].includes(state.country) ? "caucasus" : "ukraine";
 
     $("guide").innerHTML = `
-      ${panel(t("address"), `<p>${addressHtml}</p>`)}
+      ${panel(t("address"), `<p>${addressHtml}</p>
+        <button type="button" data-action="copy-address">${escapeHtml(t("copyAddress"))}</button>
+        <div id="addressCopyFallback" class="address-copy-fallback" hidden>
+          <p id="addressCopyHint" role="status">${escapeHtml(copyFallbackLabels[state.lang])}</p>
+          <textarea id="addressCopyValue" rows="3" readonly aria-label="${escapeHtml(t("address"))}" aria-describedby="addressCopyHint">${escapeHtml(address)}</textarea>
+        </div>`)}
       ${panel(t("route"), `${routeSteps(localizedList(place.route))}${routeLinks(place.routeLinks)}`)}
       ${panel(t("workType"), list(workItems))}
       ${panel(t("arrivalRules"), `<p>${escapeHtml(t("reception"))}</p><p>${escapeHtml(t("noWeekend"))}</p><p>${escapeHtml(t("late"))}</p>`)}
@@ -225,7 +242,6 @@
         <h2>${escapeHtml(place.name)}</h2>
         <div class="action-grid">
           <button type="button" data-action="maps">${escapeHtml(t("openMaps"))}</button>
-          <button type="button" data-action="copy-address">${escapeHtml(t("copyAddress"))}</button>
           <button type="button" data-action="call">${escapeHtml(t("call"))}</button>
           <button type="button" data-action="whatsapp">${escapeHtml(t("whatsapp"))}</button>
         </div>
@@ -435,13 +451,30 @@
     return config?.languages?.[normalized] ? normalized : "pl";
   }
 
-  function copyText(text) {
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(() => toast(t("copied"))).catch(() => fallbackCopy(text));
-      return;
+  async function copyText(text) {
+    const fallback = $("addressCopyFallback");
+    const visibleField = $("addressCopyValue");
+    if (fallback) fallback.hidden = true;
+    // Keep this click's elements: a later city/language render must not show a stale address.
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        toast(t("copied"));
+        return;
+      }
+    } catch (error) {
+      // Permission denial and synchronous failures can still use the legacy copy path.
     }
-
-    fallbackCopy(text);
+    if (fallbackCopy(text)) {
+      toast(t("copied"));
+    } else if (fallback?.isConnected && visibleField?.value === text) {
+      // Never report success when the browser refused both copy methods.
+      $("toast").classList.remove("show");
+      fallback.hidden = false;
+      visibleField.focus();
+      visibleField.select();
+      visibleField.setSelectionRange(0, text.length);
+    }
   }
 
   function fallbackCopy(text) {
@@ -453,8 +486,9 @@
     document.body.appendChild(field);
     field.select();
     try {
-      document.execCommand("copy");
-      toast(t("copied"));
+      return document.execCommand("copy") === true;
+    } catch (error) {
+      return false;
     } finally {
       field.remove();
     }

@@ -144,13 +144,15 @@ function boot(lang, place = "bogatynia", options = {}) {
   function node(id) {
     if (!nodes.has(id)) {
       const handlers = {};
-      nodes.set(id, { handlers, children: [], dataset: {}, hidden: false, textContent: "", innerHTML: "", href: "",
+      nodes.set(id, { handlers, children: [], dataset: {}, hidden: false, textContent: "", innerHTML: "", href: "", value: "", isConnected: true,
         setAttribute(name, value) { this[name] = value; },
         addEventListener(name, callback) { handlers[name] = callback; },
         querySelector(selector) { return node(`${id}:${selector}`); },
         scrollIntoView(options) { this.lastScroll = options; },
         focus(options) { document.activeElement = this; this.lastFocus = options; },
-        classList: { add() {}, remove() {}, contains() { return false; } }
+        classList: { values: new Set(), add(value) { this.values.add(value); }, remove(value) { this.values.delete(value); }, contains(value) { return this.values.has(value); } },
+        select() { this.selected = true; },
+        setSelectionRange(start, end) { this.selectionStart = start; this.selectionEnd = end; }
       });
     }
     return nodes.get(id);
@@ -161,26 +163,37 @@ function boot(lang, place = "bogatynia", options = {}) {
     getItem(key) { if (options.blockedStorage) throw Error("Storage blocked"); return saved.get(key) ?? (key === "arrival-guide-language" ? options.storedLang || null : null); },
     setItem(key, value) { if (options.blockedStorage || options.blockedWrite) throw Error("Storage blocked"); saved.set(key,value); writes.push([key,value]); }
   };
+  const copyAttempts = [], temporaryFields = [], timers = [];
   const document = {
+    createElement(tag) {
+      const field = { tag, value: "", style: {}, setAttribute() {}, select() { this.selected = true; }, remove() { this.removed = true; } };
+      temporaryFields.push(field); return field;
+    },
+    execCommand(command) {
+      copyAttempts.push([command, temporaryFields.at(-1).value]);
+      if (options.execThrows) throw Error("Copy refused");
+      return options.execResult ?? false;
+    },
     getElementById: node,
     documentElement: { lang: "", dataset: {}, style: { setProperty() {} } },
     addEventListener() {}, querySelectorAll: () => [],
     querySelector: selector => selector === ".topbar" ? null : node(selector),
-    body: { insertAdjacentHTML() { throw new Error("Unexpected application error"); } }
+    body: { appendChild() {}, insertAdjacentHTML() { throw new Error("Unexpected application error"); } }
   };
-  const window = { localStorage, location };
+  const window = { localStorage, location, isSecureContext: options.secure !== false };
   if (!options.noMatchMedia) window.matchMedia = () => ({ matches: !!options.reducedMotion });
   const context = vm.createContext({ window, document, location, localStorage,
-    navigator: {}, URL, URLSearchParams, structuredClone, console,
+    navigator: options.navigator || {}, URL, URLSearchParams, structuredClone, console,
     history, DOMException,
     open() { throw new Error("External actions are forbidden"); },
     fetch() { throw new Error("Network requests are forbidden"); },
-    setTimeout() { throw new Error("No operational action may be triggered"); }
+    setTimeout(callback) { if (!options.copyTest) throw new Error("No operational action may be triggered"); timers.push(callback); }
   });
   scripts.slice(0, 3).forEach((script, i) => vm.runInContext(script, context, { filename: paths[i] }));
   const originalConfig = JSON.stringify(window.ARRIVAL_DEFAULT_CONFIG);
   vm.runInContext(scripts[3], context, { filename: paths[3] });
-  return { node, document, location, window, history, originalConfig, saved, writes,
+  return { node, document, location, window, history, originalConfig, saved, writes, copyAttempts, temporaryFields, timers,
+    copy() { node("addressCopyValue").value = window.ARRIVAL_DEFAULT_CONFIG.locations[document.documentElement.dataset.arrivalLocation].address.join(", "); return node('guide:[data-action="copy-address"]').handlers.click(); },
     mark(key,index,checked=true) {
       const input={type:"checkbox",dataset:{pack:key,packIndex:String(index)},checked};
       document.activeElement=input;
@@ -504,4 +517,58 @@ test("contact navigation tolerates browsers without matchMedia", () => {
   c.activate("help", "call");
   assert.equal(c.document.activeElement, c.nodes.get("contactsPage"));
   assert.equal(c.nodes.get("contactsPage").lastScroll.behavior, "smooth");
+});
+
+for (const lang of locales) test(`${lang}: exactly one copy button belongs to the visible address panel for every city`, () => {
+  for (const place of locations) {
+    const c = boot(lang, place), html = c.node("guide").innerHTML;
+    const firstPanel = html.slice(0, html.indexOf("</section>"));
+    assert.equal((html.match(/data-action="copy-address"/g) || []).length, 1);
+    assert.ok(firstPanel.includes(`>${c.window.ARRIVAL_DEFAULT_CONFIG.ui[lang].copyAddress}</button>`));
+    assert.ok(firstPanel.includes('id="addressCopyFallback" class="address-copy-fallback" hidden'));
+    assert.ok(firstPanel.includes('readonly aria-label='));
+    assert.ok(firstPanel.includes(c.window.ARRIVAL_DEFAULT_CONFIG.locations[place].address.join(", ")));
+    assert.equal(JSON.stringify(c.window.ARRIVAL_DEFAULT_CONFIG), c.originalConfig);
+  }
+});
+
+test("modern clipboard success copies the exact address and never uses legacy copy", async () => {
+  const copied = [], c = boot("en", "ryczywol", {copyTest:true,navigator:{clipboard:{async writeText(text){copied.push(text);}}}});
+  await c.copy();
+  assert.deepEqual(copied,[c.window.ARRIVAL_DEFAULT_CONFIG.locations.ryczywol.address.join(", ")]);
+  assert.equal(c.node("toast").textContent,c.window.ARRIVAL_DEFAULT_CONFIG.ui.en.copied);
+  assert.equal(c.node("toast").classList.contains("show"),true);
+  assert.equal(c.copyAttempts.length,0);assert.equal(c.node("addressCopyFallback").hidden,true);
+});
+
+for (const mode of ["rejected", "synchronous", "missing", "insecure"]) test(`${mode} clipboard: actual legacy success is required before showing copied`, async () => {
+  const clipboard={writeText(){if(mode==="synchronous")throw Error("Denied");return Promise.reject(Error("Denied"));}};
+  const c=boot("ru","bogatynia",{copyTest:true,execResult:true,secure:mode!=="insecure",navigator:mode==="missing"?{}:{clipboard}});
+  await c.copy();assert.equal(c.copyAttempts.length,1);
+  assert.equal(c.copyAttempts[0][1],c.node("addressCopyValue").value);
+  assert.equal(c.node("toast").classList.contains("show"),true);
+  assert.equal(c.node("addressCopyFallback").hidden,true);
+  assert.ok(c.temporaryFields.every(field=>field.removed));
+});
+
+for (const execThrows of [false,true]) test(`denied clipboard and legacy ${execThrows?"throw":"false"}: selected manual address without false success`, async()=>{
+  const c=boot("uk","zgorzelec",{copyTest:true,execThrows,navigator:{clipboard:{async writeText(){throw Error("Denied");}}}});
+  await c.copy();const field=c.node("addressCopyValue");
+  assert.equal(c.node("addressCopyFallback").hidden,false);assert.equal(c.document.activeElement,field);
+  assert.equal(field.selected,true);assert.equal(field.selectionStart,0);assert.equal(field.selectionEnd,field.value.length);
+  assert.equal(c.node("toast").classList.contains("show"),false);assert.ok(c.temporaryFields.every(field=>field.removed));
+  assert.equal(c.writes.length,0);
+});
+
+test("clipboard getter denial and prior success toast cannot produce a false copied result",async()=>{
+  const navigator={};Object.defineProperty(navigator,"clipboard",{get(){throw Error("Denied");}});
+  const c=boot("en","siechnice",{copyTest:true,navigator});c.node("toast").classList.add("show");
+  await c.copy();assert.equal(c.node("addressCopyFallback").hidden,false);assert.equal(c.node("toast").classList.contains("show"),false);
+});
+
+test("a rejected pending copy cannot reveal a stale city's manual field after rendering",async()=>{
+  let reject;const pending=new Promise((_,r)=>{reject=r;});
+  const c=boot("en","siechnice",{copyTest:true,navigator:{clipboard:{writeText(){return pending;}}}});
+  const action=c.copy();c.node("addressCopyFallback").isConnected=false;reject(Error("Denied"));await action;
+  assert.equal(c.node("addressCopyFallback").hidden,true);
 });

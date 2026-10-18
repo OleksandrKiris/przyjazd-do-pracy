@@ -10,7 +10,7 @@ jobs:
     timeout-minutes: 12
     env:
       TESTED_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
-      TESTED_BASE: ${{ github.event.pull_request.base.sha || 'fe33e4c8f74990d6b90de90cd6dec6bf67799024' }}
+      TESTED_BASE: ${{ github.event.pull_request.base.sha || 'ad2d856bb0c0dbf433b4636b8d7615f294ecb885' }}
     steps:
       - uses: actions/checkout@v4
         with:
