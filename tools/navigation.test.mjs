@@ -96,12 +96,32 @@ test("concurrent storage change is never overwritten",()=>{
   assert.match(c.node("packingStatus").textContent,/Not saved/);
 });
 
-test("new helper text has an explicit English fallback, existing list language stays selected",()=>{
-  for(const lang of ["az","es","fil","id","ne"]){
-    const c=boot(lang);
-    assert.match(c.node("guide").innerHTML, /id="packingHint" lang="en">English \(EN\):/);
-    assert.equal(c.document.documentElement.lang,lang);
-  }
+for(const lang of locales)test(`${lang}: packing hint, saved and memory-only status use the selected language`,()=>{
+  const c=boot(lang);
+  assert.match(c.node('guide').innerHTML,new RegExp(`id="packingHint" lang="${lang}">`));
+  assert.doesNotMatch(c.node('guide').innerHTML,/English \(EN\):/);
+  c.mark('poland',0);assert.equal(c.node('packingStatus').lang,lang);
+  assert.ok(c.node('packingStatus').textContent.trim());
+  if(lang!=='en')assert.doesNotMatch(c.node('packingStatus').textContent,/Saved on this device/);
+  const saved=c.saved.get(packingKey),reload=boot(lang,'ryczywol',{saved:c.saved});
+  assert.match(reload.node('guide').innerHTML,/data-pack="poland" data-pack-index="0"[^>]*checked/);
+  assert.equal(c.saved.get(packingKey),saved,'Language-only render never rewrites prior marks');
+  const blocked=boot(lang,'ryczywol',{blockedWrite:true});blocked.mark('poland',0);
+  assert.equal(blocked.node('packingStatus').lang,lang);assert.ok(blocked.node('packingStatus').textContent.trim());
+  if(lang!=='en')assert.doesNotMatch(blocked.node('packingStatus').textContent,/Not saved/);
+});
+
+for(const lang of locales)test(`${lang}: visible and accessible top language label use approved UI text`,()=>{
+  const label={textContent:'Language'},select={innerHTML:'',value:'',setAttribute(k,v){this[k]=v;}},wrapper={querySelector(selector){return selector==='label'?label:select;}};
+  const window={},document={documentElement:{lang,dataset:{arrivalLocation:'ryczywol'}},getElementById(id){return id==='topLanguageSwitcher'?wrapper:id==='topLanguageSelect'?select:null;},querySelector(selector){return selector==='.topbar'?{}:null;},addEventListener(){}};
+  const context=vm.createContext({window,document,location:{search:'?lang='+lang},URLSearchParams,URL});
+  scripts.slice(0,3).forEach(script=>vm.runInContext(script,context));
+  const before=JSON.stringify(window.ARRIVAL_DEFAULT_CONFIG);
+  const instrumented=improvements.replace(/  refresh\(\);\r?\n\}\)\(\);\s*$/,'  window.labelTest=ensureTopLanguageSwitcher;\n})();');
+  assert.notEqual(instrumented,improvements);vm.runInContext(instrumented,context);window.labelTest();
+  const expected=window.ARRIVAL_DEFAULT_CONFIG.ui[lang].chooseLanguage;
+  assert.equal(label.textContent,expected);assert.equal(select['aria-label'],expected);assert.equal(select.value,lang);
+  assert.equal(JSON.stringify(window.ARRIVAL_DEFAULT_CONFIG),before);
 });
 
 function boot(lang, place = "bogatynia", options = {}) {

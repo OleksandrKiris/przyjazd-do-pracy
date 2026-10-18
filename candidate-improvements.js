@@ -226,14 +226,16 @@
     const header = document.querySelector(".topbar");
     if (!config?.languages || !header) return;
 
+    const activeLang = currentLang();
+    const languageLabel = config.ui?.[activeLang]?.chooseLanguage || config.ui?.en?.chooseLanguage || "Choose language";
     let wrapper = $("topLanguageSwitcher");
     if (!wrapper) {
       wrapper = document.createElement("div");
       wrapper.id = "topLanguageSwitcher";
       wrapper.className = "top-language-switcher";
       wrapper.innerHTML = `
-        <label for="topLanguageSelect">Language</label>
-        <select id="topLanguageSelect" aria-label="Language"></select>
+        <label for="topLanguageSelect">${escapeHtml(languageLabel)}</label>
+        <select id="topLanguageSelect" aria-label="${escapeHtml(languageLabel)}"></select>
       `;
       header.appendChild(wrapper);
       wrapper.querySelector("select").addEventListener("change", (event) => {
@@ -253,7 +255,9 @@
 
     const select = $("topLanguageSelect");
     if (!select) return;
-    const activeLang = currentLang();
+    const label = wrapper.querySelector("label");
+    if (label) label.textContent = languageLabel;
+    select.setAttribute("aria-label", languageLabel);
     select.innerHTML = Object.entries(config.languages)
       .map(([code, label]) => `<option value="${escapeHtml(code)}">${escapeHtml(label)}</option>`)
       .join("");
