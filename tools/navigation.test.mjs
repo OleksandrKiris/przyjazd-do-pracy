@@ -163,6 +163,7 @@ function boot(lang, place = "bogatynia", options = {}) {
     getItem(key) { if (options.blockedStorage) throw Error("Storage blocked"); return saved.get(key) ?? (key === "arrival-guide-language" ? options.storedLang || null : null); },
     setItem(key, value) { if (options.blockedStorage || options.blockedWrite) throw Error("Storage blocked"); saved.set(key,value); writes.push([key,value]); }
   };
+  let copyClock = 0;
   const copyAttempts = [], temporaryFields = [], timers = [];
   const document = {
     createElement(tag) {
@@ -187,12 +188,14 @@ function boot(lang, place = "bogatynia", options = {}) {
     history, DOMException,
     open() { throw new Error("External actions are forbidden"); },
     fetch() { throw new Error("Network requests are forbidden"); },
-    setTimeout(callback) { if (!options.copyTest) throw new Error("No operational action may be triggered"); timers.push(callback); }
+    setTimeout(callback, delay) { if (!options.copyTest) throw new Error("No operational action may be triggered"); const id=timers.length; timers.push({callback,at:copyClock+delay,active:true}); return id; },
+    clearTimeout(id) { if(timers[id])timers[id].active=false; }
   });
   scripts.slice(0, 3).forEach((script, i) => vm.runInContext(script, context, { filename: paths[i] }));
   const originalConfig = JSON.stringify(window.ARRIVAL_DEFAULT_CONFIG);
   vm.runInContext(scripts[3], context, { filename: paths[3] });
   return { node, document, location, window, history, originalConfig, saved, writes, copyAttempts, temporaryFields, timers,
+    elapse(milliseconds) { copyClock+=milliseconds; for(const timer of timers)if(timer.active&&timer.at<=copyClock){timer.active=false;timer.callback();} },
     copy() { node("addressCopyValue").value = window.ARRIVAL_DEFAULT_CONFIG.locations[document.documentElement.dataset.arrivalLocation].address.join(", "); return node('guide:[data-action="copy-address"]').handlers.click(); },
     mark(key,index,checked=true) {
       const input={type:"checkbox",dataset:{pack:key,packIndex:String(index)},checked};
@@ -571,4 +574,11 @@ test("a rejected pending copy cannot reveal a stale city's manual field after re
   const c=boot("en","siechnice",{copyTest:true,navigator:{clipboard:{writeText(){return pending;}}}});
   const action=c.copy();c.node("addressCopyFallback").isConnected=false;reject(Error("Denied"));await action;
   assert.equal(c.node("addressCopyFallback").hidden,true);
+});
+
+test("rapid copies keep the newest success visible for its full duration",async()=>{
+  const c=boot("en","siechnice",{copyTest:true,navigator:{clipboard:{async writeText(){}}}});
+  await c.copy();c.elapse(1000);await c.copy();c.elapse(900);
+  assert.equal(c.node("toast").classList.contains("show"),true,"The previous copy's timer must not hide the new result");
+  c.elapse(901);assert.equal(c.node("toast").classList.contains("show"),false);
 });

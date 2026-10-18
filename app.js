@@ -521,11 +521,13 @@
     console.error(error);
   }
 
+  let toastTimer;
   function toast(message) {
     const node = $("toast");
     node.textContent = message;
     node.classList.add("show");
-    setTimeout(() => node.classList.remove("show"), 1800);
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => node.classList.remove("show"), 1800);
   }
 
   function normalizePhone(phone) {
