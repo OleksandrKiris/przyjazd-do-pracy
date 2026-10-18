@@ -54,7 +54,7 @@ const labels={
   id:['Tandai barang yang sudah dikemas. Disimpan hanya di perangkat ini; tidak ada yang dikirim.','Tersimpan di perangkat ini.','Tidak tersimpan. Tanda hanya berlaku selama sesi ini; data sebelumnya tidak berubah.'],
   ne:['तयार पारेका सामानमा चिन्ह लगाउनुहोस्। यस उपकरणमा मात्र सुरक्षित हुन्छ; केही पठाइँदैन।','यस उपकरणमा सुरक्षित भयो।','सुरक्षित भएन। चिन्हहरू यस सत्रमा मात्र रहन्छन्; पहिलेका डेटा परिवर्तन भएका छैनन्।']
 };
-const configContext={window:{}};
+const configContext={window:{},document:{addEventListener(){}},location:{search:''},open(){}};
 for(const file of ['data/config.js','data/overrides.js','language-options.js'])vm.runInNewContext(current[file].toString(),configContext);
 assert.deepEqual(Object.keys(configContext.window.ARRIVAL_DEFAULT_CONFIG.languages).sort(),[...languages].sort());
 const languageLabel=lang=>configContext.window.ARRIVAL_DEFAULT_CONFIG.ui[lang].chooseLanguage;
