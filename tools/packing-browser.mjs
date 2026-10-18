@@ -59,7 +59,11 @@ const languageLabel=lang=>configContext.window.ARRIVAL_DEFAULT_CONFIG.ui[lang].c
 const localized=async(page,lang,status)=>{
   assert.equal(await page.locator('#packingHint').innerText(),labels[lang][0]);
   assert.equal(await page.locator('#packingHint').getAttribute('lang'),lang);
-  assert.equal(await page.locator('#topLanguageSwitcher label').innerText(),languageLabel(lang));
+  const label=page.locator('#topLanguageSwitcher label');
+  assert.equal(await label.isVisible(),true);
+  assert.equal((await label.textContent()).trim(),languageLabel(lang));
+  const transform=await label.evaluate(el=>getComputedStyle(el).textTransform);
+  assert.equal(await label.innerText(),transform==='uppercase'?languageLabel(lang).toUpperCase():languageLabel(lang));
   assert.equal(await page.locator('#topLanguageSelect').getAttribute('aria-label'),languageLabel(lang));
   assert.equal(await page.locator('#topLanguageSelect').inputValue(),lang);
   if(status!==undefined){assert.equal(await page.locator('#packingStatus').innerText(),labels[lang][status]);assert.equal(await page.locator('#packingStatus').getAttribute('lang'),lang);}
@@ -221,7 +225,7 @@ try {
       }
       if(oldRef===base){
         assert.match(await page.locator('#packingHint').innerText(),/^English \(EN\):/);
-        assert.equal(await page.locator('#topLanguageSwitcher label').innerText(),'Language');
+        assert.equal((await page.locator('#topLanguageSwitcher label').textContent()).trim(),'Language');
       }
       await page.evaluate(async()=>{
         localStorage.setItem('unrelated-fixture','preserve');
