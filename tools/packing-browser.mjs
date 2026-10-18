@@ -15,6 +15,7 @@ const files = ['index.html','sw.js','styles.css','candidate-improvements.css','a
   'candidate-improvements.js','language-options.js','translations.js','data/config.js',
   'data/overrides.js','manifest.webmanifest','assets/icon.svg','assets/primserv-logo.svg','assets/primserv-icon-192.png'];
 const head = process.env.TESTED_HEAD, base = process.env.TESTED_BASE;
+const copyRegressionRef='ad2d856bb0c0dbf433b4636b8d7615f294ecb885';
 const gitFile = (ref, file) => execFileSync('git', ['show', `${ref}:${file}`]);
 const report = {head,base,checkout:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),
   files:{},results:[],limits:['320px is an emulated viewport, not a physical phone.',
@@ -41,7 +42,7 @@ const server=createServer((req,res)=>{
 });
 await new Promise(done=>server.listen(4173,'127.0.0.1',done));
 const url='http://127.0.0.1:4173/przyjazd-do-pracy/';
-const key='primserv.arrival.packing.v1', cache='arrival-guide-v58-status-languages';
+const key='primserv.arrival.packing.v1', cache='arrival-guide-v59-copy-address';
 const languages=['pl','uk','ru','en','az','es','fil','id','ne'];
 const labels={
   pl:['Zaznacz spakowane rzeczy. Zapis tylko na tym urządzeniu; bez wysyłania.','Zapisano na tym urządzeniu.','Nie zapisano. Zaznaczenia działają tylko w tej sesji; poprzednie dane pozostają bez zmian.'],
@@ -93,7 +94,7 @@ const checks=async(page,lang,location='ryczywol')=>{
   assert.ok(await page.locator('.packing-list input').count());
   assert.equal(await page.locator('.packing-list input').first().isVisible(),true,'packing list must be visible, not merely in DOM');
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'horizontal overflow');
-  if(location==='ryczywol')assert.ok(await page.locator('a[href="tel:+48511472583"]').count(),'confirmed housing contact');
+  if(location==='ryczywol')await page.locator('a[href="tel:+48511472583"]').first().waitFor({state:'visible'});
 };
 const installed=page=>page.waitForFunction(()=>Boolean(navigator.serviceWorker.controller));
 const cacheReport=page=>page.evaluate(async name=>{
@@ -189,6 +190,93 @@ try {
       report.results.push({mode,width:320,status:'passed',steps:['in-memory marks','honest warning','offline reload','old bytes preserved']});
     } finally {await ctx.close();}
   }
+  // Pin the failing revision separately from the moving event base for future PRs.
+  {
+    serving=Object.fromEntries(files.map(file=>[file,gitFile(copyRegressionRef,file)]));
+    const {ctx}=await context(320),page=await ctx.newPage();
+    await ctx.addInitScript(()=>{
+      Object.defineProperty(navigator,'clipboard',{value:{writeText(){return Promise.reject(Error('Fixture denial'));}}});
+      document.execCommand=()=>false;
+    });
+    try{
+      await page.goto(url+'?lang=ru&location=siechnice');await checks(page,'ru','siechnice');
+      assert.equal(await page.locator('[data-action="copy-address"]').isVisible(),false);
+      // Diagnostic invocation of the hidden legacy handler, not an end-user action.
+      await page.locator('[data-action="copy-address"]').evaluate(el=>el.click());
+      await page.waitForFunction(()=>document.querySelector('#toast').classList.contains('show'));
+      assert.equal(await page.locator('#toast').innerText(),configContext.window.ARRIVAL_DEFAULT_CONFIG.ui.ru.copied);
+      await page.screenshot({path:join(output,'copy-pinned-regression.png')});
+      report.copyRegression={ref:copyRegressionRef,appSHA256:createHash('sha256').update(serving['app.js']).digest('hex'),width:320,hidden:true,falseSuccessOnDenied:true,syntheticHiddenHandlerDiagnostic:true,status:'reproduced'};
+    }finally{serving=current;await ctx.close();}
+  }
+  // Copy public business addresses through actual user buttons; deny both APIs explicitly in failure fixtures.
+  report.copyRows=[];
+  for(const width of [320,1280]) for(const mode of ['native','denied']) {
+    const {ctx,blocked}=await context(width),page=await ctx.newPage(),errors=[];
+    page.on('pageerror',e=>errors.push(e.message));
+    await ctx.grantPermissions(['clipboard-read','clipboard-write']);
+    if(mode==='denied')await ctx.addInitScript(()=>{
+      Object.defineProperty(navigator,'clipboard',{value:{writeText(){return Promise.reject(new DOMException('Fixture denial','NotAllowedError'));}}});
+      document.execCommand=()=>false;
+    });
+    try {
+      await page.goto(url+'?lang=en&location=siechnice');
+      const before=await page.evaluate(key=>localStorage.getItem(key),key);
+      for(const lang of languages) for(const city of ['siechnice','ryczywol','bogatynia','zgorzelec']) {
+        await page.locator('#topLanguageSelect').selectOption(lang);
+        await page.locator(`[data-location="${city}"]`).click();await checks(page,lang,city);
+        const button=page.locator('[data-action="copy-address"]'),field=page.locator('#addressCopyValue');
+        const ui=configContext.window.ARRIVAL_DEFAULT_CONFIG.ui[lang],address=configContext.window.ARRIVAL_DEFAULT_CONFIG.locations[city].address.join(', ');
+        assert.equal(await button.count(),1);assert.equal(await button.isVisible(),true);
+        assert.equal(await button.textContent(),ui.copyAddress);assert.equal(await field.inputValue(),address);
+        assert.equal(await field.getAttribute('aria-label'),ui.address);
+        await button.scrollIntoViewIfNeeded();await button.focus();await page.keyboard.press('Enter');
+        if(mode==='native'){
+          await page.waitForFunction(()=>document.querySelector('#toast').classList.contains('show'));
+          assert.equal(await page.evaluate(()=>navigator.clipboard.readText()),address);
+          assert.equal(await page.locator('#toast').innerText(),ui.copied);
+          assert.equal(await page.locator('#addressCopyFallback').isVisible(),false);
+          assert.equal(await button.evaluate(el=>document.activeElement===el),true);
+        }else{
+          await field.waitFor({state:'visible'});
+          assert.equal(await page.locator('#toast').evaluate(el=>el.classList.contains('show')),false);
+          assert.equal(await field.evaluate(el=>el.readOnly&&el===document.activeElement&&el.selectionStart===0&&el.selectionEnd===el.value.length),true);
+          const hint=await page.locator('#addressCopyHint').innerText();assert.ok(hint.trim());
+          if(lang!=='en')assert.ok(!hint.includes('Automatic copying failed'));
+        }
+        assert.equal(await page.evaluate(key=>localStorage.getItem(key),key),before,'Copy cannot write packing data');
+        assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+        const screenshot=`copy-${width}-${mode}-${lang}-${city}.png`;
+        await page.screenshot({path:join(output,screenshot)});
+        report.copyRows.push({width,mode,lang,city,address,label:ui.copyAddress,hint:mode==='denied'?await page.locator('#addressCopyHint').innerText():null,screenshot,status:'passed'});
+      }
+      assert.deepEqual(errors,[]);assert.deepEqual(blocked,[]);
+      report.results.push({width,mode:'copy-'+mode,status:'passed',rows:36,exactClipboardRead:mode==='native',manualSelected:mode==='denied'});
+    }finally{await ctx.close();}
+  }
+  for(const mode of ['legacy','throw']) {
+    const {ctx,blocked}=await context(320),page=await ctx.newPage();
+    await ctx.grantPermissions(['clipboard-read','clipboard-write']);
+    await ctx.addInitScript(mode=>{
+      const read=navigator.clipboard.readText.bind(navigator.clipboard);
+      Object.defineProperty(navigator,'clipboard',{value:{readText:read,writeText(){throw new DOMException('Fixture denial','NotAllowedError');}}});
+      if(mode==='throw')document.execCommand=()=>{throw new Error('Fixture legacy denial');};
+    },mode);
+    try{
+      await page.goto(url+'?lang=en&location=ryczywol');await checks(page,'en');
+      await page.locator('[data-action="copy-address"]').click();
+      if(mode==='legacy'){
+        await page.waitForFunction(()=>document.querySelector('#toast').classList.contains('show'));
+        assert.equal(await page.evaluate(()=>navigator.clipboard.readText()),configContext.window.ARRIVAL_DEFAULT_CONFIG.locations.ryczywol.address.join(', '));
+        assert.equal(await page.locator('#addressCopyFallback').isVisible(),false);
+      }else{
+        await page.locator('#addressCopyValue').waitFor({state:'visible'});
+        assert.equal(await page.locator('#toast').evaluate(el=>el.classList.contains('show')),false);
+      }
+      await page.screenshot({path:join(output,`copy-${mode}.png`)});assert.deepEqual(blocked,[]);
+      report.results.push({mode:'copy-'+mode,width:320,status:'passed'});
+    }finally{await ctx.close();}
+  }
   // An actual second tab must not be overwritten after this page read its marks.
   {
     const {ctx,blocked}=await context(320),page=await ctx.newPage();
@@ -211,6 +299,10 @@ try {
     try {
       await page.goto(url+'?lang=ne&location=ryczywol');await installed(page);
       const oldCache=await page.evaluate(()=>caches.keys());
+      if(gitFile(oldRef,'sw.js').equals(current['sw.js'])){
+        report.results.push({oldRef,width,status:'passed',workerUpgrade:'not-needed-identical-worker',installedCache:await exactCache(page)});
+        continue;
+      }
       assert.ok(oldCache.some(name=>name.startsWith('arrival-guide-')&&name!==cache));
       // The current base already has the checklist: produce all three lists through real controls.
       const oldRows=[];
@@ -226,8 +318,8 @@ try {
         oldRows.push({country:'ukraine',pack:'ukraine',index:0},{country:'poland',pack:'poland',index:1},{country:'georgia',pack:'caucasus',index:2});
       }
       if(oldRef===base){
-        assert.match(await page.locator('#packingHint').innerText(),/^English \(EN\):/);
-        assert.equal((await page.locator('#topLanguageSwitcher label').textContent()).trim(),'Language');
+        await localized(page,'ne',1);
+        if(oldRef===copyRegressionRef)assert.equal(await page.locator('[data-action="copy-address"]').isVisible(),false,'pinned failing base copy action is hidden');
       }
       await page.evaluate(async()=>{
         localStorage.setItem('unrelated-fixture','preserve');
@@ -249,6 +341,7 @@ try {
       // Stop the origin, rather than only asking Chromium to simulate offline.
       await new Promise(done=>server.close(done));
       await ctx.setOffline(true);await page.reload();await checks(page,'ne');await localized(page,'ne',1);
+      assert.equal(await page.locator('[data-action="copy-address"]').isVisible(),true,'new action works from exact offline shell');
       for(const {country,pack,index} of oldRows){
         await page.goto(url+'?lang=ne&location=ryczywol&country='+country);await checks(page,'ne');
         assert.equal(await page.locator(`input[data-pack="${pack}"][data-pack-index="${index}"]`).isChecked(),true);
