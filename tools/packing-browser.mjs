@@ -94,7 +94,7 @@ const checks=async(page,lang,location='ryczywol')=>{
   assert.ok(await page.locator('.packing-list input').count());
   assert.equal(await page.locator('.packing-list input').first().isVisible(),true,'packing list must be visible, not merely in DOM');
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'horizontal overflow');
-  if(location==='ryczywol')assert.ok(await page.locator('a[href="tel:+48511472583"]').count(),'confirmed housing contact');
+  if(location==='ryczywol')await page.locator('a[href="tel:+48511472583"]').first().waitFor({state:'visible'});
 };
 const installed=page=>page.waitForFunction(()=>Boolean(navigator.serviceWorker.controller));
 const cacheReport=page=>page.evaluate(async name=>{
@@ -230,7 +230,7 @@ try {
         assert.equal(await button.count(),1);assert.equal(await button.isVisible(),true);
         assert.equal(await button.textContent(),ui.copyAddress);assert.equal(await field.inputValue(),address);
         assert.equal(await field.getAttribute('aria-label'),ui.address);
-        await button.focus();await page.keyboard.press('Enter');
+        await button.scrollIntoViewIfNeeded();await button.focus();await page.keyboard.press('Enter');
         if(mode==='native'){
           await page.waitForFunction(()=>document.querySelector('#toast').classList.contains('show'));
           assert.equal(await page.evaluate(()=>navigator.clipboard.readText()),address);
