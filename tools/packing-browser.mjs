@@ -65,7 +65,7 @@ const localized=async(page,lang,status)=>{
   assert.equal(await label.isVisible(),true);
   assert.equal((await label.textContent()).trim(),languageLabel(lang));
   const transform=await label.evaluate(el=>getComputedStyle(el).textTransform);
-  assert.equal(await label.innerText(),transform==='uppercase'?languageLabel(lang).toUpperCase():languageLabel(lang));
+  assert.equal(await label.innerText(),transform==='uppercase'?languageLabel(lang).toLocaleUpperCase(lang):languageLabel(lang));
   assert.equal(await page.locator('#topLanguageSelect').getAttribute('aria-label'),languageLabel(lang));
   assert.equal(await page.locator('#topLanguageSelect').inputValue(),lang);
   if(status!==undefined){assert.equal(await page.locator('#packingStatus').innerText(),labels[lang][status]);assert.equal(await page.locator('#packingStatus').getAttribute('lang'),lang);}
