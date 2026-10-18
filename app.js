@@ -33,7 +33,12 @@
     pl: ["Zaznacz spakowane rzeczy. Zapis tylko na tym urządzeniu; bez wysyłania.", "Zapisano na tym urządzeniu.", "Nie zapisano. Zaznaczenia działają tylko w tej sesji; poprzednie dane pozostają bez zmian."],
     uk: ["Позначайте зібрані речі. Збереження лише на цьому пристрої; без надсилання.", "Збережено на цьому пристрої.", "Не збережено. Позначки діють лише в цьому сеансі; попередні дані не змінено."],
     ru: ["Отмечайте собранные вещи. Сохранение только на этом устройстве; без отправки.", "Сохранено на этом устройстве.", "Не сохранено. Отметки действуют только в этом сеансе; предыдущие данные не изменены."],
-    en: ["Mark packed items. Saved only on this device; nothing is sent.", "Saved on this device.", "Not saved. Marks work only in this session; previous data is unchanged."]
+    en: ["Mark packed items. Saved only on this device; nothing is sent.", "Saved on this device.", "Not saved. Marks work only in this session; previous data is unchanged."],
+    az: ["Yığdığınız əşyaları işarələyin. Yalnız bu cihazda saxlanılır; heç nə göndərilmir.", "Bu cihazda yadda saxlanıldı.", "Saxlanılmadı. İşarələr yalnız bu sessiyada işləyir; əvvəlki məlumatlar dəyişməyib."],
+    es: ["Marca lo que ya has preparado. Se guarda solo en este dispositivo; no se envía nada.", "Guardado en este dispositivo.", "No se ha guardado. Las marcas solo se mantienen durante esta sesión; los datos anteriores no han cambiado."],
+    fil: ["Markahan ang mga naimpakeng gamit. Sa device na ito lang ise-save; walang ipapadala.", "Na-save sa device na ito.", "Hindi na-save. Sa session na ito lang mananatili ang mga marka; hindi nabago ang dating data."],
+    id: ["Tandai barang yang sudah dikemas. Disimpan hanya di perangkat ini; tidak ada yang dikirim.", "Tersimpan di perangkat ini.", "Tidak tersimpan. Tanda hanya berlaku selama sesi ini; data sebelumnya tidak berubah."],
+    ne: ["तयार पारेका सामानमा चिन्ह लगाउनुहोस्। यस उपकरणमा मात्र सुरक्षित हुन्छ; केही पठाइँदैन।", "यस उपकरणमा सुरक्षित भयो।", "सुरक्षित भएन। चिन्हहरू यस सत्रमा मात्र रहन्छन्; पहिलेका डेटा परिवर्तन भएका छैनन्।"]
   };
 
   const $ = (id) => document.getElementById(id);
