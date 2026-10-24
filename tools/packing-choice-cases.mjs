@@ -25,7 +25,9 @@ export async function packingChoiceCases({browserContext,url,output,report,insta
       assert.deepEqual(await select.locator('option').allTextContents(),expected.slice(1,6));
       assert.equal(await page.locator('label[for="packingChoice"]').innerText(),expected[0]);assert.equal(await page.locator('#packingChoiceHint').innerText(),expected[6]);
       assert.equal(await select.getAttribute('aria-describedby'),'packingChoiceHint');assert.equal(await select.inputValue(),'');assert.equal(await page.locator('.packing-list input').count(),0);
-      await select.focus();const focus=await select.evaluate(n=>{const s=getComputedStyle(n);return {active:document.activeElement===n,width:s.outlineWidth,style:s.outlineStyle,offset:s.outlineOffset};});assert.deepEqual(focus,{active:true,width:'3px',style:'solid',offset:'2px'});
+      await page.evaluate(()=>document.fonts.ready);await select.scrollIntoViewIfNeeded();await select.focus();
+      await page.waitForFunction(()=>{const n=document.getElementById('packingChoice'),s=getComputedStyle(n);return document.activeElement===n&&s.outlineWidth==='3px'&&s.outlineStyle==='solid'&&s.outlineOffset==='2px';},null,{polling:'raf',timeout:3000});
+      const focus=await select.evaluate(n=>{const s=getComputedStyle(n);return {active:document.activeElement===n,width:s.outlineWidth,style:s.outlineStyle,offset:s.outlineOffset};});assert.deepEqual(focus,{active:true,width:'3px',style:'solid',offset:'2px'});
       await capture(page,width,lang,'choose');
       // Actual native select keyboard interaction, followed by checkbox Tab/Space.
       await select.press('ArrowDown');await page.waitForFunction(()=>document.getElementById('packingChoice').value==='ukraine');assert.equal(await select.evaluate(n=>n===document.activeElement),true);
