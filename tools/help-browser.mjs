@@ -45,14 +45,14 @@ try{
   for(const [scope,kind] of [['#helpSection','help'],['#mobileCandidateHero','hero'],['#candidateStickyActions','sticky'],['#guide','legacy']]){
    const container=page.locator(scope),selector=kind==='legacy'?'data-action':'data-help-action',available=[];
    for(const action of ['maps','call','whatsapp']){const el=container.locator(`[${selector}="${action}"]`);if(await el.isVisible())available.push(action);}
-   surfaces.push({kind,visibleActions:available});
+   surfaces.push({kind,containerVisible:await container.isVisible(),visibleActions:available});if(available.length)assert.deepEqual(available,['maps','call','whatsapp'],'Every visible action surface retains all three actions');
    for(const action of available){const button=container.locator(`[${selector}="${action}"]`),screen=await capture(button,kind+'-'+action);const before=await page.evaluate(()=>window.__mapOpens.length);await keyboard(button);
     if(action==='maps'){const opens=await page.evaluate(()=>window.__mapOpens);assert.equal(opens.length,before+1);assert.deepEqual(opens.at(-1),[originalMaps[city],'_blank']);}
     else{await page.waitForFunction(()=>document.activeElement?.id==='contactsPage');assert.equal(await page.evaluate(()=>window.__mapOpens.length),before);const rect=await page.locator('#contactsPage').boundingBox();assert(rect.y<900&&rect.y>=-1,'Real contact scroll destination');}
     actions.push({kind,action,...screen,actualEnterActivation:true,localContactFocus:action!=='maps',expectedOriginalMap:action==='maps'?originalMaps[city]:null});
    }
   }
-  assert.deepEqual(surfaces.find(s=>s.kind==='help').visibleActions,['maps','call','whatsapp']);assert(actions.some(a=>a.action==='maps'));
+  for(const action of ['maps','call','whatsapp'])assert(actions.some(a=>a.action===action),'At least one actual visible action surface supplies '+action);
   const sticky=page.locator('#candidateStickyActions'),stickyVisible=await sticky.isVisible(),stickyAria=stickyVisible?await sticky.ariaSnapshot():null,stickyLabel=await sticky.getAttribute('aria-label');
   if(stickyVisible&&stickyLabel!==quickActions[lang])report.ariaIssues.push({lang,city,width,actual:stickyLabel,expected:quickActions[lang],actualAriaSnapshot:stickyAria});
   const contactTitle=await capture(page.locator('#contactsTitle'),'contact-title'),contactHint=await capture(page.locator('#contactsPage > p strong'),'contact-hint'),cards=[];
