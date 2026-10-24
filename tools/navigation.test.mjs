@@ -127,6 +127,7 @@ for(const lang of locales)test(`${lang}: visible and accessible top language lab
 function boot(lang, place = "bogatynia", options = {}) {
   const url = new URL("https://oleksandrkiris.github.io/przyjazd-do-pracy/");
   url.search = new URLSearchParams({ lang, location: place, name: "Fixture", surname: "Example", date: "2026-11-02", department: "production", hotel: "yes", country: options.country || "poland" });
+  if (Object.hasOwn(options, "pack")) url.searchParams.set("pack", options.pack);
   url.hash = "#instructionStart";
   const location = { href: url.href, search: url.search, protocol: url.protocol };
   const history = {
@@ -212,6 +213,7 @@ function boot(lang, place = "bogatynia", options = {}) {
       document.activeElement = origin === "button" ? button : node("topLanguageSelect");
       node("languageGate").handlers.click({ target: { closest: () => button } });
     },
+    choosePacking(value) { node("guide").handlers.change({ target: { id: "packingChoice", value } }); },
     chooseLocation(value) { node("locationTiles").handlers.click({ target: { closest: () => ({ dataset: { location: value } }) } }); }
   };
 }
@@ -581,4 +583,37 @@ test("rapid copies keep the newest success visible for its full duration",async(
   await c.copy();c.elapse(1000);await c.copy();c.elapse(900);
   assert.equal(c.node("toast").classList.contains("show"),true,"The previous copy's timer must not hide the new result");
   c.elapse(901);assert.equal(c.node("toast").classList.contains("show"),false);
+});
+
+test("explicit choose mode does not infer a packing list from the legacy country",()=>{
+  const c=boot("en","ryczywol",{country:"poland",pack:"choose"});
+  assert.match(c.node("guide").innerHTML,/id="packingChoice"/);
+  assert.doesNotMatch(c.node("guide").innerHTML,/data-pack-index/);
+  assert.equal(c.saved.get(packingKey),undefined);
+  c.choosePacking("ukraine");assert.match(c.node("guide").innerHTML,/data-pack="ukraine"/);
+  assert.equal(new URL(c.location.href).searchParams.get("pack"),"ukraine");
+  assert.equal(new URL(c.location.href).searchParams.get("country"),"poland");
+  assert.equal(c.document.activeElement,c.node("packingChoice"));
+});
+test("unknown packing choice becomes an explicit choice without reflected text or storage",()=>{
+  const c=boot("en","siechnice",{pack:"<unknown>"});
+  assert.doesNotMatch(c.node("guide").innerHTML,/<unknown>|data-pack-index/);
+  assert.equal(new URL(c.location.href).searchParams.get("pack"),"choose");
+  assert.equal(c.saved.get(packingKey),undefined);
+});
+test("visible packing choices preserve three independent lists and other adds no facts",()=>{
+  const c=boot("ru","ryczywol",{pack:"choose"});
+  for(const key of ["ukraine","poland","caucasus"]){c.choosePacking(key);c.mark(key,0);}
+  const saved=c.saved.get(packingKey);c.choosePacking("other");
+  assert.match(c.node("guide").innerHTML,/id="packingChoiceHelp" role="status"/);
+  assert.doesNotMatch(c.node("guide").innerHTML,/data-pack-index/);assert.equal(c.saved.get(packingKey),saved);
+  c.chooseLanguage("uk");c.chooseLocation("bogatynia");
+  for(const key of ["ukraine","poland","caucasus"]){c.choosePacking(key);assert.match(c.node("guide").innerHTML,new RegExp(`data-pack="${key}" data-pack-index="0"[^>]*checked`));}
+  assert.equal(c.saved.get(packingKey),saved);assert.equal(JSON.stringify(c.window.ARRIVAL_DEFAULT_CONFIG),c.originalConfig);
+});
+test("blocked URL and storage still permit in-memory list choice without overwriting",()=>{
+  const c=boot("en","ryczywol",{pack:"choose",blockedHistory:true,blockedStorage:true}),before=c.location.href;
+  c.choosePacking("caucasus");c.mark("caucasus",0);c.choosePacking("other");c.choosePacking("caucasus");
+  assert.match(c.node("guide").innerHTML,/data-pack="caucasus" data-pack-index="0"[^>]*checked/);
+  assert.equal(c.location.href,before);assert.equal(c.writes.length,0);
 });

@@ -1,0 +1,92 @@
+{
+  "pl": [
+    "Wybierz listę rzeczy",
+    "Wybierz wariant",
+    "Ukraina",
+    "Polska",
+    "Gruzja / Azerbejdżan",
+    "Inny / nie wiem",
+    "Zaznaczenia są zachowywane osobno dla każdej listy.",
+    "Zapytaj koordynatora, która lista dotyczy Twojego przyjazdu."
+  ],
+  "uk": [
+    "Оберіть список речей",
+    "Оберіть варіант",
+    "Україна",
+    "Польща",
+    "Грузія / Азербайджан",
+    "Інше / не впевнений",
+    "Позначки зберігаються окремо для кожного списку.",
+    "Уточніть у координатора, який список стосується вашого приїзду."
+  ],
+  "ru": [
+    "Выберите список вещей",
+    "Выберите вариант",
+    "Украина",
+    "Польша",
+    "Грузия / Азербайджан",
+    "Другое / не уверен",
+    "Отметки сохраняются отдельно для каждого списка.",
+    "Уточните у координатора, какой список относится к вашему приезду."
+  ],
+  "en": [
+    "Choose your packing list",
+    "Choose an option",
+    "Ukraine",
+    "Poland",
+    "Georgia / Azerbaijan",
+    "Other / not sure",
+    "Checkmarks are kept separately for each list.",
+    "Ask your coordinator which list applies to your arrival."
+  ],
+  "az": [
+    "Əşya siyahısını seçin",
+    "Variant seçin",
+    "Ukrayna",
+    "Polşa",
+    "Gürcüstan / Azərbaycan",
+    "Digər / əmin deyiləm",
+    "İşarələr hər siyahı üçün ayrıca saxlanılır.",
+    "Gəlişinizə hansı siyahının aid olduğunu koordinatordan dəqiqləşdirin."
+  ],
+  "es": [
+    "Elige tu lista de equipaje",
+    "Elige una opción",
+    "Ucrania",
+    "Polonia",
+    "Georgia / Azerbaiyán",
+    "Otro / no estoy seguro",
+    "Las marcas se conservan por separado para cada lista.",
+    "Pregunta a tu coordinador qué lista corresponde a tu llegada."
+  ],
+  "fil": [
+    "Piliin ang listahan ng dadalhin",
+    "Pumili ng opsyon",
+    "Ukraine",
+    "Poland",
+    "Georgia / Azerbaijan",
+    "Iba / hindi sigurado",
+    "Magkahiwalay na naka-save ang mga tsek sa bawat listahan.",
+    "Tanungin ang coordinator kung aling listahan ang angkop sa iyong pagdating."
+  ],
+  "id": [
+    "Pilih daftar barang bawaan",
+    "Pilih opsi",
+    "Ukraina",
+    "Polandia",
+    "Georgia / Azerbaijan",
+    "Lainnya / belum yakin",
+    "Tanda centang disimpan terpisah untuk setiap daftar.",
+    "Tanyakan kepada koordinator daftar mana yang sesuai untuk kedatangan Anda."
+  ],
+  "ne": [
+    "ल्याउने सामानको सूची छान्नुहोस्",
+    "विकल्प छान्नुहोस्",
+    "युक्रेन",
+    "पोल्यान्ड",
+    "जर्जिया / अजरबैजान",
+    "अन्य / निश्चित छैन",
+    "हरेक सूचीका चिन्हहरू छुट्टाछुट्टै सुरक्षित रहन्छन्।",
+    "तपाईंको आगमनका लागि कुन सूची लागू हुन्छ भनेर संयोजकलाई सोध्नुहोस्।"
+  ]
+}

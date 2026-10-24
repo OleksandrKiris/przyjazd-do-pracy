@@ -1,4 +1,4 @@
-const CACHE_NAME = "arrival-guide-v62-route-wording";
+const CACHE_NAME = "arrival-guide-v63-packing-choice";
 const APP_SHELL = "./index.html";
 const ASSETS = [
   "./",

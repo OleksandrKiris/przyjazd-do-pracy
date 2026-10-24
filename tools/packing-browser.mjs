@@ -7,6 +7,7 @@ import { execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { resolve, join, extname } from 'node:path';
 import vm from 'node:vm';
+import {packingChoiceCases} from './packing-choice-cases.mjs';
 assert.equal(process.env.GITHUB_ACTIONS, 'true', 'Run through the authorized CI workflow');
 const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT_PACKAGE);
 const output = resolve(process.env.BROWSER_REPORT), root = process.cwd();
@@ -45,7 +46,7 @@ async function bounded(promise,label){let timer;try{return await Promise.race([p
 async function stopOrigin(){if(!server.listening)return;await bounded(new Promise((done,reject)=>{server.close(error=>error?reject(error):done());server.closeAllConnections();}),'stop-owned-CI-origin');assert.equal(server.listening,false,'The fixture origin must actually stop before offline acceptance');}
 await new Promise(done=>server.listen(4173,'127.0.0.1',done));
 const url='http://127.0.0.1:4173/przyjazd-do-pracy/';
-const key='primserv.arrival.packing.v1', cache='arrival-guide-v62-route-wording';
+const key='primserv.arrival.packing.v1', cache='arrival-guide-v63-packing-choice';
 const languages=['pl','uk','ru','en','az','es','fil','id','ne'];
 const labels={
   pl:['Zaznacz spakowane rzeczy. Zapis tylko na tym urządzeniu; bez wysyłania.','Zapisano na tym urządzeniu.','Nie zapisano. Zaznaczenia działają tylko w tej sesji; poprzednie dane pozostają bez zmian.'],
@@ -173,6 +174,7 @@ try {
       await ctx.tracing.stop({path:join(output,`${width}-trace.zip`)});await ctx.close();
     }
   }
+  await packingChoiceCases({browserContext:context,url,output,report,installed,exactCache,config:configContext.window.ARRIVAL_DEFAULT_CONFIG});
   for(const mode of ['corrupt','future','denied','quota']) {
     const {ctx,blocked}=await context(320,mode),page=await ctx.newPage();
     try {
