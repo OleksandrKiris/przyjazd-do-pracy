@@ -1,4 +1,4 @@
-const CACHE_NAME = "arrival-guide-v59-copy-address";
+const CACHE_NAME = "arrival-guide-v60-quick-actions-languages";
 const APP_SHELL = "./index.html";
 const ASSETS = [
   "./",
