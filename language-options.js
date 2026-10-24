@@ -64,7 +64,7 @@
       chooseLocationText: "Нажмите место, куда вы едете. Страница покажет маршрут, адрес и контакты только для этой локации.",
       selectedLocation: "Выбранная локация",
       showInstruction: "Показать маршрут",
-      checkConnections: "Проверить соединения",
+      checkConnections: "Проверить маршруты",
       travelToolHint: "Сначала проверьте дорогу до города или станции. Потом используйте карту до точного адреса.",
       employee: "Работник",
       arrivalDate: "Дата приезда",
@@ -280,7 +280,7 @@
       chooseLocationText: "Tekan tempat tujuan Anda. Halaman akan menampilkan rute, alamat, dan kontak hanya untuk lokasi itu.",
       selectedLocation: "Lokasi dipilih",
       showInstruction: "Tampilkan rute",
-      checkConnections: "Cek koneksi",
+      checkConnections: "Cek rute perjalanan",
       travelToolHint: "Pertama cek perjalanan ke kota atau stasiun. Lalu gunakan peta ke alamat tepat.",
       employee: "Pekerja",
       arrivalDate: "Tanggal kedatangan",
@@ -747,7 +747,7 @@
     finalNiedow: text("3. Ostatni odcinek: Bogatynia → Niedów 9", "3. Последний участок: Bogatynia → Niedów 9", "3. Остання частина: Bogatynia → Niedów 9", "3. Final part: Bogatynia → Niedów 9", "3. Son hissə: Bogatynia → Niedów 9", "3. Último tramo: Bogatynia → Niedów 9", "3. Huling bahagi: Bogatynia → Niedów 9", "3. Bagian akhir: Bogatynia → Niedów 9", "3. अन्तिम भाग: Bogatynia → Niedów 9"),
     warsawKoz: text("1. Bus: Warszawa Zachodnia → Kozienice", "1. Бус: Warszawa Zachodnia → Kozienice", "1. Бус: Warszawa Zachodnia → Kozienice", "1. Bus: Warszawa Zachodnia → Kozienice", "1. Bus: Warszawa Zachodnia → Kozienice", "1. Bus: Warszawa Zachodnia → Kozienice", "1. Bus: Warszawa Zachodnia → Kozienice", "1. Bus: Warszawa Zachodnia → Kozienice", "1. Bus: Warszawa Zachodnia → Kozienice"),
     finalRyczywol: text("2. Ostatni odcinek: Kozienice → Ryczywół / Wilczkowice Górne 40", "2. Последний участок: Kozienice → Ryczywół / Wilczkowice Górne 40", "2. Остання частина: Kozienice → Ryczywół / Wilczkowice Górne 40", "2. Final part: Kozienice → Ryczywół / Wilczkowice Górne 40", "2. Son hissə: Kozienice → Ryczywół / Wilczkowice Górne 40", "2. Último tramo: Kozienice → Ryczywół / Wilczkowice Górne 40", "2. Huling bahagi: Kozienice → Ryczywół / Wilczkowice Górne 40", "2. Bagian akhir: Kozienice → Ryczywół / Wilczkowice Górne 40", "2. अन्तिम भाग: Kozienice → Ryczywół / Wilczkowice Górne 40"),
-    compare: text("Sprawdź alternatywne połączenie", "Проверить альтернативное соединение", "Перевірити альтернативне сполучення", "Check an alternative connection", "Alternativ bağlantını yoxla", "Comprobar conexión alternativa", "Suriin ang alternatibong biyahe", "Cek koneksi alternatif", "वैकल्पिक connection जाँच गर्नुहोस्")
+    compare: text("Sprawdź alternatywne połączenie", "Проверить другой маршрут", "Перевірити альтернативне сполучення", "Check an alternative connection", "Alternativ bağlantını yoxla", "Comprobar conexión alternativa", "Suriin ang alternatibong biyahe", "Cek rute alternatif", "वैकल्पिक connection जाँच गर्नुहोस्")
   };
   const noteText = {
     main: text("Najlepszy pierwszy wybór.", "Лучший первый вариант.", "Найкращий перший варіант.", "Best first choice.", "Ən yaxşı ilk seçim.", "Mejor primera opción.", "Pinakamagandang unang opsyon.", "Pilihan pertama terbaik.", "सबैभन्दा राम्रो पहिलो विकल्प।"),
