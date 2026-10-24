@@ -1,0 +1,37 @@
+name: Arrival visible instruction screens
+on:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  instructions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install pinned instruction browser
+        run: |
+          npm install --prefix "$RUNNER_TEMP/arrival-instruction-browser" --no-package-lock --no-audit --no-fund playwright@1.56.1
+          "$RUNNER_TEMP/arrival-instruction-browser/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Actual full instructions and visible transport notes
+        env:
+          TESTED_HEAD: ${{ github.event.pull_request.head.sha }}
+          TESTED_BASE: ${{ github.event.pull_request.base.sha }}
+          PLAYWRIGHT_PACKAGE: ${{ runner.temp }}/arrival-instruction-browser/node_modules/playwright
+          BROWSER_REPORT: ${{ runner.temp }}/arrival-instruction-report
+        run: node tools/instruction-browser.mjs
+      - name: Keep exact instruction screen evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: arrival-instructions-${{ github.event.pull_request.head.sha }}
+          path: ${{ runner.temp }}/arrival-instruction-report
+          if-no-files-found: error
+          retention-days: 7

@@ -40,9 +40,12 @@ const server=createServer((req,res)=>{
   const type={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.webmanifest':'application/manifest+json'}[extname(path)];
   res.writeHead(200,{'Content-Type':type,'Cache-Control':'no-store'});res.end(serving[path]);
 });
+const checkpoint=async(phase,details={})=>{report.phase={phase,...details};await writeFile(join(output,'acceptance.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report.phase));};
+async function bounded(promise,label){let timer;try{return await Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('Timed out at '+label)),30000);})]);}finally{clearTimeout(timer);}}
+async function stopOrigin(){if(!server.listening)return;await bounded(new Promise((done,reject)=>{server.close(error=>error?reject(error):done());server.closeAllConnections();}),'stop-owned-CI-origin');assert.equal(server.listening,false,'The fixture origin must actually stop before offline acceptance');}
 await new Promise(done=>server.listen(4173,'127.0.0.1',done));
 const url='http://127.0.0.1:4173/przyjazd-do-pracy/';
-const key='primserv.arrival.packing.v1', cache='arrival-guide-v60-quick-actions-languages';
+const key='primserv.arrival.packing.v1', cache='arrival-guide-v61-transport-labels';
 const languages=['pl','uk','ru','en','az','es','fil','id','ne'];
 const labels={
   pl:['Zaznacz spakowane rzeczy. Zapis tylko na tym urządzeniu; bez wysyłania.','Zapisano na tym urządzeniu.','Nie zapisano. Zaznaczenia działają tylko w tej sesji; poprzednie dane pozostają bez zmian.'],
@@ -106,6 +109,7 @@ try {
   browser=await chromium.launch({headless:true});report.browser=browser.version();
   const context=async(width,mode='normal')=>{
     const ctx=await browser.newContext({viewport:{width,height:900},locale:'en-GB',reducedMotion:'reduce'});
+    ctx.setDefaultTimeout(30000);ctx.setDefaultNavigationTimeout(30000);
     const blocked=[];
     await ctx.route('**/*',route=>{
       const req=route.request();
@@ -328,18 +332,22 @@ try {
       const before=await page.evaluate(key=>localStorage.getItem(key),key);
       assert.equal(JSON.parse(before).version,1);
       await page.screenshot({path:join(output,`upgrade-${oldRef.slice(0,7)}-${width}-before.png`)});
-      serving=current;await page.evaluate(async()=>{
+      await checkpoint('before-worker-update',{oldRef,width});
+      serving=current;await bounded(page.evaluate(async()=>{
         window.previousTestController=navigator.serviceWorker.controller;
         await (await navigator.serviceWorker.getRegistration()).update();
-      });
+      }),'registration-update');
+      await checkpoint('registration-update-completed',{oldRef,width});
       await page.waitForFunction(()=>navigator.serviceWorker.controller &&
         navigator.serviceWorker.controller!==window.previousTestController &&
         navigator.serviceWorker.controller.state==='activated');
+      await checkpoint('new-controller-activated',{oldRef,width});
       await page.waitForFunction(async name=>(await caches.keys()).includes(name),cache);
       const installedCache=await exactCache(page);
       const cacheNamesAfterActivation=await page.evaluate(()=>caches.keys());
+      await checkpoint('exact-current-cache-before-origin-stop',{oldRef,width,exactEntries:installedCache.length});
       // Stop the origin, rather than only asking Chromium to simulate offline.
-      await new Promise(done=>server.close(done));
+      await stopOrigin();await checkpoint('owned-origin-stopped',{oldRef,width,listening:server.listening});
       await ctx.setOffline(true);await page.reload();await checks(page,'ne');await localized(page,'ne',1);
       assert.equal(await page.locator('[data-action="copy-address"]').isVisible(),true,'new action works from exact offline shell');
       for(const {country,pack,index} of oldRows){
@@ -360,6 +368,7 @@ try {
       assert.deepEqual(blocked,[]);
       report.results.push({oldRef,width,status:'passed',oldCache,cacheNamesAfterActivation,installedCache,translatedRows,oldMarksBefore:before,
         steps:[oldRef===base?'actual base worker and UI-produced marks for all three origins':'historical v55 worker with schema-only seeded marks','new controller activation','all 14 cached entries exact SHA256','origin stopped/offline reload','9 translated screens','v1 marks byte-preserved','foreign storage/cache retained']});
+      await checkpoint('worker-upgrade-completed',{oldRef,width});
     } finally {
       serving=current;
       await page.screenshot({path:join(output,`upgrade-${oldRef.slice(0,7)}-${width}-last.png`)}).catch(()=>{});
@@ -371,4 +380,4 @@ try {
   report.requests={count:requests.length,uniquePaths:[...new Set(requests.map(r=>r.path))],nonGet:0};
   report.status='passed';
 } catch(error){report.status='failed';report.error=error.stack;process.exitCode=1;}
-finally{await browser?.close();await new Promise(done=>server.close(done));await writeFile(join(output,'acceptance.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));}
+finally{await browser?.close();await stopOrigin();await writeFile(join(output,'acceptance.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));}
