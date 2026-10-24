@@ -47,8 +47,16 @@ async function instructions(department){
 function fixtureURL(lang,city,department,country='ukraine',hotel=false){return url+`?lang=${lang}&location=${city}&department=${department}&country=${country}&hotel=${hotel?'yes':'no'}`;}
 async function ready(lang,city){await page.waitForFunction(({lang,city})=>document.documentElement.lang===lang&&document.documentElement.dataset.arrivalLocation===city,{lang,city});await page.evaluate(()=>document.fonts.ready);}
 async function visit(department,country='ukraine',hotel=false){await page.goto(fixtureURL(row.lang,row.city,department,country,hotel));await ready(row.lang,row.city);}
+async function retainedOldRegression(){
+ const ref='80d5a4c4c664da553fda6b61aca49c26723b3239',saved=new Map(current),files={};let old;
+ try{
+  for(const p of paths){const b=git('show',ref+':'+p);current.set(p,b);files[p]={bytes:b.length,sha256:hash(b)};}
+  old=await browser.newContext({viewport:{width:320,height:900},reducedMotion:'reduce'});old.setDefaultTimeout(15000);await old.route('**/*',r=>{const q=r.request();if(new URL(q.url()).origin!==origin||!['GET','HEAD'].includes(q.method())){report.blocked.push({url:q.url(),method:q.method()});return r.abort();}return r.continue();});await old.addInitScript(()=>{window.open=()=>{throw Error('Historical regression must not open providers');};});page=await old.newPage();page.on('pageerror',e=>report.errors.push(e.message));await page.goto(fixtureURL('pl','ryczywol','greenhouse'));await ready('pl','ryczywol');const a=page.locator('.route-links a').nth(1);await center(a);const extent=await fullAnchorExtent(a),screen='old-pl-320-ryczywol-transport-label.png';await a.screenshot({path:join(out,screen),animations:'disabled'});report.oldRegression={ref,eventBase:base,files,lang:'pl',city:'ryczywol',width:320,screen,label:await a.locator('span').textContent(),href:await a.getAttribute('href'),extent,actualOldFailureReproduced:!extent.fullTextFits};assert.equal(extent.fullTextFits,false,'Retain the actual original transport label truncation');
+ }finally{await old?.close();for(const [p,b] of saved)current.set(p,b);}
+}
 try{
  browser=await chromium.launch({headless:true});report.browser=browser.version();
+ await retainedOldRegression();
  for(const width of [320,1280])for(const lang of languages)for(const city of cities){
   stem=`${width}-${lang}-${city}`;serial=0;phase='core';row={width,lang,city,screens:[],hidden:[],hiddenContexts:[],originalHrefs:[],extraDepartments:[],originVariants:[],offline:null};ctx=await browser.newContext({viewport:{width,height:900},reducedMotion:'reduce'});ctx.setDefaultTimeout(15000);tracing=width===320&&lang==='pl'&&city==='siechnice';if(tracing)await ctx.tracing.start({snapshots:true,screenshots:true});
   await ctx.route('**/*',r=>{const q=r.request();if(new URL(q.url()).origin!==origin||!['GET','HEAD'].includes(q.method())){report.blocked.push({url:q.url(),method:q.method()});return r.abort();}return r.continue();});await ctx.addInitScript(()=>{window.open=()=>{throw Error('Instruction fixture must never open providers or contacts');};Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText(){throw Error('No copy in instruction fixture');}}});});

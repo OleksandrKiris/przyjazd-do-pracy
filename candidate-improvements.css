@@ -3285,8 +3285,7 @@ button,
 }
 
 /* Compact reading layer: shorten previews, keep the full route instructions available. */
-.location-tile small,
-.route-links a {
+.location-tile small {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;

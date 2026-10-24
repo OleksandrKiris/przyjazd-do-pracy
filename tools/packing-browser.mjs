@@ -42,7 +42,7 @@ const server=createServer((req,res)=>{
 });
 await new Promise(done=>server.listen(4173,'127.0.0.1',done));
 const url='http://127.0.0.1:4173/przyjazd-do-pracy/';
-const key='primserv.arrival.packing.v1', cache='arrival-guide-v60-quick-actions-languages';
+const key='primserv.arrival.packing.v1', cache='arrival-guide-v61-transport-labels';
 const languages=['pl','uk','ru','en','az','es','fil','id','ne'];
 const labels={
   pl:['Zaznacz spakowane rzeczy. Zapis tylko na tym urządzeniu; bez wysyłania.','Zapisano na tym urządzeniu.','Nie zapisano. Zaznaczenia działają tylko w tej sesji; poprzednie dane pozostają bez zmian.'],
