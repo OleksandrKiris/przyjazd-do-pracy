@@ -3,7 +3,7 @@
   "scripts": {
     "test": "npm run validate && npm run quality && node --test tools/quality-check.test.cjs && npm run test:navigation && npm run test:cache",
     "test:cache": "node --test tools/cache.test.mjs",
-    "test:navigation": "node --test tools/navigation.test.mjs",
+    "test:navigation": "node --test tools/navigation.test.mjs tools/help-actions.test.mjs",
     "validate": "node tools/validate-site.js",
     "quality": "node tools/quality-check.js",
     "quality:public": "node tools/quality-check.js --public https://oleksandrkiris.github.io/przyjazd-do-pracy/"

@@ -1,6 +1,17 @@
 (function () {
   const $ = (id) => document.getElementById(id);
   const mapUrl = "https://maps.app.goo.gl/GJc55GLUWFPa6MMcA";
+  const quickActionLabels = {
+    pl: "Szybkie akcje",
+    ru: "Быстрые действия",
+    uk: "Швидкі дії",
+    en: "Quick actions",
+    az: "Sürətli əməliyyatlar",
+    es: "Acciones rápidas",
+    fil: "Mga mabilisang aksyon",
+    id: "Tindakan cepat",
+    ne: "द्रुत कार्यहरू"
+  };
   const labels = {
     pl: {
       travelTo: "Jedziesz do",
@@ -377,10 +388,10 @@
       bar = document.createElement("nav");
       bar.id = "candidateStickyActions";
       bar.className = "candidate-sticky-actions";
-      bar.setAttribute("aria-label", "Szybkie akcje");
       document.body.appendChild(bar);
     }
 
+    bar.setAttribute("aria-label", quickActionLabels[currentLang()] || quickActionLabels.en);
     bar.innerHTML = `
       <button type="button" data-help-action="maps">${escapeHtml(tr("map"))}</button>
       <button type="button" data-help-action="call">${escapeHtml(tr("numbers"))}</button>
