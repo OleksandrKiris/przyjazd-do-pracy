@@ -53,6 +53,18 @@
     ne: "स्वचालित रूपमा प्रतिलिपि गर्न सकिएन। तलको बाकसबाट ठेगाना छानेर प्रतिलिपि गर्नुहोस्।"
   };
 
+  const packingChoiceLabels = {
+    pl: ["Wybierz listę rzeczy", "Wybierz wariant", "Ukraina", "Polska", "Gruzja / Azerbejdżan", "Inny / nie wiem", "Zaznaczenia są zachowywane osobno dla każdej listy.", "Zapytaj koordynatora, która lista dotyczy Twojego przyjazdu."],
+    uk: ["Оберіть список речей", "Оберіть варіант", "Україна", "Польща", "Грузія / Азербайджан", "Інше / не впевнений", "Позначки зберігаються окремо для кожного списку.", "Уточніть у координатора, який список стосується вашого приїзду."],
+    ru: ["Выберите список вещей", "Выберите вариант", "Украина", "Польша", "Грузия / Азербайджан", "Другое / не уверен", "Отметки сохраняются отдельно для каждого списка.", "Уточните у координатора, какой список относится к вашему приезду."],
+    en: ["Choose your packing list", "Choose an option", "Ukraine", "Poland", "Georgia / Azerbaijan", "Other / not sure", "Checkmarks are kept separately for each list.", "Ask your coordinator which list applies to your arrival."],
+    az: ["Əşya siyahısını seçin", "Variant seçin", "Ukrayna", "Polşa", "Gürcüstan / Azərbaycan", "Digər / əmin deyiləm", "İşarələr hər siyahı üçün ayrıca saxlanılır.", "Gəlişinizə hansı siyahının aid olduğunu koordinatordan dəqiqləşdirin."],
+    es: ["Elige tu lista de equipaje", "Elige una opción", "Ucrania", "Polonia", "Georgia / Azerbaiyán", "Otro / no estoy seguro", "Las marcas se conservan por separado para cada lista.", "Pregunta a tu coordinador qué lista corresponde a tu llegada."],
+    fil: ["Piliin ang listahan ng dadalhin", "Pumili ng opsyon", "Ukraine", "Poland", "Georgia / Azerbaijan", "Iba / hindi sigurado", "Magkahiwalay na naka-save ang mga tsek sa bawat listahan.", "Tanungin ang coordinator kung aling listahan ang angkop sa iyong pagdating."],
+    id: ["Pilih daftar barang bawaan", "Pilih opsi", "Ukraina", "Polandia", "Georgia / Azerbaijan", "Lainnya / belum yakin", "Tanda centang disimpan terpisah untuk setiap daftar.", "Tanyakan kepada koordinator daftar mana yang sesuai untuk kedatangan Anda."],
+    ne: ["ल्याउने सामानको सूची छान्नुहोस्", "विकल्प छान्नुहोस्", "युक्रेन", "पोल्यान्ड", "जर्जिया / अजरबैजान", "अन्य / निश्चित छैन", "हरेक सूचीका चिन्हहरू छुट्टाछुट्टै सुरक्षित रहन्छन्।", "तपाईंको आगमनका लागि कुन सूची लागू हुन्छ भनेर संयोजकलाई सोध्नुहोस्।"]
+  };
+
   const $ = (id) => document.getElementById(id);
   const t = (key) => (config.ui[state.lang] && config.ui[state.lang][key]) || config.ui.pl[key] || key;
 
@@ -81,7 +93,8 @@
       location: normalizeLocation(params.get("location") || params.get("lokalizacja") || "siechnice"),
       department: params.get("department") || params.get("dzial") || "production",
       hotel: ["yes", "tak", "true", "1"].includes((params.get("hotel") || "").toLowerCase()),
-      country: params.get("country") || params.get("kraj") || "ukraine"
+      country: params.get("country") || params.get("kraj") || "ukraine",
+      packingChoice: params.has("pack") ? (["ukraine", "poland", "caucasus", "other"].includes(params.get("pack")) ? params.get("pack") : "") : null
     };
   }
 
@@ -138,6 +151,11 @@
 
     if (url.searchParams.has("lokalizacja")) {
       url.searchParams.delete("lokalizacja");
+      changed = true;
+    }
+
+    if (state.packingChoice !== null && url.searchParams.get("pack") !== (state.packingChoice || "choose")) {
+      url.searchParams.set("pack", state.packingChoice || "choose");
       changed = true;
     }
 
@@ -223,7 +241,7 @@
     const address = place.address.join(", ");
     const addressHtml = place.address.map((line) => escapeHtml(line)).join("<br>");
     const workItems = localizedList(place.work[state.department] || Object.values(place.work)[0] || []);
-    const packKey = state.country === "poland" ? "poland" : ["georgia", "azerbaijan", "ka", "az"].includes(state.country) ? "caucasus" : "ukraine";
+    const packKey = state.packingChoice !== null ? state.packingChoice : state.country === "poland" ? "poland" : ["georgia", "azerbaijan", "ka", "az"].includes(state.country) ? "caucasus" : "ukraine";
 
     $("guide").innerHTML = `
       ${panel(t("address"), `<p>${addressHtml}</p>
@@ -235,7 +253,7 @@
       ${panel(t("route"), `${routeSteps(localizedList(place.route))}${routeLinks(place.routeLinks)}`)}
       ${panel(t("workType"), list(workItems))}
       ${panel(t("arrivalRules"), `<p>${escapeHtml(t("reception"))}</p><p>${escapeHtml(t("noWeekend"))}</p><p>${escapeHtml(t("late"))}</p>`)}
-      ${panel(t("whatToPack"), `<p><strong>${escapeHtml(packLabel(packKey))}</strong></p>${packingList(packKey)}`, "packing-panel")}
+      ${panel(t("whatToPack"), packingChoiceContent(packKey), "packing-panel")}
       ${state.hotel ? panel(t("housing"), `<p>${escapeHtml(t("hotelReady"))}</p>`) : ""}
       ${place.note ? panel(t("contacts"), `<p>${escapeHtml(localizedText(place.note))}</p>${place.coordinators ? list(place.coordinators) : ""}`) : ""}
       <section class="panel wide">
@@ -310,6 +328,16 @@
     return { lang, text: prefix + packingLabels[lang][index] };
   }
 
+  function packingChoiceContent(key) {
+    const labels = packingChoiceLabels[state.lang] || packingChoiceLabels.en;
+    const options = [["", labels[1]], ["ukraine", labels[2]], ["poland", labels[3]], ["caucasus", labels[4]], ["other", labels[5]]];
+    const chooser = `<div class="packing-choice"><label for="packingChoice">${escapeHtml(labels[0])}</label>
+      <select id="packingChoice" aria-describedby="packingChoiceHint">${options.map(([value, label]) => `<option value="${value}"${value === key ? " selected" : ""}>${escapeHtml(label)}</option>`).join("")}</select>
+      <p id="packingChoiceHint">${escapeHtml(labels[6])}</p></div>`;
+    if (!Object.hasOwn(config.packs, key)) return chooser + (key === "other" ? `<p id="packingChoiceHelp" role="status">${escapeHtml(labels[7])}</p>` : "");
+    return `${chooser}<p><strong>${escapeHtml(packLabel(key))}</strong></p>${packingList(key)}`;
+  }
+
   function packingList(key) {
     const hint = packingMessage(0);
     const status = packingMessage(!packingWritable ? 2 : packingSaved ? 1 : 0);
@@ -323,6 +351,13 @@
 
   $("guide")?.addEventListener("change", (event) => {
     const input = event.target;
+    if (input.id === "packingChoice") {
+      state.packingChoice = ["ukraine", "poland", "caucasus", "other"].includes(input.value) ? input.value : "";
+      syncUrlWithState();
+      renderGuide();
+      $("packingChoice")?.focus({ preventScroll: true });
+      return;
+    }
     const key = input.dataset?.pack;
     const index = Number(input.dataset?.packIndex);
     if (input.type !== "checkbox" || !Object.hasOwn(packing.lists, key) ||
