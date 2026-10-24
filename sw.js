@@ -1,4 +1,4 @@
-const CACHE_NAME = "arrival-guide-v61-transport-labels";
+const CACHE_NAME = "arrival-guide-v62-route-wording";
 const APP_SHELL = "./index.html";
 const ASSETS = [
   "./",
