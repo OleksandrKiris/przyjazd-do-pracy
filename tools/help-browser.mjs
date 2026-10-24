@@ -63,7 +63,14 @@ try{
    await center(el);const screen=stem+'-card-'+i+'.png';await el.screenshot({path:join(out,screen)});cards.push({name:person.name,sourceRole:person.role,screen,parts,phoneHref:'tel:+'+digits,whatsappHref:'https://wa.me/'+wa});
   }
   assert.equal(await page.evaluate(()=>localStorage.getItem('primserv.arrival.packing.v1')),packingBefore);assert.equal(await page.evaluate(()=>localStorage.getItem('unrelated-help-fixture')),'keep');assert(await page.locator('.packing-list input').first().isChecked());
-  const row={lang,city,width,initialLanguage:initial,actualLanguageAndCityChange:true,surfaces,actions,contactTitle,contactHint,cards,stickyVisible,stickyLabel,stickyAria,expectedStickyLabel:quickActions[lang],mapInvocations:(await page.evaluate(()=>window.__mapOpens.length))-opensBefore,packingPreserved:true,contactLinksOnlyRead:true};report.cases.push(row);await writeFile(join(out,'help-report.json'),JSON.stringify(report,null,2));
+  const mapInvocations=(await page.evaluate(()=>window.__mapOpens.length))-opensBefore;let offlineAccessibility=null;
+  if(city==='ryczywol'){
+   await page.evaluate(()=>navigator.serviceWorker.ready);await page.waitForFunction(()=>Boolean(navigator.serviceWorker.controller));await ctx.setOffline(true);await page.reload();
+   await page.waitForFunction(({lang,city,label})=>document.documentElement.lang===lang&&document.documentElement.dataset.arrivalLocation===city&&document.querySelector('#candidateStickyActions')?.getAttribute('aria-label')===label,{lang,city,label:quickActions[lang]});
+   assert.equal(await page.locator('#candidateStickyActions').getAttribute('aria-label'),quickActions[lang]);assert.equal(await page.evaluate(()=>localStorage.getItem('primserv.arrival.packing.v1')),packingBefore);assert(await page.locator('.packing-list input').first().isChecked());
+   offlineAccessibility={actualLabel:await page.locator('#candidateStickyActions').getAttribute('aria-label'),actualAriaSnapshot:await page.locator('#candidateStickyActions').ariaSnapshot(),actualOfflineReload:true,packingBytesPreserved:true};
+  }
+  const row={lang,city,width,initialLanguage:initial,actualLanguageAndCityChange:true,surfaces,actions,contactTitle,contactHint,cards,stickyVisible,stickyLabel,stickyAria,expectedStickyLabel:quickActions[lang],mapInvocations,packingPreserved:true,contactLinksOnlyRead:true,offlineAccessibility};report.cases.push(row);await writeFile(join(out,'help-report.json'),JSON.stringify(report,null,2));
   if(width===320&&lang==='pl'&&city==='siechnice')await ctx.tracing.stop({path:join(out,'representative-trace.zip')});else await ctx.tracing.stop();await ctx.close();ctx=null;console.log(JSON.stringify({lang,city,width,actions:actions.length,pass:true}));
  }
  assert.equal(report.cases.length,72);assert.deepEqual(report.errors,[]);assert.deepEqual(report.blocked,[]);assert.deepEqual(report.ariaIssues,[],'Actual accessible sticky navigation name must follow the chosen language');report.pass=true;
