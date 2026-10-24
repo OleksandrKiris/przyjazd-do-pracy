@@ -55,7 +55,7 @@ try{
   for(const action of ['maps','call','whatsapp'])assert(actions.some(a=>a.action===action),'At least one actual visible action surface supplies '+action);
   const sticky=page.locator('#candidateStickyActions'),stickyVisible=await sticky.isVisible(),stickyAria=stickyVisible?await sticky.ariaSnapshot():null,stickyLabel=await sticky.getAttribute('aria-label');
   if(stickyVisible&&stickyLabel!==quickActions[lang])report.ariaIssues.push({lang,city,width,actual:stickyLabel,expected:quickActions[lang],actualAriaSnapshot:stickyAria});
-  const contactTitle=await capture(page.locator('#contactsTitle'),'contact-title'),contactHint=await capture(page.locator('#contactsPage > p strong'),'contact-hint'),cards=[];
+  const contactTitle=await capture(page.locator('#contactsTitle'),'contact-title'),hint=page.locator('#contactsPage > p strong'),contactHint=await hint.isVisible()?{visible:true,...await capture(hint,'contact-hint')}:{visible:false,sourceOnlyText:await hint.textContent(),reason:'Existing CSS hides the optional contact footer; not accepted as a visible instruction'},cards=[];
   const nodes=page.locator('#contactsPage .contact-card');assert.equal(await nodes.count(),people.length);
   for(let i=0;i<people.length;i++){
    const el=nodes.nth(i),person=people[i],digits=String(person.phone).replace(/\D/g,''),wa=String(person.whatsapp||person.phone).replace(/\D/g,'');assert.equal(await el.locator('h3').innerText(),person.name);assert.equal(await el.locator('.contact-phone').getAttribute('href'),'tel:+'+digits);assert.equal(await el.locator('.contact-whatsapp').getAttribute('href'),'https://wa.me/'+wa);
