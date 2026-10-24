@@ -1,4 +1,4 @@
-name: Arrival full instruction screens
+name: Arrival visible instruction screens
 on:
   pull_request:
 permissions:
