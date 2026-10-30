@@ -646,7 +646,9 @@
 
   if ("serviceWorker" in navigator && location.protocol !== "file:") {
     navigator.serviceWorker.register("./sw.js").then((registration) => {
-      registration.update();
+      registration.update().catch((error) => {
+        console.warn("Service worker update check failed", error);
+      });
       registration.addEventListener("updatefound", () => {
         const worker = registration.installing;
         if (!worker) return;
