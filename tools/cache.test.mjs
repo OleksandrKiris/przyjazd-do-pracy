@@ -6,8 +6,9 @@ import fs from 'node:fs/promises';
 const source = await fs.readFile(new URL('../sw.js', import.meta.url), 'utf8');
 const scope = 'https://example.test/przyjazd-do-pracy/';
 const current = source.match(/const CACHE_NAME = "([^"]+)"/)[1];
-function boot({ offline = false, failedWrite = false } = {}) {
+function boot({ offline = false, failedWrite = false, failedAsset = null } = {}) {
   const listeners = {}, stores = new Map(), requests = [], writes = [];
+  let skips = 0;
   const key = value => new URL(typeof value === 'string' ? value : value.url, scope).href;
   const open = async name => {
     if (!stores.has(name)) stores.set(name, new Map());
@@ -15,7 +16,12 @@ function boot({ offline = false, failedWrite = false } = {}) {
     return {
       match: async request => data.get(key(request)),
       put: async (request, response) => { if (failedWrite) throw Error('quota'); writes.push(key(request)); data.set(key(request), response); },
-      add: async request => { requests.push(key(request)); data.set(key(request), new Response('static shell')); }
+      add: async request => { requests.push(key(request)); if (failedAsset && key(request).endsWith('/' + failedAsset)) throw Error('asset transfer failed'); data.set(key(request), new Response('static shell')); },
+      addAll: async batch => {
+        const urls = batch.map(key); requests.push(...urls);
+        if (failedAsset && urls.some(url => url.endsWith('/' + failedAsset))) throw Error('asset transfer failed');
+        for (const url of urls) data.set(url, new Response('static shell'));
+      }
     };
   };
   const caches = { open, keys: async () => [...stores.keys()], delete: async name => stores.delete(name),
@@ -25,13 +31,14 @@ function boot({ offline = false, failedWrite = false } = {}) {
       }
     }
   };
-  const context = vm.createContext({ URL, Request, Response, caches,
-    self: { location: new URL('sw.js', scope), registration: { scope }, clients: { claim: async () => {} }, skipWaiting: async () => {}, addEventListener: (name, fn) => { listeners[name] = fn; } },
+  class ScopedRequest extends Request { constructor(input, options) { super(typeof input === 'string' ? new URL(input, scope) : input, options); } }
+  const context = vm.createContext({ URL, Request: ScopedRequest, Response, caches,
+    self: { location: new URL('sw.js', scope), registration: { scope }, clients: { claim: async () => {} }, skipWaiting: async () => { skips++; }, addEventListener: (name, fn) => { listeners[name] = fn; } },
     fetch: async request => { requests.push(key(request)); if (offline) throw Error('offline'); return new Response('static shell'); },
     setTimeout: (fn, delay) => { const timer = setTimeout(fn, delay); timer.unref(); return timer; }, clearTimeout
   });
   vm.runInContext(source, context);
-  return { stores, requests, writes, open,
+  return { stores, requests, writes, open, get skips() { return skips; }, allowAllAssets() { failedAsset = null; },
     async send(relative, { mode = 'navigate', method = 'GET', headers = {} } = {}) {
       let response; const work = [];
       listeners.fetch({ request: { url: new URL(relative, scope).href, mode, method, headers: new Headers(headers) },
@@ -42,7 +49,8 @@ function boot({ offline = false, failedWrite = false } = {}) {
       await new Promise(resolve => setImmediate(resolve));
       return result;
     },
-    async activate() { let work; listeners.activate({ waitUntil: promise => { work = promise; } }); await work; }
+    async activate() { let work; listeners.activate({ waitUntil: promise => { work = promise; } }); await work; },
+    async install() { let work; listeners.install({ waitUntil: promise => { work = promise; } }); await work; }
   };
 }
 test('navigation caches/fetches only static shell, never fictitious arrival query data', async () => {
@@ -96,4 +104,29 @@ test('activation removes only old arrival caches, retains current and unrelated 
   await b.open('arrival-guide-v54-housing-contact'); await b.open(current); await b.open('other-app');
   await b.activate();
   assert.deepEqual([...b.stores.keys()].sort(), [current, 'other-app'].sort());
+});
+
+for (const failedAsset of ['app.js', 'styles.css']) test(`failed ${failedAsset} install rejects before replacing the usable shell`, async () => {
+  const b = boot({ failedAsset });
+  const old = await b.open('arrival-guide-previous'); await old.put(new URL('index.html', scope), new Response('usable previous shell'));
+  await b.open('unrelated-cache');
+  await assert.rejects(b.install(), /asset transfer failed/);
+  assert.equal(b.skips, 0);
+  assert.equal(await (await old.match(new URL('index.html', scope))).text(), 'usable previous shell');
+  assert(b.stores.has('unrelated-cache'));
+});
+
+test('complete install caches all14 approved requests before skipWaiting and activation', async () => {
+  const b = boot(); await b.open('arrival-guide-previous'); await b.open('unrelated-cache');
+  await b.install(); assert.equal(b.stores.get(current).size, 14); assert.equal(b.skips, 1);
+  assert(b.stores.has('arrival-guide-previous'));
+  assert(b.requests.every(url => !new URL(url).search));
+  await b.activate(); assert(!b.stores.has('arrival-guide-previous')); assert(b.stores.has('unrelated-cache'));
+});
+
+test('retry after an interrupted transfer fills the complete shell without discarding the previous one early', async () => {
+  const b = boot({ failedAsset: 'app.js' }); await b.open('arrival-guide-previous');
+  await assert.rejects(b.install(), /asset transfer failed/); assert.equal(b.skips, 0); assert(b.stores.has('arrival-guide-previous'));
+  b.allowAllAssets(); await b.install(); assert.equal(b.skips, 1); assert.equal(b.stores.get(current).size, 14); assert(b.stores.has('arrival-guide-previous'));
+  await b.activate(); assert(!b.stores.has('arrival-guide-previous'));
 });
