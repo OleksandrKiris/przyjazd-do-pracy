@@ -1,4 +1,4 @@
-const CACHE_NAME = "arrival-guide-v64-packing-progress";
+const CACHE_NAME = "arrival-guide-v65-complete-shell";
 const APP_SHELL = "./index.html";
 const ASSETS = [
   "./",
@@ -20,13 +20,9 @@ const ASSETS = [
 self.addEventListener("install", (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
-    await Promise.all(ASSETS.map(async (asset) => {
-      try {
-        await cache.add(new Request(asset, { cache: "reload" }));
-      } catch (error) {
-        // Keep installation resilient if a non-critical asset fails.
-      }
-    }));
+    // A failed shell transfer must reject installation and leave the active
+    // worker/cache usable. Promote this version only after the whole shell loads.
+    await cache.addAll(ASSETS.map(asset => new Request(asset, { cache: "reload" })));
     await self.skipWaiting();
   })());
 });

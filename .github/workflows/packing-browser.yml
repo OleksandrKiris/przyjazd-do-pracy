@@ -34,6 +34,8 @@ jobs:
           export PLAYWRIGHT_PACKAGE="$RUNNER_TEMP/arrival-browser/node_modules/playwright"
           export BROWSER_REPORT="$RUNNER_TEMP/arrival-acceptance"
           node tools/packing-browser.mjs
+          export UPGRADE_EXPECTATION=repaired
+          node tools/worker-upgrade-browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

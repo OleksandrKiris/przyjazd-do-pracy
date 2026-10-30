@@ -48,7 +48,7 @@ async function stopOrigin(){if(!server.listening)return;await bounded(new Promis
 async function startOrigin(){await bounded(new Promise((done,reject)=>{const fail=e=>reject(e);server.once('error',fail);server.listen(4173,'127.0.0.1',()=>{server.off('error',fail);done();});}),'start-owned-CI-origin');}
 await startOrigin();
 const url='http://127.0.0.1:4173/przyjazd-do-pracy/';
-const key='primserv.arrival.packing.v1', cache='arrival-guide-v64-packing-progress';
+const key='primserv.arrival.packing.v1', cache='arrival-guide-v65-complete-shell';
 const languages=['pl','uk','ru','en','az','es','fil','id','ne'];
 const labels={
   pl:['Zaznacz spakowane rzeczy. Zapis tylko na tym urządzeniu; bez wysyłania.','Zapisano na tym urządzeniu.','Nie zapisano. Zaznaczenia działają tylko w tej sesji; poprzednie dane pozostają bez zmian.'],
