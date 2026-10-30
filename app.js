@@ -65,6 +65,18 @@
     ne: ["ल्याउने सामानको सूची छान्नुहोस्", "विकल्प छान्नुहोस्", "युक्रेन", "पोल्यान्ड", "जर्जिया / अजरबैजान", "अन्य / निश्चित छैन", "हरेक सूचीका चिन्हहरू छुट्टाछुट्टै सुरक्षित रहन्छन्।", "तपाईंको आगमनका लागि कुन सूची लागू हुन्छ भनेर संयोजकलाई सोध्नुहोस्।"]
   };
 
+  const packingProgressLabels = {
+    pl: "Spakowano: {checked} z {total}",
+    uk: "Зібрано: {checked} із {total}",
+    ru: "Собрано: {checked} из {total}",
+    en: "Packed: {checked} of {total}",
+    az: "Yığılıb: {checked} / {total}",
+    es: "Preparado: {checked} de {total}",
+    fil: "Naimpakeng gamit: {checked} / {total}",
+    id: "Barang dikemas: {checked} dari {total}",
+    ne: "तयार सामान: {checked} / {total}"
+  };
+
   const $ = (id) => document.getElementById(id);
   const t = (key) => (config.ui[state.lang] && config.ui[state.lang][key]) || config.ui.pl[key] || key;
 
@@ -342,11 +354,22 @@
     const hint = packingMessage(0);
     const status = packingMessage(!packingWritable ? 2 : packingSaved ? 1 : 0);
     const items = localizedList(config.packs[key]);
+    const progress = packingProgressMessage(key);
     return `<p id="packingHint" lang="${hint.lang}">${escapeHtml(hint.text)}</p>
+      <p id="packingProgress" class="packing-progress" lang="${progress.lang}">${escapeHtml(progress.text)}</p>
       <ul class="packing-list">${items.map((item, index) => `<li><label>
-        <input type="checkbox" data-pack="${key}" data-pack-index="${index}" aria-describedby="packingHint" ${packing.lists[key].checked[index] ? "checked" : ""}>
+        <input type="checkbox" data-pack="${key}" data-pack-index="${index}" aria-describedby="packingHint packingProgress" ${packing.lists[key].checked[index] ? "checked" : ""}>
         <span>${escapeHtml(item)}</span></label></li>`).join("")}</ul>
       <p id="packingStatus" role="status" aria-live="polite" lang="${status.lang}">${escapeHtml(status.text)}</p>`;
+  }
+
+  function packingProgressMessage(key) {
+    const lang = Object.hasOwn(packingProgressLabels, state.lang) ? state.lang : "en";
+    const marks = packing.lists[key].checked;
+    const text = packingProgressLabels[lang]
+      .replace("{checked}", String(marks.filter(value => value).length))
+      .replace("{total}", String(marks.length));
+    return { lang, text };
   }
 
   $("guide")?.addEventListener("change", (event) => {
@@ -379,6 +402,9 @@
     const status = packingMessage(packingSaved ? 1 : 2);
     $("packingStatus").textContent = status.text;
     $("packingStatus").setAttribute("lang", status.lang);
+    const progress = packingProgressMessage(key);
+    $("packingProgress").textContent = progress.text;
+    $("packingProgress").setAttribute("lang", progress.lang);
     // Do not re-render the checkbox: keyboard focus and current scroll survive.
   });
 
@@ -620,7 +646,9 @@
 
   if ("serviceWorker" in navigator && location.protocol !== "file:") {
     navigator.serviceWorker.register("./sw.js").then((registration) => {
-      registration.update();
+      registration.update().catch((error) => {
+        console.warn("Service worker update check failed", error);
+      });
       registration.addEventListener("updatefound", () => {
         const worker = registration.installing;
         if (!worker) return;

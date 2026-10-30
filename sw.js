@@ -1,4 +1,4 @@
-const CACHE_NAME = "arrival-guide-v63-packing-choice";
+const CACHE_NAME = "arrival-guide-v64-packing-progress";
 const APP_SHELL = "./index.html";
 const ASSETS = [
   "./",

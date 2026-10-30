@@ -1,0 +1,11 @@
+{
+  "pl": "Spakowano: {checked} z {total}",
+  "uk": "Зібрано: {checked} із {total}",
+  "ru": "Собрано: {checked} из {total}",
+  "en": "Packed: {checked} of {total}",
+  "az": "Yığılıb: {checked} / {total}",
+  "es": "Preparado: {checked} de {total}",
+  "fil": "Naimpakeng gamit: {checked} / {total}",
+  "id": "Barang dikemas: {checked} dari {total}",
+  "ne": "तयार सामान: {checked} / {total}"
+}

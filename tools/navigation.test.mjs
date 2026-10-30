@@ -185,7 +185,7 @@ function boot(lang, place = "bogatynia", options = {}) {
   const window = { localStorage, location, isSecureContext: options.secure !== false };
   if (!options.noMatchMedia) window.matchMedia = () => ({ matches: !!options.reducedMotion });
   const context = vm.createContext({ window, document, location, localStorage,
-    navigator: options.navigator || {}, URL, URLSearchParams, structuredClone, console,
+    navigator: options.navigator || {}, URL, URLSearchParams, structuredClone, console: options.console || console,
     history, DOMException,
     open() { throw new Error("External actions are forbidden"); },
     fetch() { throw new Error("Network requests are forbidden"); },
@@ -217,6 +217,41 @@ function boot(lang, place = "bogatynia", options = {}) {
     chooseLocation(value) { node("locationTiles").handlers.click({ target: { closest: () => ({ dataset: { location: value } }) } }); }
   };
 }
+
+test("service worker update rejection stays handled while the cached guide remains usable", async () => {
+  const warnings = [], listeners = [];
+  let updates = 0;
+  const registration = {
+    update() { updates++; return Promise.reject(new Error("Anonymous offline update fixture")); },
+    addEventListener(name) { listeners.push(name); }
+  };
+  const c = boot("en", "ryczywol", {
+    navigator: { serviceWorker: { async register() { return registration; } } },
+    console: { warn(...args) { warnings.push(args[0]); } }
+  });
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(updates, 1);
+  assert.deepEqual(listeners, ["updatefound"]);
+  assert.deepEqual(warnings, ["Service worker update check failed"]);
+  c.mark("poland", 0);
+  assert.equal(JSON.parse(c.saved.get(packingKey)).lists.poland.checked[0], true);
+  assert.ok(c.node("guide").innerHTML.includes('id="packingProgress"'));
+});
+
+test("service worker update success retains ordinary update observation and guide rendering", async () => {
+  const warnings = [], listeners = [];
+  let updates = 0;
+  boot("en", "ryczywol", {
+    navigator: { serviceWorker: { async register() { return {
+      async update() { updates++; }, addEventListener(name) { listeners.push(name); }
+    }; } } },
+    console: { warn(...args) { warnings.push(args[0]); } }
+  });
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(updates, 1);
+  assert.deepEqual(listeners, ["updatefound"]);
+  assert.deepEqual(warnings, []);
+});
 
 test("Ryczywół arrival and contact screens use today's confirmed accommodation number in every language", () => {
   for (const lang of locales) {
