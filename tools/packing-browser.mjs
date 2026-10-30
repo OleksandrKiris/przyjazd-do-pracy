@@ -8,6 +8,7 @@ import { createRequire } from 'node:module';
 import { resolve, join, extname } from 'node:path';
 import vm from 'node:vm';
 import {packingChoiceCases} from './packing-choice-cases.mjs';
+import {packingProgressCases,assertPackingProgress,capturePackingProgress} from './packing-progress-cases.mjs';
 assert.equal(process.env.GITHUB_ACTIONS, 'true', 'Run through the authorized CI workflow');
 const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT_PACKAGE);
 const output = resolve(process.env.BROWSER_REPORT), root = process.cwd();
@@ -44,9 +45,10 @@ const server=createServer((req,res)=>{
 const checkpoint=async(phase,details={})=>{report.phase={phase,...details};await writeFile(join(output,'acceptance.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report.phase));};
 async function bounded(promise,label){let timer;try{return await Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('Timed out at '+label)),30000);})]);}finally{clearTimeout(timer);}}
 async function stopOrigin(){if(!server.listening)return;await bounded(new Promise((done,reject)=>{server.close(error=>error?reject(error):done());server.closeAllConnections();}),'stop-owned-CI-origin');assert.equal(server.listening,false,'The fixture origin must actually stop before offline acceptance');}
-await new Promise(done=>server.listen(4173,'127.0.0.1',done));
+async function startOrigin(){await bounded(new Promise((done,reject)=>{const fail=e=>reject(e);server.once('error',fail);server.listen(4173,'127.0.0.1',()=>{server.off('error',fail);done();});}),'start-owned-CI-origin');}
+await startOrigin();
 const url='http://127.0.0.1:4173/przyjazd-do-pracy/';
-const key='primserv.arrival.packing.v1', cache='arrival-guide-v63-packing-choice';
+const key='primserv.arrival.packing.v1', cache='arrival-guide-v64-packing-progress';
 const languages=['pl','uk','ru','en','az','es','fil','id','ne'];
 const labels={
   pl:['Zaznacz spakowane rzeczy. Zapis tylko na tym urządzeniu; bez wysyłania.','Zapisano na tym urządzeniu.','Nie zapisano. Zaznaczenia działają tylko w tej sesji; poprzednie dane pozostają bez zmian.'],
@@ -175,6 +177,7 @@ try {
     }
   }
   await packingChoiceCases({browserContext:context,url,output,report,installed,exactCache,config:configContext.window.ARRIVAL_DEFAULT_CONFIG});
+  await packingProgressCases({browserContext:context,url,output,report,installed,exactCache,config:configContext.window.ARRIVAL_DEFAULT_CONFIG,stopOrigin,startOrigin});
   for(const mode of ['corrupt','future','denied','quota']) {
     const {ctx,blocked}=await context(320,mode),page=await ctx.newPage();
     try {
@@ -183,7 +186,7 @@ try {
       for(const lang of languages){
         await page.locator('#topLanguageSelect').selectOption(lang);await checks(page,lang);
         await first.uncheck();await first.check();assert.equal(await first.isChecked(),true);
-        await localized(page,lang,2);await first.scrollIntoViewIfNeeded();
+        await localized(page,lang,2);await assertPackingProgress(page,lang,1);await capturePackingProgress({page,width:320,lang,stage:'fault-'+mode,output,report});await first.scrollIntoViewIfNeeded();
         await page.screenshot({path:join(output,`${mode}-${lang}-warning.png`)});
       }
       await page.locator('#topLanguageSelect').selectOption('en');await checks(page,'en');
@@ -360,6 +363,7 @@ try {
       for(const lang of languages){
         await page.locator('#topLanguageSelect').selectOption(lang);await checks(page,lang);await localized(page,lang,1);
         assert.equal(await page.locator('input[data-pack-index="2"]').isChecked(),true);
+        await assertPackingProgress(page,lang);
         translatedRows.push({lang,hint:await page.locator('#packingHint').innerText(),status:await page.locator('#packingStatus').innerText(),label:await page.locator('#topLanguageSwitcher label').innerText()});
         await page.locator('.packing-panel').scrollIntoViewIfNeeded();
         await page.screenshot({path:join(output,`upgrade-${oldRef.slice(0,7)}-${width}-${lang}.png`)});
@@ -378,6 +382,7 @@ try {
       if(!server.listening)await new Promise(done=>server.listen(4173,'127.0.0.1',done));
     }
   }
+  assert.equal(report.packingProgressCaptures.length,108);
   assert.ok(requests.every(r=>['GET','HEAD'].includes(r.method)));
   report.requests={count:requests.length,uniquePaths:[...new Set(requests.map(r=>r.path))],nonGet:0};
   report.status='passed';
