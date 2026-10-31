@@ -3386,3 +3386,7 @@ button,
     width: min(230px, 100%);
   }
 }
+
+.packing-copy-actions { margin-top: 12px; }
+.packing-copy-actions button { width: 100%; max-width: 100%; white-space: normal; overflow-wrap: anywhere; line-height: 1.4; }
+.packing-copy-actions label { display: block; margin-bottom: 8px; font-weight: 700; }

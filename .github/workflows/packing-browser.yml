@@ -39,6 +39,7 @@ jobs:
           node tools/first-install-browser.mjs
           export HEADER_EXPECTATION=repaired
           node tools/header-browser.mjs
+          node tools/packing-copy-browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

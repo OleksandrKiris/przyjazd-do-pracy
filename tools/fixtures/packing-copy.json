@@ -1,0 +1,11 @@
+{
+  "pl": ["Kopiuj listę rzeczy", "Nie udało się skopiować automatycznie. Zaznacz i skopiuj poniższą listę.", "Lista do skopiowania"],
+  "uk": ["Копіювати список речей", "Не вдалося скопіювати автоматично. Виділіть і скопіюйте список нижче.", "Список для копіювання"],
+  "ru": ["Копировать список вещей", "Не удалось скопировать автоматически. Выделите и скопируйте список ниже.", "Список для копирования"],
+  "en": ["Copy packing list", "Automatic copying failed. Select and copy the list below.", "List to copy"],
+  "az": ["Əşya siyahısını kopyala", "Avtomatik kopyalama alınmadı. Aşağıdakı siyahını seçib kopyalayın.", "Kopyalanacaq siyahı"],
+  "es": ["Copiar lista de equipaje", "No se pudo copiar automáticamente. Selecciona y copia la lista de abajo.", "Lista para copiar"],
+  "fil": ["Kopyahin ang listahan ng dadalhin", "Hindi awtomatikong nakopya. Piliin at kopyahin ang listahan sa ibaba.", "Listahang kokopyahin"],
+  "id": ["Salin daftar barang bawaan", "Penyalinan otomatis gagal. Pilih dan salin daftar di bawah.", "Daftar untuk disalin"],
+  "ne": ["सामानको सूची प्रतिलिपि गर्नुहोस्", "स्वतः प्रतिलिपि हुन सकेन। तलको सूची चयन गरेर प्रतिलिपि गर्नुहोस्।", "प्रतिलिपि गर्ने सूची"]
+}

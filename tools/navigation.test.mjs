@@ -198,6 +198,7 @@ function boot(lang, place = "bogatynia", options = {}) {
   return { node, document, location, window, history, originalConfig, saved, writes, copyAttempts, temporaryFields, timers,
     elapse(milliseconds) { copyClock+=milliseconds; for(const timer of timers)if(timer.active&&timer.at<=copyClock){timer.active=false;timer.callback();} },
     copy() { node("addressCopyValue").value = window.ARRIVAL_DEFAULT_CONFIG.locations[document.documentElement.dataset.arrivalLocation].address.join(", "); return node('guide:[data-action="copy-address"]').handlers.click(); },
+    copyPacking() { return node('packingCopyBtn').handlers.click?.(); },
     mark(key,index,checked=true) {
       const input={type:"checkbox",dataset:{pack:key,packIndex:String(index)},checked};
       document.activeElement=input;
@@ -217,6 +218,51 @@ function boot(lang, place = "bogatynia", options = {}) {
     chooseLocation(value) { node("locationTiles").handlers.click({ target: { closest: () => ({ dataset: { location: value } }) } }); }
   };
 }
+
+const packingCopyExpected = JSON.parse(await fs.readFile(new URL('tools/fixtures/packing-copy.json',root),'utf8'));
+function expectedPackingPayload(c,lang,key,checked){
+  const cfg=c.window.ARRIVAL_DEFAULT_CONFIG,label=key==='poland'?'inPoland':key==='caucasus'?'fromCaucasus':'fromUkraine';
+  return [cfg.ui[lang][label],...cfg.packs[key][lang].map((text,index)=>`${checked.includes(index)?'[x]':'[ ]'} ${text}`)].join('\n');
+}
+for(const lang of locales)test(`${lang}: list copy uses all3visible lists/current marks, no arrival data or writes`,async()=>{
+  const copies=[],c=boot(lang,'ryczywol',{copyTest:true,navigator:{clipboard:{async writeText(text){copies.push(text);}}}});
+  for(const key of ['ukraine','poland','caucasus']){
+    c.choosePacking(key);c.mark(key,0);const stored=c.saved.get(packingKey),writes=c.writes.length;c.node('packingCopyBtn').focus();
+    c.node('addressCopyFallback').hidden=false;c.node('addressCopyValue').value='UNRELATED ADDRESS';await c.copyPacking();
+    assert.equal(copies.at(-1),expectedPackingPayload(c,lang,key,[0]));assert.doesNotMatch(copies.at(-1),/Fixture|Example|2026-11-02|https?:|48511|ryczywol|production/);
+    assert.equal(c.saved.get(packingKey),stored);assert.equal(c.writes.length,writes);assert.equal(c.document.activeElement,c.node('packingCopyBtn'));assert.equal(c.node('packingCopyFallback').hidden,true);
+    assert(c.node('guide').innerHTML.includes(packingCopyExpected[lang][0]));assert(c.node('guide').innerHTML.includes(packingCopyExpected[lang][1]));assert(c.node('guide').innerHTML.includes(packingCopyExpected[lang][2]));
+    assert.equal(c.node('addressCopyFallback').hidden,false);assert.equal(c.node('addressCopyValue').value,'UNRELATED ADDRESS');
+  }
+  assert.equal(JSON.stringify(c.window.ARRIVAL_DEFAULT_CONFIG),c.originalConfig);
+});
+for(const mode of ['blockedStorage','blockedWrite','corrupt','future'])test(`${mode}: copy reflects current-session marks without replacing saved bytes`,async()=>{
+  const raw=mode==='corrupt'?'{broken':mode==='future'?'{"version":9,"lists":{}}':null,saved=new Map(raw===null?[]:[[packingKey,raw]]),copies=[];
+  const c=boot('en','ryczywol',{saved,copyTest:true,[mode]:true,navigator:{clipboard:{async writeText(text){copies.push(text);}}}});c.choosePacking('ukraine');c.mark('ukraine',0);const stored=saved.get(packingKey),writes=c.writes.length;await c.copyPacking();
+  assert.equal(copies[0],expectedPackingPayload(c,'en','ukraine',[0]));assert.equal(saved.get(packingKey),stored);assert.equal(c.writes.length,writes);assert.match(c.node('packingStatus').textContent,/Not saved/);
+});
+test('choose/other have no copy action or invented list',()=>{
+  for(const pack of ['', 'other']){let calls=0;const c=boot('en','ryczywol',{pack,navigator:{clipboard:{writeText(){calls++;}}}});assert.doesNotMatch(c.node('guide').innerHTML,/packingCopyBtn|packingCopyValue/);assert.equal(c.copyPacking(),undefined);assert.equal(calls,0);}
+});
+test('failed clipboard and legacy copy reveal/select only the list manual field, without false success',async()=>{
+  const c=boot('ru','ryczywol',{copyTest:true,navigator:{clipboard:{async writeText(){throw Error('denied');}}}});c.mark('poland',1);c.node('packingCopyBtn').focus();await c.copyPacking();const field=c.node('packingCopyValue');
+  assert.equal(c.node('packingCopyFallback').hidden,false);assert.equal(field.value,expectedPackingPayload(c,'ru','poland',[1]));assert.equal(c.document.activeElement,field);assert.equal(field.selectionStart,0);assert.equal(field.selectionEnd,field.value.length);assert.equal(c.node('packingCopyStatus').hidden,true);assert.equal(c.copyAttempts.length,1);assert(c.temporaryFields.every(f=>f.removed));
+});
+test('legacy list-copy success restores the button keyboard focus and reports actual success',async()=>{
+  const c=boot('en','ryczywol',{copyTest:true,execResult:true,navigator:{clipboard:{writeText(){throw Error('sync denial');}}}});c.node('packingCopyBtn').focus();await c.copyPacking();assert.equal(c.node('packingCopyFallback').hidden,true);assert.equal(c.document.activeElement,c.node('packingCopyBtn'));assert.equal(c.node('packingCopyBtn').lastFocus.preventScroll,true);assert.equal(c.node('packingCopyStatus').hidden,false);assert.equal(c.copyAttempts[0][1],expectedPackingPayload(c,'en','poland',[]));
+});
+for(const action of ['mark','list','language','location'])test(`${action} change invalidates pending list-copy failure without stealing new focus`,async()=>{
+  let reject;const c=boot('en','ryczywol',{copyTest:true,navigator:{clipboard:{writeText(){return new Promise((_,no)=>{reject=no;});}}}});const pending=c.copyPacking();
+  if(action==='mark')c.mark('poland',1);if(action==='list')c.choosePacking('caucasus');if(action==='language')c.chooseLanguage('ru');if(action==='location')c.chooseLocation('bogatynia');const focus=c.document.activeElement;
+  reject(Error('late fixture denial'));await pending;assert.equal(c.copyAttempts.length,0);assert.equal(c.node('packingCopyFallback').hidden,true);assert.equal(c.node('packingCopyStatus').hidden,true);assert.equal(c.document.activeElement,focus);
+});
+test('a stale first copy cannot dismiss the successful newer list-copy result',async()=>{
+  const pending=[];const c=boot('en','ryczywol',{copyTest:true,navigator:{clipboard:{writeText(){return new Promise((ok,no)=>pending.push({ok,no}));}}}});const first=c.copyPacking();c.mark('poland',1);const second=c.copyPacking();pending[1].ok();await second;const text=c.node('packingCopyValue').value;assert.equal(c.node('packingCopyStatus').hidden,false);pending[0].no(Error('stale failure'));await first;
+  assert.equal(c.node('packingCopyValue').value,text);assert.equal(text,expectedPackingPayload(c,'en','poland',[1]));assert.equal(c.node('packingCopyStatus').hidden,false);assert.equal(c.node('packingCopyFallback').hidden,true);assert.equal(c.copyAttempts.length,0);
+});
+test('visible manual list stays current after another native checkbox change without remounting or focus loss',async()=>{
+  const c=boot('en','ryczywol',{copyTest:true,navigator:{clipboard:{async writeText(){throw Error('denied');}}}});await c.copyPacking();const field=c.node('packingCopyValue');assert.equal(c.node('packingCopyFallback').hidden,false);c.mark('poland',2);assert.equal(c.node('packingCopyValue'),field);assert.equal(field.value,expectedPackingPayload(c,'en','poland',[2]));assert.equal(c.node('packingCopyFallback').hidden,false);assert.notEqual(c.document.activeElement,field);
+});
 
 test("service worker update rejection stays handled while the cached guide remains usable", async () => {
   const warnings = [], listeners = [];
