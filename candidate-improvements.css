@@ -3374,3 +3374,15 @@ button,
   outline: 3px solid #475569;
   outline-offset: 4px;
 }
+
+/* Keep the service identity readable beside a full-size language control. */
+@media (max-width: 430px) {
+  .primserv-arrival .topbar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .primserv-arrival .top-language-switcher {
+    justify-self: start;
+    width: min(230px, 100%);
+  }
+}
