@@ -379,6 +379,7 @@
       <p id="packingStatus" role="status" aria-live="polite" lang="${status.lang}">${escapeHtml(status.text)}</p>
       <div id="packingCopyActions" class="packing-copy-actions">
         <button type="button" id="packingCopyBtn" data-action="copy-packing" lang="${state.lang}">${escapeHtml(copy[0])}</button>
+        <p id="packingCopyStatus" role="status" aria-live="polite" lang="${state.lang}" hidden></p>
         <div id="packingCopyFallback" class="address-copy-fallback" hidden>
           <p id="packingCopyHint" role="status" lang="${state.lang}">${escapeHtml(copy[1])}</p>
           <label for="packingCopyValue" lang="${state.lang}">${escapeHtml(copy[2])}</label>
@@ -437,6 +438,8 @@
     $("packingProgress").setAttribute("lang", progress.lang);
     const copyField = $("packingCopyValue");
     if (copyField) copyField.value = packingCopyText(key);
+    const copyStatus = $("packingCopyStatus");
+    if (copyStatus) copyStatus.hidden = true;
     // Do not re-render the checkbox: keyboard focus and current scroll survive.
   });
 
@@ -589,16 +592,18 @@
 
   async function copyPackingList(key) {
     if (!Object.hasOwn(config.packs, key)) return;
-    const field = $("packingCopyValue"), fallback = $("packingCopyFallback"), origin = $("packingCopyBtn");
-    if (!field || !fallback) return;
+    const field = $("packingCopyValue"), fallback = $("packingCopyFallback"), origin = $("packingCopyBtn"), status = $("packingCopyStatus");
+    if (!field || !fallback || !status) return;
     const text = packingCopyText(key), attempt = ++packingCopyAttempt;
     field.value = text;
     fallback.hidden = true;
+    status.hidden = true;
     const current = () => attempt === packingCopyAttempt && field.isConnected && fallback.isConnected && field.value === text;
+    const copied = () => { status.textContent = t("copied"); status.hidden = false; };
     try {
       if (navigator.clipboard && window.isSecureContext) {
         await navigator.clipboard.writeText(text);
-        if (current()) toast(t("copied"));
+        if (current()) copied();
         return;
       }
     } catch (error) {
@@ -608,10 +613,9 @@
     if (fallbackCopy(text)) {
       if (current()) {
         origin?.focus({ preventScroll: true });
-        toast(t("copied"));
+        copied();
       }
     } else if (current()) {
-      $("toast").classList.remove("show");
       fallback.hidden = false;
       field.focus();
       field.select();
