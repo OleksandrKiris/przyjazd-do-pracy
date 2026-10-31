@@ -1,4 +1,4 @@
-const CACHE_NAME = "arrival-guide-v65-complete-shell";
+const CACHE_NAME = "arrival-guide-v66-intact-header";
 const APP_SHELL = "./index.html";
 const ASSETS = [
   "./",
