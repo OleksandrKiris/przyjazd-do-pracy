@@ -2,6 +2,11 @@ name: Packing browser acceptance
 on:
   pull_request:
   workflow_dispatch:
+  push:
+    branches: [codex/personal-arrival-first-install]
+    paths:
+      - tools/first-install-browser.mjs
+      - .github/workflows/packing-browser.yml
 permissions:
   contents: read
 jobs:
@@ -25,17 +30,26 @@ jobs:
           test "$(git rev-parse HEAD)" = "$TESTED_HEAD"
           git merge-base --is-ancestor "$TESTED_BASE" "$TESTED_HEAD"
       - run: npm test
+        if: github.event_name != 'push'
       - name: Install isolated browser test dependency
         run: |
           npm install --prefix "$RUNNER_TEMP/arrival-browser" --no-package-lock --no-audit --no-fund playwright@1.56.1
           "$RUNNER_TEMP/arrival-browser/node_modules/.bin/playwright" install --with-deps chromium
       - name: Real Chromium acceptance
+        if: github.event_name != 'push'
         run: |
           export PLAYWRIGHT_PACKAGE="$RUNNER_TEMP/arrival-browser/node_modules/playwright"
           export BROWSER_REPORT="$RUNNER_TEMP/arrival-acceptance"
           node tools/packing-browser.mjs
           export UPGRADE_EXPECTATION=repaired
           node tools/worker-upgrade-browser.mjs
+      - name: Bounded first-install boundary observation
+        if: github.event_name == 'push'
+        env:
+          PLAYWRIGHT_PACKAGE: ${{ runner.temp }}/arrival-browser/node_modules/playwright
+          BROWSER_REPORT: ${{ runner.temp }}/arrival-acceptance
+          FIRST_INSTALL_PUBLISHED: 'true'
+        run: node tools/first-install-browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
