@@ -29,6 +29,7 @@
   let packingRaw = null;
   let packingWritable = true;
   let packingSaved = false;
+  let packingCopyAttempt = 0;
   const packingLabels = {
     pl: ["Zaznacz spakowane rzeczy. Zapis tylko na tym urządzeniu; bez wysyłania.", "Zapisano na tym urządzeniu.", "Nie zapisano. Zaznaczenia działają tylko w tej sesji; poprzednie dane pozostają bez zmian."],
     uk: ["Позначайте зібрані речі. Збереження лише на цьому пристрої; без надсилання.", "Збережено на цьому пристрої.", "Не збережено. Позначки діють лише в цьому сеансі; попередні дані не змінено."],
@@ -75,6 +76,18 @@
     fil: "Naimpakeng gamit: {checked} / {total}",
     id: "Barang dikemas: {checked} dari {total}",
     ne: "तयार सामान: {checked} / {total}"
+  };
+
+  const packingCopyLabels = {
+    pl: ["Kopiuj listę rzeczy", "Nie udało się skopiować automatycznie. Zaznacz i skopiuj poniższą listę.", "Lista do skopiowania"],
+    uk: ["Копіювати список речей", "Не вдалося скопіювати автоматично. Виділіть і скопіюйте список нижче.", "Список для копіювання"],
+    ru: ["Копировать список вещей", "Не удалось скопировать автоматически. Выделите и скопируйте список ниже.", "Список для копирования"],
+    en: ["Copy packing list", "Automatic copying failed. Select and copy the list below.", "List to copy"],
+    az: ["Əşya siyahısını kopyala", "Avtomatik kopyalama alınmadı. Aşağıdakı siyahını seçib kopyalayın.", "Kopyalanacaq siyahı"],
+    es: ["Copiar lista de equipaje", "No se pudo copiar automáticamente. Selecciona y copia la lista de abajo.", "Lista para copiar"],
+    fil: ["Kopyahin ang listahan ng dadalhin", "Hindi awtomatikong nakopya. Piliin at kopyahin ang listahan sa ibaba.", "Listahang kokopyahin"],
+    id: ["Salin daftar barang bawaan", "Penyalinan otomatis gagal. Pilih dan salin daftar di bawah.", "Daftar untuk disalin"],
+    ne: ["सामानको सूची प्रतिलिपि गर्नुहोस्", "स्वतः प्रतिलिपि हुन सकेन। तलको सूची चयन गरेर प्रतिलिपि गर्नुहोस्।", "प्रतिलिपि गर्ने सूची"]
   };
 
   const $ = (id) => document.getElementById(id);
@@ -248,6 +261,7 @@
   }
 
   function renderGuide() {
+    packingCopyAttempt++;
     const place = config.locations[state.location] || config.locations.siechnice;
     document.documentElement.style.setProperty("--primary", place.accent || "#1f7a8c");
     const address = place.address.join(", ");
@@ -282,6 +296,7 @@
       open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.mapQuery || address)}`, "_blank");
     });
     $("guide").querySelector('[data-action="copy-address"]').addEventListener("click", () => copyText(address));
+    if (Object.hasOwn(config.packs, packKey)) $("packingCopyBtn")?.addEventListener("click", () => copyPackingList(packKey));
     $("guide").querySelector('[data-action="call"]').addEventListener("click", () => { window.location.href = `tel:${place.phone}`; });
     $("guide").querySelector('[data-action="whatsapp"]').addEventListener("click", () => {
       open(`https://wa.me/${normalizePhone(place.whatsapp || place.phone)}`, "_blank");
@@ -355,12 +370,26 @@
     const status = packingMessage(!packingWritable ? 2 : packingSaved ? 1 : 0);
     const items = localizedList(config.packs[key]);
     const progress = packingProgressMessage(key);
+    const copy = packingCopyLabels[state.lang] || packingCopyLabels.en;
     return `<p id="packingHint" lang="${hint.lang}">${escapeHtml(hint.text)}</p>
       <p id="packingProgress" class="packing-progress" lang="${progress.lang}">${escapeHtml(progress.text)}</p>
       <ul class="packing-list">${items.map((item, index) => `<li><label>
         <input type="checkbox" data-pack="${key}" data-pack-index="${index}" aria-describedby="packingHint packingProgress" ${packing.lists[key].checked[index] ? "checked" : ""}>
         <span>${escapeHtml(item)}</span></label></li>`).join("")}</ul>
-      <p id="packingStatus" role="status" aria-live="polite" lang="${status.lang}">${escapeHtml(status.text)}</p>`;
+      <p id="packingStatus" role="status" aria-live="polite" lang="${status.lang}">${escapeHtml(status.text)}</p>
+      <div id="packingCopyActions" class="packing-copy-actions">
+        <button type="button" id="packingCopyBtn" data-action="copy-packing" lang="${state.lang}">${escapeHtml(copy[0])}</button>
+        <div id="packingCopyFallback" class="address-copy-fallback" hidden>
+          <p id="packingCopyHint" role="status" lang="${state.lang}">${escapeHtml(copy[1])}</p>
+          <label for="packingCopyValue" lang="${state.lang}">${escapeHtml(copy[2])}</label>
+          <textarea id="packingCopyValue" rows="10" readonly lang="${state.lang}" aria-label="${escapeHtml(copy[2])}" aria-describedby="packingCopyHint">${escapeHtml(packingCopyText(key))}</textarea>
+        </div>
+      </div>`;
+  }
+
+  function packingCopyText(key) {
+    return [packLabel(key), ...localizedList(config.packs[key]).map((item, index) =>
+      `${packing.lists[key].checked[index] ? "[x]" : "[ ]"} ${item}`)].join("\n");
   }
 
   function packingProgressMessage(key) {
@@ -385,6 +414,7 @@
     const index = Number(input.dataset?.packIndex);
     if (input.type !== "checkbox" || !Object.hasOwn(packing.lists, key) ||
         !Number.isInteger(index) || index < 0 || index >= packing.lists[key].checked.length) return;
+    packingCopyAttempt++;
     packing.lists[key].checked[index] = input.checked;
     packingSaved = false;
     if (packingWritable) {
@@ -405,6 +435,8 @@
     const progress = packingProgressMessage(key);
     $("packingProgress").textContent = progress.text;
     $("packingProgress").setAttribute("lang", progress.lang);
+    const copyField = $("packingCopyValue");
+    if (copyField) copyField.value = packingCopyText(key);
     // Do not re-render the checkbox: keyboard focus and current scroll survive.
   });
 
@@ -552,6 +584,38 @@
       return false;
     } finally {
       field.remove();
+    }
+  }
+
+  async function copyPackingList(key) {
+    if (!Object.hasOwn(config.packs, key)) return;
+    const field = $("packingCopyValue"), fallback = $("packingCopyFallback"), origin = $("packingCopyBtn");
+    if (!field || !fallback) return;
+    const text = packingCopyText(key), attempt = ++packingCopyAttempt;
+    field.value = text;
+    fallback.hidden = true;
+    const current = () => attempt === packingCopyAttempt && field.isConnected && fallback.isConnected && field.value === text;
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        if (current()) toast(t("copied"));
+        return;
+      }
+    } catch (error) {
+      // Try the existing legacy copy path only for this still-current list action.
+    }
+    if (!current()) return;
+    if (fallbackCopy(text)) {
+      if (current()) {
+        origin?.focus({ preventScroll: true });
+        toast(t("copied"));
+      }
+    } else if (current()) {
+      $("toast").classList.remove("show");
+      fallback.hidden = false;
+      field.focus();
+      field.select();
+      field.setSelectionRange(0, text.length);
     }
   }
 
